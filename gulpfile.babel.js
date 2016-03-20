@@ -7,10 +7,18 @@ import serve from './gulp-tasks/serve';
 var task = gtb();
 
 task.filesIn('app')
+  .inFolder('js')
   .withExtension('js')
   .run(commonTasks.babel({
     presets: ['stage-0'],
     plugins: ['transform-es2015-modules-amd']
+  }))
+  .run(commonTasks.minifyJs())
+  .put('js')
+task.filesIn('app')
+  .withName('sw.js')
+  .run(commonTasks.babel({
+    presets: ['stage-0'],
   }))
   .run(commonTasks.minifyJs());
 task.filesIn('app')
@@ -32,6 +40,11 @@ task.filesIn('app')
 task.filesIn('node_modules')
   .inFolder('requirejs')
   .withName('require.js')
+  .run(commonTasks.minifyJs())
+  .put('js');
+task.filesIn('node_modules')
+  .inFolder('babel-polyfill/dist')
+  .withName('polyfill.js')
   .run(commonTasks.minifyJs())
   .put('js');
 

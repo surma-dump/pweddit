@@ -18,8 +18,8 @@ export default class Reddit {
     });
   }
 
-  static SubredditPosts(subreddit, sorting = 'top') {
-    return this._apiCall(`${this._apiBase}/r/${subreddit}/${sorting}`)
-      .then(data => data.data.children.map(post => post.data));
+  static async SubredditPosts(subreddit, sorting = 'top') {
+    const data = await this._apiCall(`${this._apiBase}/r/${subreddit}/${sorting}`);
+    return data.data.children.map(post => post.data);
   }
 }

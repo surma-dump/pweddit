@@ -15,13 +15,12 @@ export default class SubredditListController {
     this._updateList().then(::this._render);
   }
 
-  _updateList() {
+  async _updateList() {
     if(this.subreddit === '') {
       this._list = [];
       return;
     }
-    return Reddit.SubredditPosts(this.subreddit)
-      .then(posts => this._posts = posts);
+    this._posts = await Reddit.SubredditPosts(this.subreddit);
   }
 
   _render() {
