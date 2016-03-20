@@ -14,7 +14,7 @@ task.filesIn('app')
     plugins: ['transform-es2015-modules-amd']
   }))
   .run(commonTasks.minifyJs())
-  .put('js')
+  .put('js');
 task.filesIn('app')
   .withName('sw.js')
   .run(commonTasks.babel({
@@ -40,11 +40,6 @@ task.filesIn('app')
 task.filesIn('node_modules')
   .inFolder('requirejs')
   .withName('require.js')
-  .run(commonTasks.minifyJs())
-  .put('js');
-task.filesIn('node_modules')
-  .inFolder('babel-polyfill/dist')
-  .withName('polyfill.js')
   .run(commonTasks.minifyJs())
   .put('js');
 

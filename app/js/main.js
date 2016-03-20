@@ -2,7 +2,8 @@ import SubredditListController from 'SubredditListController';
 
 const srlc = new SubredditListController(document.querySelector('div'));
 window.x = srlc;
-srlc.subreddit = 'leagueoflegends';
+srlc.subreddit = 'pics';
 
-import ServiceWorkerController from 'ServiceWorkerController';
-ServiceWorkerController.test();
+navigator.serviceWorker.register('/sw.js').then(_ => {
+  navigator.serviceWorker.controller.postMessage({subreddit: 'all'});
+});
