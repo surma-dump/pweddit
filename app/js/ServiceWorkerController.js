@@ -7,13 +7,18 @@ export default class ServiceWorkerController {
   }
 
   onMessage(msg) {
-    console.log('Message received');
-    Reddit.SubredditPosts(msg.data.subreddit).then(posts => {
-      console.log(posts);
-    });
+    console.log('Message received:', msg);
   }
 
-  onFetch() {
-    console.log('Fetching');
+  onFetch(event) {
+    const url = new URL(event.request.url);
+    switch(url.host) {
+      case 'api.reddit.com':
+        Reddit.onFetch(event);
+        break;
+      default:
+        event.respondWith(fetch(event.request));
+        break;
+    }
   }
 }

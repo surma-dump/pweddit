@@ -1,5 +1,7 @@
 importScripts('js/require.js');
 
+const version = '4';
+
 self.addEventListener('install', event => {
   console.log('Installing new ServiceWorker');
   event.waitUntil(self.skipWaiting());

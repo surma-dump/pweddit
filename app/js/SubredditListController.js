@@ -20,7 +20,7 @@ export default class SubredditListController {
       this._list = [];
       return;
     }
-    return Reddit.SubredditPosts(this.subreddit)
+    return Reddit.subredditPosts(this.subreddit)
       .then(posts => this._posts = posts);
   }
 
