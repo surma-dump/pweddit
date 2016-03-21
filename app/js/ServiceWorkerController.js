@@ -1,9 +1,13 @@
 import Reddit from 'js/Reddit';
+import Config from 'js/Config';
 
 export default class ServiceWorkerController {
-  constructor() {
+  constructor(event) {
     self.addEventListener('message', ::this.onMessage);
     self.addEventListener('fetch', ::this.onFetch);
+    caches.open(Config.APP_CACHE)
+      .then(cache => cache.addAll(Config.APP_FILES))
+      .then(_ => {console.log('App has been cached offline')});
   }
 
   onMessage(msg) {
@@ -17,7 +21,18 @@ export default class ServiceWorkerController {
         Reddit.onFetch(event);
         break;
       default:
-        event.respondWith(fetch(event.request));
+        event.respondWith(caches.match(event.request).then(cachedResponse => {
+          const freshResponse = fetch(event.request).then(freshResponse => {
+            if(freshResponse.status === 200) {
+              return caches.open(Config.APP_CACHE)
+                .then(cache => cache.put(event.request, freshResponse))
+                .then(_ => freshResponse);
+            }
+            return freshResponse;
+          });
+
+          return cachedResponse?cachedResponse:freshResponse;
+        }));
         break;
     }
   }

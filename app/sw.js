@@ -1,9 +1,9 @@
 importScripts('js/require.js');
 
-const version = '4';
+const version = '9';
 
 self.addEventListener('install', event => {
-  console.log('Installing new ServiceWorker');
+  console.log(`Installing new ServiceWorker v${version}`);
   event.waitUntil(self.skipWaiting());
 });
 
