@@ -1,19 +1,19 @@
-import pkg from './package.json';
+const pkg = require('./package.json');
 
-import gulp from 'gulp';
-import minimatch from 'minimatch';
-import browserSync from 'browser-sync';
-import through from 'through2';
+const gulp = require('gulp');
+const minimatch = require('minimatch');
+const browserSync = require('browser-sync');
+const through = require('through2');
 
 // Gulp plugins
-import uglify from 'gulp-uglify';
-import babel from 'gulp-babel';
-import autoprefixer from 'gulp-autoprefixer';
-import sass from 'gulp-sass';
-import cssnano from 'gulp-cssnano';
-import minifyInline from 'gulp-minify-inline';
-import htmlmin from 'gulp-htmlmin';
-import sourcemaps from 'gulp-sourcemaps';
+const uglify = require('gulp-uglify');
+const babel = require('gulp-babel');
+const autoprefixer = require('gulp-autoprefixer');
+const sass = require('gulp-sass');
+const cssnano = require('gulp-cssnano');
+const minifyInline = require('gulp-minify-inline');
+const htmlmin = require('gulp-htmlmin');
+const sourcemaps = require('gulp-sourcemaps');
 
 const FILES_FROM_MODULES = [
   'normalize.css/normalize.css'
@@ -38,13 +38,9 @@ function serviceWorker() {
       'node_modules/requirejs/require.js'
     ])
     .pipe(sourcemaps.init())
-    // Babel’s transform-es2015-modules-commonjs destroy require.js
-    // so Imma add the individual plugins on an as-needed basis. But don’t
-    // expect sw.js to contain much code anyways.
-    .pipe(babel({
-      plugins: []
-    }))
-    .pipe(uglify())
+    // This uses the defaults provided in the `package.json`.
+    .pipe(babel())
+    // .pipe(uglify())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist'));
 }

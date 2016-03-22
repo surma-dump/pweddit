@@ -1,6 +1,6 @@
 importScripts('require.js');
 
-const version = '9';
+const version = '12';
 
 self.addEventListener('install', event => {
   console.log(`Installing new ServiceWorker v${version}`);
