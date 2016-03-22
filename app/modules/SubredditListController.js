@@ -1,4 +1,4 @@
-import Reddit from 'Reddit';
+import Reddit from 'modules/Reddit';
 
 export default class SubredditListController {
   constructor(container) {

@@ -1,4 +1,4 @@
-import Utils from './utils';
+import Utils from 'modules/Utils';
 
 
 export default class Reddit {

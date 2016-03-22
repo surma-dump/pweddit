@@ -1,5 +1,5 @@
-import Reddit from 'js/Reddit';
-import Config from 'js/Config';
+import Reddit from 'modules/Reddit';
+import Config from 'modules/Config';
 
 export default class ServiceWorkerController {
   constructor(event) {

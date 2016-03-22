@@ -1,4 +1,4 @@
-importScripts('js/require.js');
+importScripts('require.js');
 
 const version = '9';
 
@@ -12,6 +12,6 @@ self.addEventListener('activate', event => {
   event.waitUntil(self.clients.claim());
 });
 
-require(['js/ServiceWorkerController'], ServiceWorkerController => {
+require(['modules/ServiceWorkerController'], ServiceWorkerController => {
   new ServiceWorkerController.default();
 });
