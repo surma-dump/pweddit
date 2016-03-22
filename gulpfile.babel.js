@@ -15,7 +15,9 @@ import minifyInline from 'gulp-minify-inline';
 import htmlmin from 'gulp-htmlmin';
 import sourcemaps from 'gulp-sourcemaps';
 
-const FILES_FROM_MODULES = [ ]
+const FILES_FROM_MODULES = [
+  'normalize.css/normalize.css'
+]
 
 function scripts() {
   return src('*.js')
@@ -48,7 +50,7 @@ function serviceWorker() {
 }
 
 function styles() {
-  return src('*.scss')
+  return src('*.{scss,sass,css}')
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(autoprefixer())
