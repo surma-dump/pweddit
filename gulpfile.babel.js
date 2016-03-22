@@ -1,9 +1,8 @@
-const pkg = require('./package.json');
-
 const gulp = require('gulp');
 const minimatch = require('minimatch');
 const browserSync = require('browser-sync');
 const through = require('through2');
+const fs = require('fs');
 
 // Gulp plugins
 const uglify = require('gulp-uglify');
@@ -14,13 +13,18 @@ const cssnano = require('gulp-cssnano');
 const minifyInline = require('gulp-minify-inline');
 const htmlmin = require('gulp-htmlmin');
 const sourcemaps = require('gulp-sourcemaps');
+const bump = require('gulp-bump');
+const handlebars = require('gulp-compile-handlebars')
 
+let pkg = JSON.parse(fs.readFileSync('package.json'));
+let templateContext = {pkg};
 const FILES_FROM_MODULES = [
   'normalize.css/normalize.css'
 ]
 
 function scripts() {
   return src('*.js')
+    .pipe(handlebars(templateContext))
     .pipe(sourcemaps.init())
     .pipe(skip(['sw.js', 'require.js']))
     .pipe(babel({
@@ -37,6 +41,7 @@ function serviceWorker() {
       'app/sw.js',
       'node_modules/requirejs/require.js'
     ])
+    .pipe(handlebars(templateContext))
     .pipe(sourcemaps.init())
     // This uses the defaults provided in the `package.json`.
     .pipe(babel())
@@ -47,6 +52,7 @@ function serviceWorker() {
 
 function styles() {
   return src('*.{scss,sass,css}')
+    .pipe(handlebars(templateContext))
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(autoprefixer())
@@ -57,6 +63,7 @@ function styles() {
 
 function markup() {
   return src('*.html')
+    .pipe(handlebars(templateContext))
     .pipe(sourcemaps.init())
     .pipe(htmlmin({
       minifyCSS: true,
@@ -77,6 +84,15 @@ function staticFiles() {
     // Imagemin et al are slow and potentially
     // non-deterministic. Use `gulp images`.
     .pipe(gulp.dest('dist'));
+}
+
+function incrementVersion() {
+  const stream = gulp.src('package.json')
+    .pipe(bump())
+    .pipe(gulp.dest('.'));
+
+  pkg = JSON.parse(fs.readFileSync('package.json'));
+  return stream;
 }
 
 function watch() {
@@ -101,8 +117,17 @@ function watch() {
   gulp.watch('app/**/*', gulp.series('build'));
 }
 
-gulp.task('build', gulp.parallel(scripts, serviceWorker, styles, markup, staticFiles))
-gulp.task('serve', gulp.series('build', watch))
+gulp.task('build', gulp.series(
+  incrementVersion,
+  gulp.parallel(
+    scripts,
+    serviceWorker,
+    styles,
+    markup,
+    staticFiles
+  )
+));
+gulp.task('serve', gulp.series('build', watch));
 gulp.task('default', gulp.series('build'));
 
 function src(glob) {
