@@ -3,6 +3,7 @@ import View from 'modules/View';
 import Template from 'modules/Template';
 import Reddit from 'modules/Reddit';
 import Utils from 'modules/Utils';
+import HeaderBar from 'modules/HeaderBar';
 
 export default class SubredditView extends View {
   constructor() {
@@ -16,6 +17,7 @@ export default class SubredditView extends View {
 
   in(data) {
     this.subreddit = data;
+    HeaderBar().setTitle(`/r/${this.subreddit}`);
     return Reddit.subredditThreads(this.subreddit)
       .then(posts => {
         this.posts = posts;

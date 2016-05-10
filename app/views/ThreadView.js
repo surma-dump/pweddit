@@ -3,6 +3,7 @@ import View from 'modules/View';
 import Template from 'modules/Template';
 import Reddit from 'modules/Reddit';
 import Utils from 'modules/Utils';
+import HeaderBar from 'modules/HeaderBar';
 
 export default class ThreadView extends View {
   constructor() {
@@ -31,6 +32,7 @@ export default class ThreadView extends View {
     data = data.split('/');
     this.subreddit = data[0];
     this.threadId = data[1];
+    HeaderBar().setTitle(`/r/${this.subreddit}`);
     return Reddit.thread(this.subreddit, this.threadId)
       .then(thread => {
         this.thread = thread;

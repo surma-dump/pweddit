@@ -27,10 +27,10 @@
       transition: transform 0.3s ease-in-out;
       transform: translateX(0);
     }
-    .invisible.in {
+    .view.invisible.in {
       transform: translateX(100%);
     }
-    .invisible.out {
+    .view.invisible.out {
       transform: translateX(-100%);
     }
     ul.comments, ul.comments ul {
@@ -40,10 +40,25 @@
     ul.comments ul {
       margin-left: 20px;
     }
+    body > header {
+      display: flex;
+      align-items: center;
+    }
+    .header__title {
+      display: block;
+      transition: transform 0.3s ease-in-out;
+      transform: scaleY(1);
+    }
+    .header__title.invisible {
+      transform: scaleY(0);
+    }
   </style>
 </head>
 <header>
   <a class="button header__back">&lt;-</a>
+  <span class="header__title">
+    Pweddit 💙
+  </span>
 </header>
 <div id="viewContainer">
 </div>

@@ -1,5 +1,6 @@
 import Router from 'modules/Router';
 import View from 'modules/View';
+import HeaderBar from 'modules/HeaderBar';
 
 export default class SubredditSelectView extends View {
   constructor() {
@@ -16,6 +17,11 @@ export default class SubredditSelectView extends View {
   onSubmit(e) {
     e.preventDefault()
     Router().go(`/r/${this.input.value}`);
+  }
+
+  in(data) {
+    HeaderBar().setTitle();
+    return super.in(data);
   }
 
   update() {}

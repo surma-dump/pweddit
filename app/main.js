@@ -9,7 +9,7 @@ Router().add('_root', SubredditSelectView);
 Router().add('r', SubredditView);
 Router().add('thread', ThreadView);
 
-document.querySelector('.header__back')
-  .addEventListener('click', _ => window.history.back());
+import HeaderBar from 'modules/HeaderBar';
+HeaderBar();
 
 navigator.serviceWorker.register('/sw.js');
