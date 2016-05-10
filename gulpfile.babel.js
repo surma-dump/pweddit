@@ -81,7 +81,7 @@ function markup() {
 }
 
 function staticFiles() {
-  return src('*.{json,svg,jpeg,jpg,png}')
+  return src('*.{json,svg,jpeg,jpg,png,woff,eot,tff,woff2,otf}')
     // Imagemin et al are slow and potentially
     // non-deterministic. Use `gulp images`.
     .pipe(gulp.dest('dist'));

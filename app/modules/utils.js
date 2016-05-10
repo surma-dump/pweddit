@@ -12,6 +12,16 @@ export default class Utils {
       });
     });
   }
+  
+  static animationIterationPromise() {
+    const elem = this;
+    return new Promise(resolve => {
+      elem.addEventListener('animationiteration', function handler() {
+        elem.removeEventListener('animationiteration', handler);
+        resolve();
+      });
+    });
+  }
 
   static rAFPromise() {
     return new Promise(resolve => {

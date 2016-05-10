@@ -1,6 +1,7 @@
 <!doctype html>
 <head>
   <link rel="stylesheet" href="/normalize.css"></link>
+  <link rel="stylesheet" href="/fa/css/font-awesome.min.css"></link>
   <style>
     * {
       box-sizing: border-box;
@@ -48,17 +49,34 @@
       display: block;
       transition: transform 0.3s ease-in-out;
       transform: scaleY(1);
+      flex-grow: 1;
+      flex-shrink: 1;
     }
     .header__title.invisible {
       transform: scaleY(0);
     }
+    .header__refresh {
+      will-change: transform;
+    }
+    .spinning {
+      animation: spin 1s  infinite linear;
+    }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(180deg);
+      }
+    }
   </style>
 </head>
 <header>
-  <a class="button header__back">&lt;-</a>
+  <a class="header__back fa fa-arrow-left"></a>
   <span class="header__title">
     Pweddit 💙
   </span>
+  <a class="header__refresh fa fa-refresh"></a>
 </header>
 <div id="viewContainer">
 </div>

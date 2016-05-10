@@ -10,7 +10,7 @@ class Router {
 
   constructor() {
     this.routes = {};
-    this.currentAction = null;
+    this.currentView = null;
     this.transition = Promise.resolve();
 
     window.addEventListener('popstate', e => {
@@ -25,20 +25,20 @@ class Router {
     // verb we want to action, with the rest of the path
     // being the data to pass to the handler.
     const pathParts = path.split('/');
-    const action = pathParts.shift();
+    const view = pathParts.shift();
 
-    if (this.routes[action])
-      throw `A handler already exists for the action "${action}"`;
+    if (this.routes[view])
+      throw `A handler already exists for the action "${view}"`;
 
-    this.routes[action] = new state();
+    this.routes[view] = new state();
     requestAnimationFrame(_ => this.manageState());
   }
 
   remove(path) {
     const pathParts = path.split('/');
-    const action = pathParts.shift();
+    const view = pathParts.shift();
 
-    delete this.routes[action];
+    delete this.routes[view];
   }
 
   manageState() {
@@ -47,33 +47,33 @@ class Router {
     // verb we want to action, with the rest of the path
     // being the data to pass to the handler.
     const pathParts = path.split('/');
-    let action = pathParts.shift();
+    let view = pathParts.shift();
     const data = pathParts.join('/');
 
     // Add a special case for the root.
-    if (action === '')
-      action = '_root';
+    if (view === '')
+      view = '_root';
 
-    if (this.currentAction === this.routes[action]) {
-      const currentAction = this.currentAction
+    if (this.currentView === this.routes[view]) {
+      const currentView = this.currentView
       return this.transition = this.transition
-                                .then(_ => currentAction.update(data));
+                                .then(_ => currentView.update(data));
     }
 
-    if (this.currentAction) {
-      const outAction = this.currentAction;
-      this.transition = this.transition.then(_ => outAction.out());
+    if (this.currentView) {
+      const outView = this.currentView;
+      this.transition = this.transition.then(_ => outView.out());
     }
 
-    if (!this.routes[action]) {
-      this.currentAction = null;
+    if (!this.routes[view]) {
+      this.currentView = null;
       document.body.focus();
       return this.transition;
     }
 
-    const inAction = this.routes[action];
-    this.currentAction = inAction;
-    return this.transition = this.transition.then(_ => inAction.in(data));
+    const inView = this.routes[view];
+    this.currentView = inView;
+    return this.transition = this.transition.then(_ => inView.in(data));
   }
 
   go(path) {

@@ -36,4 +36,9 @@ export default class View {
     return this.out()
       .then(_ => this.in(data));
   }
+
+  refresh() {
+    console.log('Not implemented');
+    return Promise.resolve();
+  }
 }

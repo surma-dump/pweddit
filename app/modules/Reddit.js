@@ -1,5 +1,6 @@
 import Utils from 'modules/Utils';
 
+const CACHE_NAME = 'reddit';
 
 export default class Reddit {
   static get _apiBase() {
@@ -46,6 +47,14 @@ export default class Reddit {
       };});
   }
 
+  static forgetThread(subreddit, id, sorting = 'hot') {
+    return Promise.resolve();
+    // return caches.open(CACHE_NAME)
+    //   .then(cache => {
+    //     cache
+    //   })
+  }
+
   // Canonicalizes a URL, i.e. removes the `jsonp` search parameter
   static _canonicalURL(url) {
     const searchParams = new URLSearchParams(url.search.slice(1));
@@ -74,7 +83,7 @@ export default class Reddit {
           // store it in the cache and return that.
           return this._apiCall(canonicalURL)
             .then(data => JSON.stringify(data))
-            .then(data => caches.open('reddit')
+            .then(data => caches.open(CACHE_NAME)
               .then(cache =>
                 cache.put(
                   canonicalURL,

@@ -42,6 +42,12 @@ export default class ThreadView extends View {
       .then(_ => super.in(data));
   }
 
+  refresh() {
+    return this.out()
+    .then(_ => Reddit.forgetThread(this.subreddit, this.threadId))
+    .then(_ => this.in(`${this.subreddit}/${this.threadId}`));
+  }
+
   updatePost(post) {
     this.postContainer::Utils.removeAllChildren();
     Array.from(this.postTemplate.renderAsDOM(post))
