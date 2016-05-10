@@ -16,8 +16,9 @@ export default class SubredditView extends View {
 
   in(data) {
     this.subreddit = data;
-    return Reddit.subredditPosts(this.subreddit)
+    return Reddit.subredditThreads(this.subreddit)
       .then(posts => {
+        this.posts = posts;
         this.updateList(posts);
       })
       .then(_ => super.in(data));
@@ -26,7 +27,9 @@ export default class SubredditView extends View {
   updateList(posts) {
     this.node::Utils.removeAllChildren();
     for(let post of posts) {
-      this.node::Utils.appendChildren(this.postTemplate.renderAsDOM(post));
+      const postNode = this.postTemplate.renderAsDOM(post)[0];
+      postNode.addEventListener('click', _ => Router().go(`/thread/${this.subreddit}/${post.id}`));
+      this.node.appendChild(postNode);
     }
   }
 

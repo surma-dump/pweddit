@@ -7,7 +7,7 @@ export default class View {
     this.node.classList.add('view')
     this.viewContainer = document.querySelector('#viewContainer');
 
-    // For inspecting through DevTools
+    // TODO: Remove this
     this.node._view = this;
   }
 

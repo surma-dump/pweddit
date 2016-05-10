@@ -1,9 +1,9 @@
 import Utils from 'modules/Utils';
 
 export default function RouterInstance () {
-  if (typeof window.RouterInstance_ === 'undefined')
-    window.RouterInstance_ = new Router();
-  return window.RouterInstance_;
+  if (typeof window._router === 'undefined')
+    window._router = new Router();
+  return window._router;
 }
 
 class Router {

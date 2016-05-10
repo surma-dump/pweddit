@@ -2,14 +2,26 @@
 <head>
   <link rel="stylesheet" href="/normalize.css"></link>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     html, body {
       width: 100vw;
       height: 100vh;
     }
+    body > header {
+      display: block;
+      position: fixed;
+      width: 100%;
+      height: 50px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+      z-index: 1;
+      background-color: white;
+    }
     #viewContainer {
-      height: 100%;
-      background-color: #888;
-      width
+      min-height: 100%;
+      background-color: #CCC;
+      padding-top: 60px;
     }
     .view {
       transition: transform 0.3s ease-in-out;
@@ -21,8 +33,18 @@
     .invisible.out {
       transform: translateX(-100%);
     }
+    ul.comments, ul.comments ul {
+      list-style: none;
+      -webkit-padding-start: 0;
+    }
+    ul.comments ul {
+      margin-left: 20px;
+    }
   </style>
 </head>
+<header>
+  <a class="button header__back">&lt;-</a>
+</header>
 <div id="viewContainer">
 </div>
 <script src="/require.js" data-main="/main.js" defer></script>

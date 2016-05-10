@@ -33,9 +33,17 @@ export default class Reddit {
     });
   }
 
-  static subredditPosts(subreddit, sorting = 'top') {
+  static subredditThreads(subreddit, sorting = 'hot') {
     return this._apiCall(`${this._apiBase}/r/${subreddit}/${sorting}`)
       .then(data => data.data.children.map(post => post.data));
+  }
+
+  static thread(subreddit, id, sorting = 'hot') {
+    return this._apiCall(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`)
+      .then(data => { return {
+        post: data[0].data.children[0].data,
+        comments: data[1].data.children.map(c => c.data)
+      };});
   }
 
   // Canonicalizes a URL, i.e. removes the `jsonp` search parameter
