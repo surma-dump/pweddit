@@ -13,19 +13,21 @@ export default class View {
 
   in(data) {
     const node = this.node;
-    node.classList.add('invisible');
+    node.classList.add('invisible', 'in');
     this.viewContainer.appendChild(node);
     return Utils.rAFPromise()
       .then(_ => Utils.rAFPromise())
       .then(_ => node.classList.remove('invisible'))
-      .then(_ => node::Utils.transitionEndPromise());
+      .then(_ => node::Utils.transitionEndPromise())
+      .then(_ => node.classList.remove('in'));
   }
 
   out() {
     const node = this.node;
-    node.classList.add('invisible');
+    node.classList.add('invisible', 'out');
     return node::Utils.transitionEndPromise()
       .then(_ => {
+        node.classList.remove('invisible', 'out');
         this.viewContainer.removeChild(node);
       });
   }

@@ -5,10 +5,15 @@ export default {
     'main.js',
     'modules/Config.js',
     'modules/Reddit.js',
-    'modules/ServiceWorkerController.js',
-    'modules/SubredditListController.js',
     'modules/Router.js',
+    'modules/ServiceWorkerController.js',
+    'modules/Template.js',
     'modules/Utils.js',
+    'modules/View.js',
+
+    'views/SubredditSelectView.js',
+    'views/SubredditView.js',
+
     'normalize.css',
     'require.js'
   ]

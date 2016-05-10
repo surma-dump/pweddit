@@ -43,7 +43,6 @@ class Router {
 
   manageState() {
     const path = document.location.pathname.replace(/^\//, '');
-
     // Assume the first part of the path is the
     // verb we want to action, with the rest of the path
     // being the data to pass to the handler.
@@ -56,16 +55,14 @@ class Router {
       action = '_root';
 
     if (this.currentAction === this.routes[action]) {
-      if (typeof this.currentAction.update === 'function') {
-        this.transition = this.transition
-          .then(_ => this.currentAction.update(data));
-      }
-      return this.transition;
+      const currentAction = this.currentAction
+      return this.transition = this.transition
+                                .then(_ => currentAction.update(data));
     }
 
     if (this.currentAction) {
       const outAction = this.currentAction;
-      return this.transition = this.transition.then(_ => outAction.out());
+      this.transition = this.transition.then(_ => outAction.out());
     }
 
     if (!this.routes[action]) {
@@ -83,14 +80,16 @@ class Router {
     if (path === window.location.pathname)
       return this.transition;
 
-    history.pushState(undefined, "", path);
-    return this.transition = this.transition
+    history.pushState(undefined, '', path);
+    return this.transition
       .then(_ => Utils.rAFPromise())
-      .then(_ => ::this.manageState());
+      .then(_ => this.manageState());
   }
 
   onPopState(e) {
     e.preventDefault();
-    requestAnimationFrame(_ => ::this.manageState());
+    this.transition
+      .then(_ => Utils.rAFPromise())
+      .then(_ => this.manageState());
   }
 }

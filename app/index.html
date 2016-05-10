@@ -2,12 +2,24 @@
 <head>
   <link rel="stylesheet" href="/normalize.css"></link>
   <style>
-    .view {
-      transition: opacity 1s linear;
-      opacity: 1;
+    html, body {
+      width: 100vw;
+      height: 100vh;
     }
-    .invisible {
-      opacity: 0;
+    #viewContainer {
+      height: 100%;
+      background-color: #888;
+      width
+    }
+    .view {
+      transition: transform 0.3s ease-in-out;
+      transform: translateX(0);
+    }
+    .invisible.in {
+      transform: translateX(100%);
+    }
+    .invisible.out {
+      transform: translateX(-100%);
     }
   </style>
 </head>
