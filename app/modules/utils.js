@@ -26,4 +26,10 @@ export default class Utils {
       setTimeout(resolve, delay);
     });
   }
+
+  static removeAllChildren() {
+    while(this.firstChild) {
+      this.removeChild(this.firstChild);
+    }
+  }
 }

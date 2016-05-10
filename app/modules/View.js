@@ -6,6 +6,9 @@ export default class View {
     this.node.id = id;
     this.node.classList.add('view')
     this.viewContainer = document.querySelector('#viewContainer');
+
+    // For inspecting through DevTools
+    this.node._view = this;
   }
 
   in(data) {

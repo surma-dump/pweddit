@@ -1,22 +1,10 @@
 import Router from 'modules/Router';
 import View from 'modules/View';
 
-Router().add('_root', class extends View {
-  constructor() {
-    super('_root');
-    this.node.textContent = 'body';
-  }
-});
+import SubredditSelectView from 'views/SubredditSelectView';
+import SubredditView from 'views/SubredditView';
 
-Router().add('r', class extends View {
-  constructor() {
-    super('r');
-  }
-
-  in(data) {
-    this.node.textContent = `subreddit ${data}`;
-    return super.in();
-  }
-});
+Router().add('_root', SubredditSelectView);
+Router().add('r', SubredditView);
 
 navigator.serviceWorker.register('/sw.js');
