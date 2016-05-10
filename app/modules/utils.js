@@ -32,4 +32,8 @@ export default class Utils {
       this.removeChild(this.firstChild);
     }
   }
+
+  static appendChildren(cs) {
+    Array.from(cs).forEach(::this.appendChild);
+  }
 }

@@ -26,12 +26,9 @@ export default class SubredditView extends View {
   updateList(posts) {
     this.node::Utils.removeAllChildren();
     for(let post of posts) {
-      Array.from(this.postTemplate.renderAsDOM(post))
-        .forEach(::this.node.appendChild);
+      this.node::Utils.appendChildren(this.postTemplate.renderAsDOM(post));
     }
   }
 
-  update(data) {
-    return this.out().then(_ => this.in(data));
-  }
+  update() {}
 }

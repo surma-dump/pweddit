@@ -11,6 +11,7 @@ class Router {
   constructor() {
     this.routes = {};
     this.currentAction = null;
+    this.transition = Promise.resolve();
 
     window.addEventListener('popstate', e => {
       this.onPopState(e);
@@ -56,34 +57,35 @@ class Router {
 
     if (this.currentAction === this.routes[action]) {
       if (typeof this.currentAction.update === 'function') {
-        return this.currentAction.update(data);
+        this.transition = this.transition
+          .then(_ => this.currentAction.update(data));
       }
-      return Promise.reject();
+      return this.transition;
     }
 
-    let p = Promise.resolve();
     if (this.currentAction) {
-      const outAction = this.currentAction
-      p = p.then(_ => outAction.out());
+      const outAction = this.currentAction;
+      return this.transition = this.transition.then(_ => outAction.out());
     }
 
     if (!this.routes[action]) {
       this.currentAction = null;
       document.body.focus();
-      return p.then(_ => Promise.reject());
+      return this.transition;
     }
 
     const inAction = this.routes[action];
     this.currentAction = inAction;
-    return p.then(_ => inAction.in(data));
+    return this.transition = this.transition.then(_ => inAction.in(data));
   }
 
   go(path) {
     if (path === window.location.pathname)
-      return Promise.resolve();
+      return this.transition;
 
     history.pushState(undefined, "", path);
-    return Utils.rAFPromise()
+    return this.transition = this.transition
+      .then(_ => Utils.rAFPromise())
       .then(_ => ::this.manageState());
   }
 

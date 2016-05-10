@@ -3,6 +3,7 @@ const minimatch = require('minimatch');
 const browserSync = require('browser-sync');
 const through = require('through2');
 const fs = require('fs');
+const url = require('url');
 
 // Gulp plugins
 const uglify = require('gulp-uglify');
@@ -95,21 +96,37 @@ function incrementVersion() {
   return stream;
 }
 
+function addCachingHeader(req, res, next) {
+  // Don’t cache anything, except if the file name has a hash
+  // directly before the extension.
+  let maxAge = 0;
+  if(/-[0-9a-f]*\.[^.]+$/.test(req.url)) {
+    maxAge = 60*60*24*356; // That’s a year!
+  }
+  res.setHeader('Cache-Control', `public, max-age=${maxAge}, must-revalidate`);
+  next();
+}
+
+function SPA(defaultFile) {
+  return (req, res, next) => {
+    var fileName = url.parse(req.url);
+    fileName = fileName.href.split(fileName.search).join('');
+    var fileExists = fs.existsSync(`dist/${fileName}`);
+    if (!fileExists && fileName.indexOf('browser-sync-client') < 0)
+      req.url = `/${defaultFile}`;
+    return next();
+  };
+}
+
 function watch() {
   browserSync.create().init({
     server: {
       baseDir: 'dist',
-      middleware: (req, res, next) => {
-        // Don’t cache anything, except if the file name has a hash
-        // directly before the extension.
-        let maxAge = 0;
-        if(/-[0-9a-f]*\.[^.]+$/.test(req.url)) {
-          maxAge = 60*60*24*356; // That’s a year!
-        }
-        res.setHeader('Cache-Control', `public, max-age=${maxAge}, must-revalidate`);
-        next();
-      }
     },
+    middleware: [
+      addCachingHeader,
+      SPA('index.html'),
+    ],
     reloadOnRestart: true,
     open: false
   });
