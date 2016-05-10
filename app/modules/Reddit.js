@@ -39,6 +39,13 @@ export default class Reddit {
       .then(data => data.data.children.map(post => post.data));
   }
 
+  static forgetSubredditThreads(subreddit, sorting = 'hot') {
+    return caches.open(CACHE_NAME)
+      .then(cache => {
+        cache.delete(`${this._apiBase}/r/${subreddit}/${sorting}`)
+      })
+  }
+
   static thread(subreddit, id, sorting = 'hot') {
     return this._apiCall(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`)
       .then(data => { return {
@@ -48,11 +55,10 @@ export default class Reddit {
   }
 
   static forgetThread(subreddit, id, sorting = 'hot') {
-    return Promise.resolve();
-    // return caches.open(CACHE_NAME)
-    //   .then(cache => {
-    //     cache
-    //   })
+    return caches.open(CACHE_NAME)
+      .then(cache => {
+        cache.delete(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`)
+      })
   }
 
   // Canonicalizes a URL, i.e. removes the `jsonp` search parameter

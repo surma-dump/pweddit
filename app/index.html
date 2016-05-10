@@ -44,6 +44,7 @@
     body > header {
       display: flex;
       align-items: center;
+      padding: 0 10px;
     }
     .header__title {
       display: block;
@@ -69,14 +70,17 @@
         transform: rotate(180deg);
       }
     }
+    .button {
+      margin: 5px;
+    }
   </style>
 </head>
 <header>
-  <a class="header__back fa fa-arrow-left"></a>
+  <a class="header__back button fa fa-arrow-left"></a>
   <span class="header__title">
     Pweddit 💙
   </span>
-  <a class="header__refresh fa fa-refresh"></a>
+  <a class="header__refresh button fa fa-refresh"></a>
 </header>
 <div id="viewContainer">
 </div>

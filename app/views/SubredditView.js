@@ -35,5 +35,11 @@ export default class SubredditView extends View {
     }
   }
 
+  refresh() {
+    return this.out()
+      .then(_ => Reddit.forgetSubredditThreads(this.subreddit))
+      .then(_ => this.in(this.subreddit));
+  }
+
   update() {}
 }
