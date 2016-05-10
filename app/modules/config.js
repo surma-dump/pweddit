@@ -7,6 +7,7 @@ export default {
     'modules/Reddit.js',
     'modules/ServiceWorkerController.js',
     'modules/SubredditListController.js',
+    'modules/Router.js',
     'modules/Utils.js',
     'normalize.css',
     'require.js'

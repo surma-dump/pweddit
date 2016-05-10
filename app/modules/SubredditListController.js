@@ -32,8 +32,9 @@ export default class SubredditListController {
       return;
     }
     this._posts.forEach(post => {
+      console.log(post);
       const n = document.createElement('div');
-      n.textContent = post.title;
+      n.innerHTML = `${post.title} <a href="${post.url}">link</a> <a href="${post.permalink}">comments</a>`
       this._container.appendChild(n);
     });
   }

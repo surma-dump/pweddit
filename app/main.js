@@ -1,7 +1,22 @@
-import SubredditListController from 'modules/SubredditListController';
+import Router from 'modules/Router';
+import View from 'modules/View';
 
-const srlc = new SubredditListController(document.querySelector('div'));
-window.x = srlc;
-srlc.subreddit = 'pics';
+Router().add('_root', class extends View {
+  constructor() {
+    super('_root');
+    this.node.textContent = 'body';
+  }
+});
+
+Router().add('r', class extends View {
+  constructor() {
+    super('r');
+  }
+
+  in(data) {
+    this.node.textContent = `subreddit ${data}`;
+    return super.in();
+  }
+});
 
 navigator.serviceWorker.register('/sw.js');
