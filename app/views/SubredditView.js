@@ -7,7 +7,11 @@ import Utils from 'modules/Utils';
 export default class SubredditView extends View {
   constructor() {
     super('subreddit');
-    this.postTemplate = new Template('<img src="%thumbnail%">%title%');
+    this.postTemplate = new Template(`
+      <div id="%id%" class="thread">
+        <img src="%thumbnail%">%title%
+      </div>
+    `);
   }
 
   in(data) {
@@ -22,10 +26,8 @@ export default class SubredditView extends View {
   updateList(posts) {
     this.node::Utils.removeAllChildren();
     for(let post of posts) {
-      const n = document.createElement('div');
-      n.id = post.id;
-      n.innerHTML = this.postTemplate.render(post);
-      this.node.appendChild(n);
+      Array.from(this.postTemplate.renderAsDOM(post))
+        .forEach(::this.node.appendChild);
     }
   }
 

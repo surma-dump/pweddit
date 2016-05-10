@@ -18,4 +18,9 @@ export default class Template {
     });
     return result;
   }
+  renderAsDOM(data) {
+    const container = document.createElement('div');
+    container.innerHTML = this.render(data);
+    return container.children;
+  }
 }
