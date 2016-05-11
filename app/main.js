@@ -5,7 +5,6 @@ import SubredditSelectView from 'views/SubredditSelectView';
 import SubredditView from 'views/SubredditView';
 import ThreadView from 'views/ThreadView';
 
-Router().add('_root', SubredditSelectView);
 Router().add('r', SubredditView);
 Router().add('thread', ThreadView);
 

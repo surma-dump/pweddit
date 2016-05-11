@@ -41,22 +41,34 @@
     ul.comments ul {
       margin-left: 20px;
     }
-    body > header {
+    .headerbar {
       display: flex;
       align-items: center;
       padding: 0 10px;
     }
-    .header__title {
-      display: block;
+    .headerbar__title, .headerbar__search {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+      flex-shrink: 1;
+      will-change: transform;
+      transform-origin: 0% 50%;
       transition: transform 0.3s ease-in-out;
-      transform: scaleY(1);
+    }
+    .headerbar.headerbar--searching > .headerbar__title,
+    .headerbar:not(.headerbar--searching) > .headerbar__search {
+      transform: scaleX(0);
+    }
+    .headerbar__search > input {
+      border: 0;
+      border-bottom: 1px solid black;
       flex-grow: 1;
       flex-shrink: 1;
     }
-    .header__title.invisible {
+    .headerbar__title--changing {
       transform: scaleY(0);
     }
-    .header__refresh {
+    .headerbar__refresh {
       will-change: transform;
     }
     .spinning {
@@ -75,12 +87,16 @@
     }
   </style>
 </head>
-<header>
-  <a class="header__back button fa fa-arrow-left"></a>
-  <span class="header__title">
+<header class="headerbar">
+  <a class="headerbar__back button fa fa-arrow-left"></a>
+  <span class="headerbar__title">
     Pweddit 💙
   </span>
-  <a class="header__refresh button fa fa-refresh"></a>
+  <form style="display: none" class="headerbar__search">
+    <input>
+    <a class="button fa fa-arrow-right"></a>
+  </form>
+  <a class="headerbar__refresh button fa fa-refresh"></a>
 </header>
 <div id="viewContainer">
 </div>
