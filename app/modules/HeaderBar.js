@@ -46,6 +46,7 @@ class HeaderBar {
       return Promise.resolve();
 
     this.node.classList.add('headerbar--searching')
+    this.searchInputNode.value = '';
     return this.node::Utils.transitionEndPromise()
       .then(_ => {
         this.node.classList.remove('headerbar--searching')

@@ -2,6 +2,11 @@
 <head>
   <link rel="stylesheet" href="/normalize.css"></link>
   <link rel="stylesheet" href="/fa/css/font-awesome.min.css"></link>
+  <noscript class="lazyload">
+    <link rel="stylesheet" href="/modules/HeaderBar.css"></link>
+    <link rel="stylesheet" href="/modules/View.css"></link>
+    <link rel="stylesheet" href="/views/ThreadView.css"></link>
+  </noscript>
   <style>
     * {
       box-sizing: border-box;
@@ -10,41 +15,21 @@
       width: 100vw;
       height: 100vh;
     }
-    body > header {
-      display: block;
+    .headerbar {
+      display: flex;
       position: fixed;
       width: 100%;
       height: 50px;
       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
       z-index: 1;
       background-color: white;
+      align-items: center;
+      padding: 0 10px;
     }
     #viewContainer {
       min-height: 100%;
       background-color: #CCC;
       padding-top: 60px;
-    }
-    .view {
-      transition: transform 0.3s ease-in-out;
-      transform: translateX(0);
-    }
-    .view.invisible.in {
-      transform: translateX(100%);
-    }
-    .view.invisible.out {
-      transform: translateX(-100%);
-    }
-    ul.comments, ul.comments ul {
-      list-style: none;
-      -webkit-padding-start: 0;
-    }
-    ul.comments ul {
-      margin-left: 20px;
-    }
-    .headerbar {
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
     }
     .headerbar__title, .headerbar__search {
       display: flex;
@@ -54,33 +39,6 @@
       will-change: transform;
       transform-origin: 0% 50%;
       transition: transform 0.3s ease-in-out;
-    }
-    .headerbar.headerbar--searching > .headerbar__title,
-    .headerbar:not(.headerbar--searching) > .headerbar__search {
-      transform: scaleX(0);
-    }
-    .headerbar__search > input {
-      border: 0;
-      border-bottom: 1px solid black;
-      flex-grow: 1;
-      flex-shrink: 1;
-    }
-    .headerbar__title--changing {
-      transform: scaleY(0);
-    }
-    .headerbar__refresh {
-      will-change: transform;
-    }
-    .spinning {
-      animation: spin 1s  infinite linear;
-    }
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(180deg);
-      }
     }
     .button {
       margin: 5px;

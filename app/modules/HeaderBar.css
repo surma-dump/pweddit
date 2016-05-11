@@ -1,0 +1,27 @@
+.headerbar.headerbar--searching > .headerbar__title,
+.headerbar:not(.headerbar--searching) > .headerbar__search {
+  transform: scaleX(0);
+}
+.headerbar__search > input {
+  border: 0;
+  border-bottom: 1px solid black;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+.headerbar__title--changing {
+  transform: scaleY(0);
+}
+.headerbar__refresh {
+  will-change: transform;
+}
+.spinning {
+  animation: spin 1s  infinite linear;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}

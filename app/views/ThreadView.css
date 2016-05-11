@@ -1,0 +1,7 @@
+ul.comments, ul.comments ul {
+  list-style: none;
+  -webkit-padding-start: 0;
+}
+ul.comments ul {
+  margin-left: 20px;
+}

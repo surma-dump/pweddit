@@ -13,6 +13,8 @@ Router().add('thread', ThreadView);
 import HeaderBar from 'modules/HeaderBar';
 HeaderBar();
 
-navigator.serviceWorker.register('/sw.js');
+import Lazyload from 'modules/Lazyload';
+Lazyload();
 
+navigator.serviceWorker.register('/sw.js');
 console.info('Version {{pkg.version}}');

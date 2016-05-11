@@ -46,7 +46,7 @@ function serviceWorker() {
     .pipe(sourcemaps.init())
     // This uses the defaults provided in the `package.json`.
     .pipe(babel())
-    // .pipe(uglify())
+    .pipe(uglify())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist'));
 }

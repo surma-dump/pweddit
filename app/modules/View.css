@@ -1,0 +1,10 @@
+.view {
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+}
+.view.invisible.in {
+  transform: translateX(100%);
+}
+.view.invisible.out {
+  transform: translateX(-100%);
+}
