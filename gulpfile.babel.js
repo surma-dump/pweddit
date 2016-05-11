@@ -93,6 +93,7 @@ function incrementVersion() {
     .pipe(gulp.dest('.'));
 
   pkg = JSON.parse(fs.readFileSync('package.json'));
+  templateContext = {pkg};
   return stream;
 }
 

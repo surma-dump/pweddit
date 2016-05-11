@@ -16,9 +16,9 @@ export default class SubredditView extends View {
   }
 
   in(data) {
-    this.subreddit = data;
+    [this.subreddit, this.sorting] = this.parseData(data);
     HeaderBar().setTitle(`/r/${this.subreddit}`);
-    return Reddit.subredditThreads(this.subreddit)
+    return Reddit.subredditThreads(this.subreddit, this.sorting)
       .then(posts => {
         this.posts = posts;
         this.updateList(posts);
@@ -41,5 +41,27 @@ export default class SubredditView extends View {
       .then(_ => this.in(this.subreddit));
   }
 
-  update() {}
+  update(data) {
+    const [newSubreddit, newSorting] = this.parseData(data);
+    if(newSubreddit !== this.subreddit) {
+      return this.out()
+        .then(_ => this.in(data));
+    }
+    if(newSorting == this.sorting) {
+      return Promise.resolve();
+    }
+    return Reddit.subredditThreads(this.subreddit, this.sorting)
+      .then(posts => {
+        this.posts = posts;
+        this.updateList(post);
+      });
+  }
+
+  parseData(data) {
+    const parts = data.split('/');
+    return [
+      parts[0],
+      parts[1] || 'hot'
+    ];
+  }
 }
