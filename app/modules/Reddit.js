@@ -46,6 +46,9 @@ export default class Reddit {
   }
 
   static forgetSubredditThreads(subreddit, sorting = 'hot') {
+    if(!('caches' in self)) {
+      return Promise.resolve();
+    }
     return caches.open(CACHE_NAME)
       .then(cache => {
         cache.delete(`${this._apiBase}/r/${subreddit}/${sorting}`)
@@ -61,6 +64,9 @@ export default class Reddit {
   }
 
   static forgetThread(subreddit, id, sorting = 'top') {
+    if(!('caches' in self)) {
+      return Promise.resolve();
+    }
     return caches.open(CACHE_NAME)
       .then(cache => {
         cache.delete(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`)
@@ -68,6 +74,9 @@ export default class Reddit {
   }
 
   static isThreadInCache(subreddit, id) {
+    if(!('caches' in self)) {
+      return Promise.resolve(false);
+    }
     return caches.open(CACHE_NAME)
       .then(cache => Promise.all(
         this.commentSortings
