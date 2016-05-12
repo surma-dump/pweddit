@@ -4,15 +4,11 @@ import Template from 'modules/Template';
 import Reddit from 'modules/Reddit';
 import Utils from 'modules/Utils';
 import HeaderBar from 'modules/HeaderBar';
+import SubredditViewItem from 'views/SubredditViewItem';
 
 export default class SubredditView extends View {
   constructor() {
     super('subreddit');
-    this.postTemplate = new Template(`
-      <div id="%id%" class="thread">
-        <img src="%thumbnail%">%title%
-      </div>
-    `);
   }
 
   in(data) {
@@ -21,18 +17,15 @@ export default class SubredditView extends View {
     return Reddit.subredditThreads(this.subreddit, this.sorting)
       .then(posts => {
         this.posts = posts;
-        this.updateList(posts);
+        this.updateDOM();
       })
       .then(_ => super.in(data));
   }
 
-  updateList(posts) {
+  updateDOM() {
     this.node::Utils.removeAllChildren();
-    for(let post of posts) {
-      const postNode = this.postTemplate.renderAsDOM(post)[0];
-      postNode.addEventListener('click', _ => Router().go(`/thread/${this.subreddit}/${post.id}`));
-      this.node.appendChild(postNode);
-    }
+    this.threadViewItems = this.posts.map(t => new SubredditViewItem(t));
+    this.threadViewItems.forEach(tvi => this.node.appendChild(tvi.node));
   }
 
   refresh() {
@@ -53,7 +46,7 @@ export default class SubredditView extends View {
     return Reddit.subredditThreads(this.subreddit, this.sorting)
       .then(posts => {
         this.posts = posts;
-        this.updateList(post);
+        this.updateDOM();
       });
   }
 

@@ -1,10 +1,12 @@
 <!doctype html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/normalize.css"></link>
   <link rel="stylesheet" href="/fa/css/font-awesome.min.css"></link>
   <noscript class="lazyload">
     <link rel="stylesheet" href="/modules/HeaderBar.css"></link>
     <link rel="stylesheet" href="/modules/View.css"></link>
+    <link rel="stylesheet" href="/views/SubredditViewItem.css"></link>
     <link rel="stylesheet" href="/views/ThreadView.css"></link>
   </noscript>
   <style>
@@ -52,7 +54,8 @@
   </span>
   <form style="display: none" class="headerbar__search">
     <input>
-    <a class="button fa fa-arrow-right"></a>
+    <a class="button headerbar__search__close fa fa-times"></a>
+    <a class="button headerbar__search__go fa fa-arrow-right"></a>
   </form>
   <a class="headerbar__refresh button fa fa-refresh"></a>
 </header>

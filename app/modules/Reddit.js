@@ -3,6 +3,12 @@ import Utils from 'modules/Utils';
 const CACHE_NAME = 'reddit';
 
 export default class Reddit {
+  static get threadSortings() {
+    return ['hot', 'new', 'top', 'controversial', 'rising'];
+  }
+  static get commentSortings() {
+    return ['top', 'confidence', 'new', 'controversial', 'old', 'random', 'qa'];
+  }
   static get _apiBase() {
     return 'https://api.reddit.com';
   }
@@ -46,7 +52,7 @@ export default class Reddit {
       })
   }
 
-  static thread(subreddit, id, sorting = 'hot') {
+  static thread(subreddit, id, sorting = 'top') {
     return this._apiCall(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`)
       .then(data => { return {
         post: data[0].data.children[0].data,
@@ -54,11 +60,26 @@ export default class Reddit {
       };});
   }
 
-  static forgetThread(subreddit, id, sorting = 'hot') {
+  static forgetThread(subreddit, id, sorting = 'top') {
     return caches.open(CACHE_NAME)
       .then(cache => {
         cache.delete(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`)
-      })
+      });
+  }
+
+  static isThreadInCache(subreddit, id) {
+    return caches.open(CACHE_NAME)
+      .then(cache => Promise.all(
+        this.commentSortings
+          .map(sorting => `${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`)
+          .map(url => cache.match(url))
+        )
+      )
+      .then(matches =>
+        matches
+          .map(x => x !== undefined)
+          .indexOf(true) !== -1
+      );
   }
 
   // Canonicalizes a URL, i.e. removes the `jsonp` search parameter

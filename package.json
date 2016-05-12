@@ -1,6 +1,6 @@
 {
   "name": "pweddit",
-  "version": "0.0.472",
+  "version": "0.0.631",
   "private": true,
   "dependencies": {
     "babel-core": "^6.3.15",

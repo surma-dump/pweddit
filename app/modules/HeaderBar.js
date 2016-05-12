@@ -21,6 +21,10 @@ class HeaderBar {
     this.searchNode = this.node.querySelector('.headerbar__search');
     this.searchNode.style = '';
     this.searchNode.addEventListener('submit', ::this.search);
+    this.searchNode.querySelector('.headerbar__search__go')
+      .addEventListener('click', _ => this.search());
+    this.searchNode.querySelector('.headerbar__search__close')
+      .addEventListener('click', _ => this.hideSearch());
     this.searchInputNode = this.searchNode.querySelector('input');
     this.node.removeChild(this.searchNode);
   }
@@ -36,7 +40,8 @@ class HeaderBar {
   }
 
   search(e) {
-    e.preventDefault();
+    if(e)
+      e.preventDefault();
     return this.hideSearch()
       .then(_ => Router().go(`/r/${this.searchInputNode.value}`));
   }

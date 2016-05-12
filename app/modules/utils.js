@@ -12,7 +12,7 @@ export default class Utils {
       });
     });
   }
-  
+
   static animationIterationPromise() {
     const elem = this;
     return new Promise(resolve => {
@@ -41,5 +41,9 @@ export default class Utils {
     while(this.firstChild) {
       this.removeChild(this.firstChild);
     }
+  }
+
+  static clamp(min, max) {
+    return (v) => Math.max(Math.min(max, v), min);
   }
 }
