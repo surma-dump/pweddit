@@ -1,5 +1,14 @@
-.headerbar.headerbar--searching > .headerbar__title,
-.headerbar:not(.headerbar--searching) > .headerbar__search {
+.headerbar__title, .headerbar__search {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  flex-shrink: 1;
+  will-change: transform;
+  transform-origin: 0% 50%;
+  transition: transform 0.3s ease-in-out;
+}
+.headerbar.headerbar--searching .headerbar__title,
+.headerbar:not(.headerbar--searching) .headerbar__search {
   transform: scaleX(0);
 }
 .headerbar__search > input {
@@ -14,7 +23,7 @@
 .headerbar__refresh {
   will-change: transform;
 }
-.spinning {
+.headerbar__refresh--spinning {
   animation: spin 1s  infinite linear;
 }
 @keyframes spin {
@@ -24,4 +33,34 @@
   100% {
     transform: rotate(180deg);
   }
+}
+.headerbar__drawer {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  will-change: transform;
+  transform: translateY(16px);
+  background-color: white;
+  min-height: 100px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  transition: transform 0.3s ease-in-out;
+}
+.headerbar__drawer--hidden {
+  transform: translateY(-10px);
+}
+.headerbar__drawer--expanded {
+  transform: translateY(100%);
+}
+.headerbar__drawer--expanded .headerbar__drawer__icon {
+  transform: rotate(180deg);
+}
+.headerbar__drawer__icon {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: rgba(0,0,0,0.5);
+  transition: transform 0.3s ease-in-out;
 }

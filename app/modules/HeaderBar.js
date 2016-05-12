@@ -12,21 +12,28 @@ class HeaderBar {
   constructor(node) {
     this.node = node;
     this.backButton = this.node.querySelector('.headerbar__back');
-    this.backButton.addEventListener('click', _ => this.back());
     this.refreshButton = this.node.querySelector('.headerbar__refresh');
-    this.refreshButton.addEventListener('click', _ => this.refresh());
     this.titleNode = this.node.querySelector('.headerbar__title');
-    this.titleNode.addEventListener('click', _ => this.showSearch());
-    this.defaultTitle = this.titleNode.textContent;
+    this.containerNode = this.node.querySelector('.headerbar__container');
     this.searchNode = this.node.querySelector('.headerbar__search');
+    this.searchInputNode = this.searchNode.querySelector('input');
+    this.drawerNode = this.node.querySelector('.headerbar__drawer');
+
+    this.defaultTitle = this.titleNode.textContent;
     this.searchNode.style = '';
+    this.containerNode.removeChild(this.searchNode);
+
+    this.backButton.addEventListener('click', _ => this.back());
+    this.refreshButton.addEventListener('click', _ => this.refresh());
+    this.titleNode.addEventListener('click', _ => this.showSearch());
     this.searchNode.addEventListener('submit', ::this.search);
     this.searchNode.querySelector('.headerbar__search__go')
       .addEventListener('click', _ => this.search());
     this.searchNode.querySelector('.headerbar__search__close')
       .addEventListener('click', _ => this.hideSearch());
-    this.searchInputNode = this.searchNode.querySelector('input');
-    this.node.removeChild(this.searchNode);
+    this.drawerNode.addEventListener('click', ::this.drawerClick);
+
+    this.node.classList.remove('headerbar--uninitialized');
   }
 
   back() {
@@ -55,7 +62,7 @@ class HeaderBar {
     return this.node::Utils.transitionEndPromise()
       .then(_ => {
         this.node.classList.remove('headerbar--searching')
-        this.node.replaceChild(this.searchNode, this.titleNode);
+        this.containerNode.replaceChild(this.searchNode, this.titleNode);
       })
       .then(_ => Utils.rAFPromise())
       .then(_ => Utils.rAFPromise())
@@ -72,7 +79,7 @@ class HeaderBar {
       return this.node::Utils.transitionEndPromise()
         .then(_ => {
           this.node.classList.add('headerbar--searching')
-          this.node.replaceChild(this.titleNode, this.searchNode);
+          this.containerNode.replaceChild(this.titleNode, this.searchNode);
         })
         .then(_ => Utils.rAFPromise())
         .then(_ => Utils.rAFPromise())
@@ -81,13 +88,13 @@ class HeaderBar {
   }
 
   startSpinning() {
-    this.refreshButton.classList.add('spinning');
+    this.refreshButton.classList.add('headerbar__refresh--spinning');
     return Promise.resolve()
   }
 
   stopSpinning() {
     return this.refreshButton::Utils.animationIterationPromise()
-      .then(_ => this.refreshButton.classList.remove('spinning'));
+      .then(_ => this.refreshButton.classList.remove('headerbar__refresh--spinning'));
   }
 
   setTitle(title) {
@@ -95,13 +102,40 @@ class HeaderBar {
       title = this.defaultTitle;
     }
     if(this.titleNode.textContent === title) {
-      return;
+      return Promise.resolve();
     }
     this.titleNode.classList.add('headerbar__title--changing');
-    this.titleNode::Utils.transitionEndPromise()
+    return this.titleNode::Utils.transitionEndPromise()
       .then(_ => {
         this.titleNode.textContent = title;
         this.titleNode.classList.remove('headerbar__title--changing');
       });
   }
+
+  drawerClick() {
+    if(this.drawerNode.classList.contains('headerbar__drawer--expanded'))
+      return this.contractDrawer();
+    return this.expandDrawer();
+  }
+
+  expandDrawer() {
+    this.drawerNode.classList.add('headerbar__drawer--expanded');
+    return this.drawerNode::Utils.transitionEndPromise();
+  }
+
+  contractDrawer() {
+    this.drawerNode.classList.remove('headerbar__drawer--expanded');
+    return this.drawerNode::Utils.transitionEndPromise();
+  }
+
+  hideDrawer() {
+    this.drawerNode.classList.add('headerbar__drawer--hidden');
+    return this.drawerNode::Utils.transitionEndPromise();
+  }
+
+  showDrawer() {
+    this.drawerNode.classList.remove('headerbar__drawer--hidden');
+    return this.drawerNode::Utils.transitionEndPromise();
+  }
+
 }
