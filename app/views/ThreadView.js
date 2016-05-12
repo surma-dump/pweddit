@@ -32,14 +32,16 @@ export default class ThreadView extends View {
     data = data.split('/');
     this.subreddit = data[0];
     this.threadId = data[1];
-    HeaderBar().setTitle(`/r/${this.subreddit}`);
-    return Reddit.thread(this.subreddit, this.threadId)
-      .then(thread => {
-        this.thread = thread;
-        this.updatePost(thread.post);
-        this.updateComments(thread.comments);
-      })
-      .then(_ => super.in(data));
+    return Promise.all([
+      HeaderBar().setTitle(`/r/${this.subreddit}`),
+      HeaderBar().showDrawer(),
+      Reddit.thread(this.subreddit, this.threadId)
+        .then(thread => {
+          this.thread = thread;
+          this.updatePost(thread.post);
+          this.updateComments(thread.comments);
+        })
+    ]).then(_ => super.in(data));
   }
 
   refresh() {

@@ -119,21 +119,29 @@ class HeaderBar {
   }
 
   expandDrawer() {
+    if(this.drawerNode.classList.contains('headerbar__drawer--expanded'))
+      return Promise.resolve();
     this.drawerNode.classList.add('headerbar__drawer--expanded');
     return this.drawerNode::Utils.transitionEndPromise();
   }
 
   contractDrawer() {
+    if(!this.drawerNode.classList.contains('headerbar__drawer--expanded'))
+      return Promise.resolve();
     this.drawerNode.classList.remove('headerbar__drawer--expanded');
     return this.drawerNode::Utils.transitionEndPromise();
   }
 
   hideDrawer() {
+    if(this.drawerNode.classList.contains('headerbar__drawer--hidden'))
+      return Promise.resolve();
     this.drawerNode.classList.add('headerbar__drawer--hidden');
     return this.drawerNode::Utils.transitionEndPromise();
   }
 
   showDrawer() {
+    if(!this.drawerNode.classList.contains('headerbar__drawer--hidden'))
+      return Promise.resolve();
     this.drawerNode.classList.remove('headerbar__drawer--hidden');
     return this.drawerNode::Utils.transitionEndPromise();
   }

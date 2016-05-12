@@ -13,13 +13,15 @@ export default class SubredditView extends View {
 
   in(data) {
     [this.subreddit, this.sorting] = this.parseData(data);
-    HeaderBar().setTitle(`/r/${this.subreddit}`);
-    return Reddit.subredditThreads(this.subreddit, this.sorting)
-      .then(posts => {
-        this.posts = posts;
-        this.updateDOM();
-      })
-      .then(_ => super.in(data));
+    return Promise.all([
+      HeaderBar().setTitle(`/r/${this.subreddit}`),
+      HeaderBar().showDrawer(),
+      Reddit.subredditThreads(this.subreddit, this.sorting)
+        .then(posts => {
+          this.posts = posts;
+          this.updateDOM();
+        })
+    ]).then(_ => super.in(data));
   }
 
   updateDOM() {
