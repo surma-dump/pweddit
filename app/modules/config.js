@@ -21,8 +21,8 @@ export default {
 
     '/views/RootView.js',
     '/views/SubredditView.js',
-    '/views/SubredditItemView.css',
-    '/views/SubredditItemView.js',
+    '/views/SubredditViewItem.css',
+    '/views/SubredditViewItem.js',
     '/views/ThreadView.css',
     '/views/ThreadView.js',
 
