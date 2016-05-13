@@ -7,16 +7,12 @@ export default function() {
 }
 
 class Router {
-
   constructor() {
     this.routes = {};
     this.currentView = null;
     this.transition = Promise.resolve();
 
-    window.addEventListener('popstate', e => {
-      this.onPopState(e);
-    });
-
+    window.addEventListener('popstate', e => this.onPopState(e));
     this.manageState();
   }
 

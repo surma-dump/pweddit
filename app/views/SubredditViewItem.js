@@ -5,6 +5,7 @@ import Utils from 'modules/Utils';
 
 const nodeTemplate = new Template(`
   <div class="thread__lower">
+    <span class="fa fa-cloud-download"></span>
   </div>
   <div class="thread__upper">
     <img src="%thumbnail%" class="thread__thumbnail">
@@ -14,7 +15,7 @@ const nodeTemplate = new Template(`
   </div>
 `);
 
-const progressStyleTemplate = 'linear-gradient(0deg, transparent, transparent _%, #888 _%, #888)';
+const DOWNLOAD_THRESHOLD = 80;
 
 export default class SubredditViewItem {
   constructor(thread) {
@@ -28,15 +29,12 @@ export default class SubredditViewItem {
     this.upperNode.addEventListener('touchstart', ::this.onTouchStart);
     this.upperNode.addEventListener('touchmove', ::this.onTouchMove);
     this.upperNode.addEventListener('touchend', ::this.onTouchEnd);
-    this.clamp = Utils.clamp(0, 30);
-    Reddit.isThreadInCache(this.thread.subreddit, this.thread.id).then(b => this.setProgress(b?100:0));
+    this.clamp = Utils.clamp(0, 2*DOWNLOAD_THRESHOLD);
+    Reddit.isThreadInCache(this.thread.subreddit, this.thread.id)
+      .then(b => this.node.classList.toggle('thread--downloaded', b));
 
     // TODO: remove me
     this.node._svi = this;
-  }
-
-  setProgress(p) {
-    this.lowerNode.style.backgroundImage = progressStyleTemplate.replace(/_/g, p);
   }
 
   onClick() {
@@ -46,21 +44,37 @@ export default class SubredditViewItem {
   onTouchStart(ev) {
     this.startPosition = ev.touches[0];
     this.lock = false;
+    this.deltaX = 0;
   }
 
   onTouchMove(ev) {
     if(!this.startPosition)
       return;
 
-    const deltaX = this.clamp(ev.touches[0].clientX - this.startPosition.clientX);
-    if(!this.lock && deltaX <= 5)
+    if(this.node.classList.contains('thread--downloading', 'thread--downloaded', 'thread--resetting'))
+      return;
+
+    this.deltaX = this.clamp(ev.touches[0].clientX - this.startPosition.clientX);
+    if(!this.lock && this.deltaX <= 5)
       return;
     this.lock = true;
     ev.preventDefault();
-    this.upperNode.style.transform = `translateX(${deltaX}px)`;
+    this.upperNode.style.transform = `translateX(${this.deltaX}px)`;
+    if(this.deltaX > DOWNLOAD_THRESHOLD)
+      this.node.classList.add('thread--would-download');
+    else
+      this.node.classList.remove('thread--would-download');
   }
 
   onTouchEnd(ev) {
     this.startPosition = null;
+    this.node.classList.remove('thread--would-download');
+    this.node.classList.add('thread--resetting');
+    this.upperNode.style.transform = '';
+    if(this.deltaX > DOWNLOAD_THRESHOLD) {
+      this.node.classList.add('thread--downloading');
+    }
+    this.upperNode::Utils.transitionEndPromise()
+      .then(_ => this.node.classList.remove('thread--resetting'));
   }
 }
