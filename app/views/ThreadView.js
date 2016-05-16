@@ -17,15 +17,15 @@ export default class ThreadView extends View {
     this.postContainer = this.node.querySelector('.post');
     this.commentsContainer = this.node.querySelector('.comments')
     this.commentTemplate = new Template(`
-      <li id="%id%" class="comment">
-        %body%
-        <ul></ul>
+      <li class="comment">
+        <div class="comment__body">%body_html%</div>
+        <ul class="comment__replies"></ul>
       </li>
-    `);
+    `, {unescapeHTML: true});
     this.postTemplate = new Template(`
-      <h1>%title%</h1>
-      <p>%selftext%</p>
-    `);
+      <h1 class="post__title">%title%</h1>
+      <div class="post__body">%selftext_html%</div>
+    `, {unescapeHTML: true});
   }
 
   in(data) {
@@ -72,7 +72,7 @@ export default class ThreadView extends View {
 
         if(comment.replies && comment.replies.data && comment.replies.data.children)
           this.renderComments(
-            commentNode.querySelector('ul'),
+            commentNode.querySelector('.comment__replies'),
             comment.replies.data.children.map(c => c.data)
           );
         container.appendChild(commentNode);

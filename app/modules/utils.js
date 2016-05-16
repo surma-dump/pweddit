@@ -46,4 +46,5 @@ export default class Utils {
   static clamp(min, max) {
     return (v) => Math.max(Math.min(max, v), min);
   }
+
 }

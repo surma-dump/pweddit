@@ -3,9 +3,12 @@ const MARKER_END = '%'
 const r = new RegExp(`${MARKER_START}(.+?)${MARKER_END}`, 'g')
 
 export default class Template {
-  constructor(template) {
+  constructor(template, opts) {
     this.template = template;
     this.keys = new Map();
+    this.options = Object.assign({
+      unescapeHTML: false
+    }, opts);
 
     let match;
     while((match = r.exec(template)) !== null)
@@ -13,8 +16,12 @@ export default class Template {
   }
   render(data) {
     let result = this.template;
-    this.keys.forEach((v, k) => {
-      result = result.replace(v, data[k]);
+    this.keys.forEach((regexp, name) => {
+      let value = data[name];
+      if(this.options.unescapeHTML) {
+        value = this.unescapeHTML(value);
+      }
+      result = result.replace(regexp, value);
     });
     return result;
   }
@@ -22,5 +29,11 @@ export default class Template {
     const container = document.createElement('div');
     container.innerHTML = this.render(data);
     return Array.from(container.children);
+  }
+
+  unescapeHTML(t) {
+    const node = document.createElement('div');
+    node.innerHTML = t;
+    return node.innerText;
   }
 }
