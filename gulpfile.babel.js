@@ -105,6 +105,7 @@ function addCachingHeader(req, res, next) {
     maxAge = 60*60*24*356; // That’s a year!
   }
   res.setHeader('Cache-Control', `public, max-age=${maxAge}, must-revalidate`);
+  res.setHeader('Expires', '0');
   next();
 }
 

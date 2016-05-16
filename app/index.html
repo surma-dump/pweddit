@@ -6,6 +6,7 @@
   <noscript class="lazyload">
     <link rel="stylesheet" href="/modules/HeaderBar.css"></link>
     <link rel="stylesheet" href="/modules/View.css"></link>
+    <link rel="stylesheet" href="/modules/LinkViewer.css"></link>
     <link rel="stylesheet" href="/views/SubredditViewItem.css"></link>
     <link rel="stylesheet" href="/views/ThreadView.css"></link>
   </noscript>
@@ -14,6 +15,7 @@
       box-sizing: border-box;
     }
     html, body {
+      position: relative;
       width: 100vw;
       height: 100vh;
     }
@@ -44,8 +46,12 @@
     .headerbar--uninitialized .headerbar__drawer {
       display: none;
     }
+    .linkviewer--hidden {
+      display: none;
+    }
     .button {
       margin: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -68,4 +74,9 @@
     <a class="headerbar__refresh button fa fa-refresh"></a>
   </div>
 </header>
+<div class="linkviewer linkviewer--hidden">
+  <a class="linkviewer__backward button fa fa-chevron-left"></a>
+  <div class="linkviewer__container"></div>
+  <a class="linkviewer__forward button fa fa-chevron-right"></a>
+</div>
 <script src="/require.js" data-main="/main.js" defer></script>

@@ -51,7 +51,9 @@ export default class SubredditViewItem {
     if(!this.startPosition)
       return;
 
-    if(this.node.classList.contains('thread--downloading', 'thread--downloaded', 'thread--resetting'))
+    if(this.node.classList.contains('thread--downloading') ||
+       this.node.classList.contains('thread--downloaded') ||
+       this.node.classList.contains('thread--resetting'))
       return;
 
     this.deltaX = this.clamp(ev.touches[0].clientX - this.startPosition.clientX);

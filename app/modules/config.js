@@ -1,4 +1,7 @@
 export default {
+  IMGUR_CREDENTIALS: {
+    CLIENT_ID: 'ce849a61df3a524'
+  },
   APP_CACHE: 'pweddit',
   APP_FILES: [
     '/', // aka. index.html

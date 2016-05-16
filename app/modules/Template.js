@@ -21,6 +21,6 @@ export default class Template {
   renderAsDOM(data) {
     const container = document.createElement('div');
     container.innerHTML = this.render(data);
-    return container.children;
+    return Array.from(container.children);
   }
 }

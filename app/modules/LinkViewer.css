@@ -1,0 +1,52 @@
+.linkviewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.74);
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.linkviewer--visible {
+  opacity: 1;
+}
+
+.linkviewer--singel .linkviewer__forward,
+.linkviewer--singel .linkviewer__backward {
+  display: none;
+}
+
+.linkviewer__forward, .linkviewer__backward {
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.linkviewer__container {
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.linkviewer__container > * {
+  max-width: 100%;
+  max-height: 100%;
+  will-change: transform;
+  transition: transform 0.3s ease-in-out;
+}
+
+.linkviewer--left .linkviewer__container > * {
+  transform: translateX(-100%);
+}
+
+.linkviewer--right .linkviewer__container > * {
+  transform: translateX(100%);
+}
