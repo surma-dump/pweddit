@@ -16,11 +16,13 @@ class LinkViewer {
     this.backwardNode = this.node.querySelector('.linkviewer__backward');
 
     this.externalLinkNode = new Template(`
-      <a href="%url%">External link</a>
+      <a href="%url%" target="_blank" class="no-linkviewer">External link</a>
     `);
 
     this.forwardNode.addEventListener('click', _ => this.next());
     this.backwardNode.addEventListener('click', _ => this.previous());
+
+    document.addEventListener('click', ::this.globalClick);
   }
 
   registerHandler(handler) {
@@ -53,11 +55,11 @@ class LinkViewer {
     return this._index || 0;
   }
 
+  // Find the first handler that doesn’t return `null`
   contentForURL(url) {
     return Array.from(this.handlers.values())
       .filter(handler => handler.canHandle(url))
-      // Find the first handler that doesn’t return `null`
-      .reduce((prev, handler) => prev || handler.handle(url), null);
+      .reduce((prev, handler) => prev || handler.handle(url), null) || Promise.resolve();
   }
 
   show() {
@@ -82,7 +84,7 @@ class LinkViewer {
 
     return this.contentForURL(url).then(content => {
       if(!content || content.length <= 0) {
-        content = [this.externalLinkNode.renderAsDOM({url})[0]];
+        content = [this.externalLinkNode.renderAsDOM({url: url.toString()})[0]];
       }
       this.content = content;
       this.index = 0;
@@ -123,5 +125,25 @@ class LinkViewer {
     this._index = this._index - 1;
     this.updateView('linkviewer--left', 'linkviewer--right');
 
+  }
+
+  globalClick(event) {
+    if(!(event.target instanceof Node))
+      return;
+    if(event.target.nodeName !== 'A')
+      return;
+    if(event.target.classList.contains('no-linkviewer'))
+      return;
+    if(event.target.href == '')
+      return;
+
+    let url;
+    try {
+      url = new URL(event.target.href);
+    } catch(e) {
+      return;
+    }
+    event.preventDefault();
+    this.showLink(url);
   }
 }

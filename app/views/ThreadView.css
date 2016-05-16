@@ -12,16 +12,13 @@
   list-style: none;
   -webkit-padding-start: 0;
 }
-.comment__replies {
-  margin-left: 20px;
-}
 
 .comment {
   padding: 0 5px;
   margin: 5px 0;
 }
 .comment__body {
-  border-left: 3px solid red;
+  border-left: 3px solid rgba(0,0,0,0.25);
   padding-left: 5px;
 }
 .comment__body > .md > *:first-child,
