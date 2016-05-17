@@ -28,6 +28,9 @@ class LinkViewer {
     this.forwardNode.addEventListener('click', _ => this.next());
     this.backwardNode.addEventListener('click', _ => this.previous());
     this.closeNode.addEventListener('click', _ => this.hide());
+    this.containerNode.addEventListener('touchstart', ::this.onTouchStart);
+    this.containerNode.addEventListener('touchmove', ::this.onTouchMove);
+    this.containerNode.addEventListener('touchend', ::this.onTouchEnd);
 
     document.addEventListener('click', ::this.globalClick);
     document.addEventListener('keydown', ::this.globalKeyDown);
@@ -41,7 +44,6 @@ class LinkViewer {
     if(!(val instanceof Array)) {
       val = [val];
     }
-    this.node.classList.toggle('linkviewer--single', val.length <= 1);
     this._content = val;
   }
 
@@ -84,10 +86,10 @@ class LinkViewer {
   }
 
   hide() {
-    this.node.classList.remove('linkviewer--visible')
+    this.node.classList.remove('linkviewer--visible');
     return this.node::Utils.transitionEndPromise()
       .then(_ => {
-        this.node.classList.add('linkviewer--hidden')
+        this.node.classList.add('linkviewer--hidden');
         this.containerNode.removeChild(this.containerNode.children[0]);
         document.body.focus();
       });
@@ -110,10 +112,18 @@ class LinkViewer {
   }
 
   updateView(outClass, inClass) {
-    let p = Promise.resolve();
+    this.node.classList.toggle('linkviewer--first', this.isFirst());
+    this.node.classList.toggle('linkviewer--last', this.isLast());
+    this.node.classList.add('linkviewer--animating');
+    let p = Utils.rAFPromise()
+      .then(_ => Utils.rAFPromise())
+
     if(this.containerNode.children.length > 0) {
-      p = p.then(_ => this.node.classList.add(outClass))
-        .then(_ => this.node::Utils.transitionEndPromise())
+      p = p.then(_ => {
+          this.containerNode.children[0].style.transform = '';
+          this.node.classList.add(outClass);
+          return this.node::Utils.transitionEndPromise();
+        })
         .then(_ => {
           this.containerNode.removeChild(this.containerNode.children[0]);
           this.node.classList.remove(outClass);
@@ -128,22 +138,30 @@ class LinkViewer {
       .then(_ => Utils.rAFPromise())
       .then(_ => Utils.rAFPromise())
       .then(_ => this.node.classList.remove(inClass))
-      .then(_ => this.node::Utils.transitionEndPromise());
+      .then(_ => this.node::Utils.transitionEndPromise())
+      .then(_ => this.node.classList.remove('linkviewer--animating'));
+  }
+
+  isFirst() {
+    return this._index === 0;
+  }
+
+  isLast() {
+    return this._index === this.content.length - 1;
   }
 
   next() {
-    if(this._index == this.content.length - 1)
+    if(this.isLast())
       return;
     this._index = this._index + 1;
     this.updateView('linkviewer--left', 'linkviewer--right');
   }
 
   previous() {
-    if(this._index == 0)
+    if(this.isFirst())
       return;
     this._index = this._index - 1;
-    this.updateView('linkviewer--left', 'linkviewer--right');
-
+    this.updateView('linkviewer--right', 'linkviewer--left');
   }
 
   globalClick(event) {
@@ -170,8 +188,51 @@ class LinkViewer {
   }
 
   globalKeyDown(event) {
-    if(this.node.classList.contains('linkviewer--visible')
-        && event.keyCode === 27) // Escape
-      this.hide();
+    if(!this.node.classList.contains('linkviewer--visible'))
+      return;
+    if(event.keyCode === 27) // Escape
+        this.hide();
+    if(event.keyCode === 37) // Arrow left
+      this.previous();
+    if(event.keyCode === 39) // Arrow right
+      this.next();
+  }
+
+  onTouchStart(event) {
+    if(this.node.classList.contains('linkviewer--animating'))
+      return;
+    this.startPosition = event.touches[0];
+    this.deltaX = 0;
+  }
+
+  onTouchMove(event) {
+    if(!this.startPosition)
+      return;
+    event.preventDefault();
+
+    this.deltaX = event.touches[0].clientX - this.startPosition.clientX;
+    this.containerNode.children[0].style.transform = `translateX(${this.deltaX}px)`;
+  }
+
+  onTouchEnd(event) {
+    this.startPosition = null;
+    if(this.deltaX > 100 && !this.isFirst()) {
+      this.previous();
+      return;
+    }
+    if(this.deltaX < -100 && !this.isLast()) {
+      this.next();
+      return;
+    }
+    // If we didn’t cross the threshold, slide image
+    // back to center.
+    this.node.classList.add('linkviewer--animating');
+    Utils.rAFPromise()
+      .then(_ => Utils.rAFPromise())
+      .then(_ => {
+        this.containerNode.children[0].style.transform = '';
+        return this.node::Utils.transitionEndPromise();
+      })
+      .then(_ => this.node.classList.remove('linkviewer--animating'));
   }
 }
