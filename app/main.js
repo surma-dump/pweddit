@@ -13,13 +13,20 @@ import HeaderBar from 'modules/HeaderBar';
 HeaderBar();
 
 import LinkViewer from 'modules/LinkViewer';
-LinkViewer();
+import Imgur from 'modules/Imgur';
+LinkViewer().registerHandler(Imgur);
+LinkViewer().registerHandler({
+  canHandle: url =>  (url.host === 'reddit.com' || url.host === location.host)
+                        && url.pathname.indexOf('/r/') === 0,
+  handle: url => {
+    Router().go(`/r/${url.pathname.split('/')[2]}`);
+    return Promise.resolve();
+  }
+});
 
 import Lazyload from 'modules/Lazyload';
 Lazyload();
 
-import Imgur from 'modules/Imgur';
-Imgur.register();
 
 navigator.serviceWorker.register('/sw.js');
 console.info('Version {{pkg.version}}');

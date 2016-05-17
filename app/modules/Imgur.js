@@ -1,7 +1,6 @@
 import Config from 'modules/Config';
 import Utils from 'modules/Utils';
 import SimpleCache from 'modules/SimpleCache';
-import LinkViewer from 'modules/LinkViewer';
 
 const CACHE_NAME = 'imgur';
 const imgurCache = new SimpleCache(CACHE_NAME, {
@@ -64,10 +63,6 @@ export default class Imgur {
         node.textContent = `Imgur plugin can’t handle the link ${url.toString()}`;
         return Promise.resolve([node]);
     }
-  }
-
-  static register() {
-    LinkViewer().registerHandler(Imgur);
   }
 
   static onFetch(event) {

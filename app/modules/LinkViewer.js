@@ -64,9 +64,13 @@ class LinkViewer {
 
   // Find the first handler that doesn’t return `null`
   contentForURL(url) {
-    return Array.from(this.handlers.values())
-      .filter(handler => handler.canHandle(url))
-      .reduce((prev, handler) => prev || handler.handle(url), null) || Promise.resolve();
+    return Promise.resolve(
+      Array.from(this.handlers.values())
+        .filter(handler => handler.canHandle(url))
+        .reduce((prev, handler) => prev || handler.handle(url), null)
+      ||
+        [this.externalLinkNode.renderAsDOM({url: url.toString()})[0]]
+      );
   }
 
   show() {
@@ -80,7 +84,10 @@ class LinkViewer {
   hide() {
     this.node.classList.remove('linkviewer--visible')
     return this.node::Utils.transitionEndPromise()
-      .then(_ => this.node.classList.add('linkviewer--hidden'));
+      .then(_ => {
+        this.node.classList.add('linkviewer--hidden')
+        this.containerNode.removeChild(this.containerNode.children[0]);
+      });
   }
 
   showLink(url) {
@@ -91,7 +98,7 @@ class LinkViewer {
 
     return this.contentForURL(url).then(content => {
       if(!content || content.length <= 0) {
-        content = [this.externalLinkNode.renderAsDOM({url: url.toString()})[0]];
+        return Promise.resolve();
       }
       this.content = content;
       this.index = 0;
