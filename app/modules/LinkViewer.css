@@ -52,6 +52,10 @@
   transition: transform 0.3s ease-in-out;
 }
 
+.linkviewer__container > .error {
+  color: red;
+}
+
 .linkviewer--left .linkviewer__container > * {
   transform: translateX(-100%);
 }

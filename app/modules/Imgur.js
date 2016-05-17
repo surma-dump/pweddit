@@ -19,20 +19,33 @@ export default class Imgur {
     return node;
   }
 
-  static loadAlbum(url) {
-    const parts = url.pathname.split('/');
-    const id = parts[parts.length - 1];
-
-    return fetch(`https://api.imgur.com/3/album/${id}`, {
+  static _apiCall(url) {
+    return fetch(url, {
       headers: {
         'Authorization': `Client-ID ${Config.IMGUR_CREDENTIALS.CLIENT_ID}`
       },
       mode: 'cors'
-    })
+    });
+  }
+
+  static loadAlbum(url) {
+    const parts = url.pathname.split('/');
+    const id = parts[parts.length - 1];
+
+    return this._apiCall(`https://api.imgur.com/3/album/${id}`)
       .then(album => album.json())
       .then(album =>
         album.data.images.map(img => this.imageNode(img.link))
       );
+  }
+
+  static loadImage(url) {
+    const parts = url.pathname.split('/');
+    const id = parts[parts.length - 1];
+
+    return this._apiCall(`https://api.imgur.com/3/image/${id}`)
+      .then(album => album.json())
+      .then(album => this.imageNode(album.data.link));
   }
 
   static handle(url) {
@@ -43,9 +56,11 @@ export default class Imgur {
         if(url.pathname.indexOf('/a/') === 0) {
           return this.loadAlbum(url);
         }
-        return this.handle(`https://i.imgur.com${url.pathname}`);
+        url.host = 'i.imgur.com';
+        return this.loadImage(url);
       default:
         const node = document.createElement('div');
+        node.classList.add('error');
         node.textContent = `Imgur plugin can’t handle the link ${url.toString()}`;
         return Promise.resolve([node]);
     }
