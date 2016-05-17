@@ -52,6 +52,12 @@
   transition: transform 0.3s ease-in-out;
 }
 
+.linkviewer__container > .external {
+  color: white;
+  text-align: center;
+  word-break: break-all;
+}
+
 .linkviewer__container > .error {
   color: red;
 }

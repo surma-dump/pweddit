@@ -19,7 +19,10 @@ class LinkViewer {
     this.textNode = this.node.querySelector('.linkviewer__details__text');
 
     this.externalLinkNode = new Template(`
-      <a href="%url%" target="_blank" class="no-linkviewer">External link</a>
+      <div class="external">
+        <a href="%url%" target="_blank" class="no-linkviewer">External link</a>
+        <p>%url%</p>
+      </div>
     `);
 
     this.forwardNode.addEventListener('click', _ => this.next());
@@ -136,16 +139,19 @@ class LinkViewer {
   globalClick(event) {
     if(!(event.target instanceof Node))
       return;
-    if(event.target.nodeName !== 'A')
+    let node = event.target;
+    while(node && node.nodeName !== 'A')
+      node = node.parentNode;
+    if(!node)
       return;
-    if(event.target.classList.contains('no-linkviewer'))
+    if(node.classList.contains('no-linkviewer'))
       return;
-    if(event.target.href == '')
+    if(node.href == '')
       return;
 
     let url;
     try {
-      url = new URL(event.target.href);
+      url = new URL(node.href);
     } catch(e) {
       return;
     }

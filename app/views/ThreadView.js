@@ -24,6 +24,7 @@ export default class ThreadView extends View {
     `, {unescapeHTML: true});
     this.postTemplate = new Template(`
       <h1 class="post__title">%title%</h1>
+      <div class="post__media"><a href="%url%"><img src="%thumbnail%"></a></div>
       <div class="post__body">%selftext_html%</div>
     `, {unescapeHTML: true});
   }

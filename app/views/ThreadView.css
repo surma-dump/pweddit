@@ -8,6 +8,10 @@
   background-color: white;
 }
 
+.post__media {
+  text-align: center;
+}
+
 .comments, .comments .comment__replies {
   list-style: none;
   -webkit-padding-start: 0;
