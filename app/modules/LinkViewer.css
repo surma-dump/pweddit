@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.74);
+  background-color: black;
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
   display: flex;
@@ -16,8 +16,9 @@
   opacity: 1;
 }
 
-.linkviewer--singel .linkviewer__forward,
-.linkviewer--singel .linkviewer__backward {
+.linkviewer--single .linkviewer__forward,
+.linkviewer--single .linkviewer__backward,
+.linkviewer--single .linkviewer__details__count {
   display: none;
 }
 
@@ -25,6 +26,14 @@
   display: flex;
   align-items: center;
   color: white;
+}
+
+.linkviewer__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: rgba(255, 255, 255, 0.54);
+  margin: 0 !important;
 }
 
 .linkviewer__container {
@@ -49,4 +58,17 @@
 
 .linkviewer--right .linkviewer__container > * {
   transform: translateX(100%);
+}
+
+.linkviewer__details {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+}
+.linkviewer__details__count,
+.linkviewer__details__text {
+  display: block;
+  text-align: center;
+  color: white;
 }

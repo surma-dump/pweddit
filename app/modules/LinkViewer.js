@@ -14,6 +14,9 @@ class LinkViewer {
     this.containerNode = this.node.querySelector('.linkviewer__container');
     this.forwardNode = this.node.querySelector('.linkviewer__forward');
     this.backwardNode = this.node.querySelector('.linkviewer__backward');
+    this.closeNode = this.node.querySelector('.linkviewer__close');
+    this.countNode = this.node.querySelector('.linkviewer__details__count');
+    this.textNode = this.node.querySelector('.linkviewer__details__text');
 
     this.externalLinkNode = new Template(`
       <a href="%url%" target="_blank" class="no-linkviewer">External link</a>
@@ -21,6 +24,7 @@ class LinkViewer {
 
     this.forwardNode.addEventListener('click', _ => this.next());
     this.backwardNode.addEventListener('click', _ => this.previous());
+    this.closeNode.addEventListener('click', _ => this.hide());
 
     document.addEventListener('click', ::this.globalClick);
   }
@@ -73,7 +77,7 @@ class LinkViewer {
   hide() {
     this.node.classList.remove('linkviewer--visible')
     return this.node::Utils.transitionEndPromise()
-      .then(_ => this.node.classList.remove('linkviewer--hidden'));
+      .then(_ => this.node.classList.add('linkviewer--hidden'));
   }
 
   showLink(url) {
@@ -100,11 +104,13 @@ class LinkViewer {
         .then(_ => {
           this.containerNode.removeChild(this.containerNode.children[0]);
           this.node.classList.remove(outClass);
+          this.textNode.innerText = '';
         });
     }
     return p.then(_ => {
       this.node.classList.add(inClass);
       this.containerNode.appendChild(this.content[this.index]);
+      this.countNode.innerText = `${this.index+1}/${this.content.length}`;
     })
       .then(_ => Utils.rAFPromise())
       .then(_ => Utils.rAFPromise())
