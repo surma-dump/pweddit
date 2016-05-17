@@ -12,7 +12,7 @@ class Router {
     this.currentView = null;
     this.transition = Promise.resolve();
 
-    window.addEventListener('popstate', e => this.onPopState(e));
+    window.addEventListener('popstate', ::this.onPopState);
     this.manageState();
   }
 

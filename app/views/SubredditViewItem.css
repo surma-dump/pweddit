@@ -6,6 +6,10 @@
   border-radius: 2px;
 }
 
+.thread--nsfw .thread__upper {
+  background-color: #fbb;
+}
+
 .thread__upper {
   position: relative;
   background-color: white;

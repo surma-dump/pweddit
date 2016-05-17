@@ -21,15 +21,19 @@ export default class SubredditViewItem {
   constructor(thread) {
     this.thread = thread;
     this.node = document.createElement('div');
-    this.node.classList.add('thread');
     this.node.innerHTML = nodeTemplate.render(thread)
+
     this.upperNode = this.node.querySelector('.thread__upper');
     this.lowerNode = this.node.querySelector('.thread__lower');
+    this.clamp = Utils.clamp(0, 2*DOWNLOAD_THRESHOLD);
+
+    this.node.classList.add('thread');
+    this.node.classList.toggle('thread--nsfw', this.thread.over_18);
+
     this.upperNode.addEventListener('click', ::this.onClick);
     this.upperNode.addEventListener('touchstart', ::this.onTouchStart);
     this.upperNode.addEventListener('touchmove', ::this.onTouchMove);
     this.upperNode.addEventListener('touchend', ::this.onTouchEnd);
-    this.clamp = Utils.clamp(0, 2*DOWNLOAD_THRESHOLD);
     Reddit.isThreadInCache(this.thread.subreddit, this.thread.id)
       .then(b => this.node.classList.toggle('thread--downloaded', b));
 
