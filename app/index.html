@@ -18,17 +18,16 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-    }
-    #viewContainer {
-      min-height: 100%;
       background-color: #CCC;
-      padding-top: 70px;
-      padding-bottom: 35px;
+    }
+    body {
+      padding: 5px;
     }
     .headerbar {
       position: fixed;
       top: 0;
-      width: 100%;
+      left: 0;
+      right: 0;
       height: 50px;
     }
     .headerbar__container {
@@ -55,8 +54,6 @@
     }
   </style>
 </head>
-<div id="viewContainer">
-</div>
 <header class="headerbar headerbar--uninitialized">
   <aside class="headerbar__drawer">
     <span class="headerbar__drawer__icon fa fa-caret-down"></span>
@@ -68,8 +65,7 @@
     </span>
     <form style="display: none" class="headerbar__search">
       <input>
-      <a class="button headerbar__search__close fa fa-times"></a>
-      <a class="button headerbar__search__go fa fa-arrow-right"></a>
+      <a class="button headerbar__search__go fa fa-sign-in"></a>
     </form>
     <a class="headerbar__refresh button fa fa-refresh"></a>
   </div>

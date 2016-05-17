@@ -5,7 +5,7 @@ export default class View {
     this.node = document.createElement('section');
     this.node.id = id;
     this.node.classList.add('view')
-    this.viewContainer = document.querySelector('#viewContainer');
+    this.viewContainer = document.body;
 
     // TODO: Remove this
     this.node._view = this;
@@ -14,7 +14,7 @@ export default class View {
   in(data) {
     const node = this.node;
     node.classList.add('invisible', 'in');
-    this.viewContainer.appendChild(node);
+    this.addView(node);
     return Utils.rAFPromise()
       .then(_ => Utils.rAFPromise())
       .then(_ => node.classList.remove('invisible'))
@@ -30,6 +30,10 @@ export default class View {
         node.classList.remove('invisible', 'out');
         this.viewContainer.removeChild(node);
       });
+  }
+
+  addView(node) {
+    this.viewContainer.insertBefore(node, this.viewContainer.children[0]);
   }
 
   update(data) {

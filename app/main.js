@@ -28,5 +28,7 @@ import Lazyload from 'modules/Lazyload';
 Lazyload();
 
 
-navigator.serviceWorker.register('/sw.js');
+if('serviceWorker' in navigator)
+  navigator.serviceWorker.register('/sw.js');
+
 console.info('Version {{pkg.version}}');

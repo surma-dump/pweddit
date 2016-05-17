@@ -20,23 +20,26 @@ class HeaderBar {
     this.drawerNode = this.node.querySelector('.headerbar__drawer');
 
     this.defaultTitle = this.titleNode.textContent;
-    this.searchNode.style = '';
+    this.searchNode.style.cssText = '';
     this.containerNode.removeChild(this.searchNode);
 
+    this.searchInputNode.addEventListener('keydown', ::this.searchKeyDown);
     this.backButton.addEventListener('click', _ => this.back());
     this.refreshButton.addEventListener('click', _ => this.refresh());
     this.titleNode.addEventListener('click', _ => this.showSearch());
     this.searchNode.addEventListener('submit', ::this.search);
     this.searchNode.querySelector('.headerbar__search__go')
       .addEventListener('click', _ => this.search());
-    this.searchNode.querySelector('.headerbar__search__close')
-      .addEventListener('click', _ => this.hideSearch());
     this.drawerNode.addEventListener('click', ::this.drawerClick);
 
     this.node.classList.remove('headerbar--uninitialized');
   }
 
   back() {
+    if(this.node.classList.contains('headerbar--searching')) {
+      this.hideSearch();
+      return;
+    }
     window.history.back();
   }
 
@@ -146,4 +149,8 @@ class HeaderBar {
     return this.drawerNode::Utils.transitionEndPromise();
   }
 
+  searchKeyDown(event) {
+    if(event.keyCode === 27) // Escape
+      this.hideSearch();
+  }
 }

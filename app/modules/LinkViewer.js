@@ -30,6 +30,7 @@ class LinkViewer {
     this.closeNode.addEventListener('click', _ => this.hide());
 
     document.addEventListener('click', ::this.globalClick);
+    document.addEventListener('keydown', ::this.globalKeyDown);
   }
 
   registerHandler(handler) {
@@ -78,7 +79,8 @@ class LinkViewer {
     return Utils.rAFPromise()
       .then(_ => Utils.rAFPromise())
       .then(_ => this.node.classList.add('linkviewer--visible'))
-      .then(_ => this.node::Utils.transitionEndPromise());
+      .then(_ => this.node::Utils.transitionEndPromise())
+      .then(_ => this.node.focus());
   }
 
   hide() {
@@ -87,6 +89,7 @@ class LinkViewer {
       .then(_ => {
         this.node.classList.add('linkviewer--hidden')
         this.containerNode.removeChild(this.containerNode.children[0]);
+        document.body.focus();
       });
   }
 
@@ -164,5 +167,11 @@ class LinkViewer {
     }
     event.preventDefault();
     this.showLink(url);
+  }
+
+  globalKeyDown(event) {
+    if(this.node.classList.contains('linkviewer--visible')
+        && event.keyCode === 27) // Escape
+      this.hide();
   }
 }
