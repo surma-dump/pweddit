@@ -8,7 +8,7 @@ const nodeTemplate = Template.compile`
     <span class="fa fa-cloud-download"></span>
   </div>
   <div class="thread__upper">
-    <img src="${'thumbnail'}" class="thread__thumbnail">
+    <a href="${'url'}"><img src="${'thumbnail'}" class="thread__thumbnail"></a>
     <div class="thread__details">
       <span class="thread__title">${'title'}</span>
     </div>
@@ -41,17 +41,19 @@ export default class SubredditViewItem {
     this.node._svi = this;
   }
 
-  onClick() {
+  onClick(event) {
+    if(event.target.nodeName === 'IMG')
+      return;
     Router().go(`/thread/${this.thread.subreddit}/${this.thread.id}`);
   }
 
-  onTouchStart(ev) {
-    this.startPosition = ev.touches[0];
+  onTouchStart(event) {
+    this.startPosition = event.touches[0];
     this.lock = false;
     this.deltaX = 0;
   }
 
-  onTouchMove(ev) {
+  onTouchMove(event) {
     if(!this.startPosition)
       return;
 
@@ -60,11 +62,11 @@ export default class SubredditViewItem {
        this.node.classList.contains('thread--resetting'))
       return;
 
-    this.deltaX = this.clamp(ev.touches[0].clientX - this.startPosition.clientX);
+    this.deltaX = this.clamp(event.touches[0].clientX - this.startPosition.clientX);
     if(!this.lock && this.deltaX <= 5)
       return;
     this.lock = true;
-    ev.preventDefault();
+    event.preventDefault();
     this.upperNode.style.transform = `translateX(${this.deltaX}px)`;
     if(this.deltaX > DOWNLOAD_THRESHOLD)
       this.node.classList.add('thread--would-download');
@@ -72,7 +74,7 @@ export default class SubredditViewItem {
       this.node.classList.remove('thread--would-download');
   }
 
-  onTouchEnd(ev) {
+  onTouchEnd(event) {
     this.startPosition = null;
     this.node.classList.remove('thread--would-download');
     this.node.classList.add('thread--resetting');
