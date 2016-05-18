@@ -32,6 +32,13 @@ export default class Imgur {
       );
   }
 
+  static createVideoSource(url, type) {
+    const node = document.createElement('source');
+    node.src = url;
+    node.type = type;
+    return node;
+  }
+
   static nodeForImage(image) {
     if(!image.data.animated) {
       const node = document.createElement('img');
@@ -39,10 +46,8 @@ export default class Imgur {
       return node;
     }
     const node = document.createElement('video');
-    if(node.canPlayType('video/webm; codecs="vp8, vorbis"'))
-      node.src = image.data.webm;
-    else
-      node.src = image.data.mp4;
+    node.appendChild(this.createVideoSource(image.data.webm, 'video/webm'));
+    node.appendChild(this.createVideoSource(image.data.mp4, 'video/mp4'));
     node.autoplay = true;
     node.loop = true;
     return node;

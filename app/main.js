@@ -14,7 +14,9 @@ HeaderBar();
 
 import LinkViewer from 'modules/LinkViewer';
 import Imgur from 'modules/Imgur';
+import Gfycat from 'modules/Gfycat';
 LinkViewer().registerHandler(Imgur);
+LinkViewer().registerHandler(Gfycat);
 LinkViewer().registerHandler({
   canHandle: url =>  (url.host === 'reddit.com' || url.host === location.host)
                         && url.pathname.indexOf('/r/') === 0,

@@ -1,5 +1,6 @@
 import Reddit from 'modules/Reddit';
 import Imgur from 'modules/Imgur';
+import Gfycat from 'modules/Gfycat';
 import Config from 'modules/Config';
 import SimpleCache from 'modules/SimpleCache';
 
@@ -11,7 +12,9 @@ export default class ServiceWorkerController {
       'b.thumbs.redditmedia.com': new SimpleCache('redditmedia'),
       'imgur.com': Imgur,
       'api.imgur.com': Imgur,
-      'i.imgur.com': Imgur
+      'i.imgur.com': Imgur,
+      'gfycat.com': Gfycat,
+      'giant.gfycat.com': Gfycat
     };
 
     self.addEventListener('message', ::this.onMessage);
