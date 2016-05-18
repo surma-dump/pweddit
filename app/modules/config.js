@@ -10,9 +10,13 @@ export default {
     '/require.js',
 
     '/modules/Config.js',
+    '/modules/Gfycat.js',
     '/modules/HeaderBar.css',
     '/modules/HeaderBar.js',
+    '/modules/Imgur.js',
     '/modules/Lazyload.js',
+    '/modules/LinkViewer.css',
+    '/modules/LinkViewer.js',
     '/modules/Reddit.js',
     '/modules/Router.js',
     '/modules/ServiceWorkerController.js',
