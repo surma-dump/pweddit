@@ -28,7 +28,7 @@ export default class Imgur {
     return this._apiCall(`https://api.imgur.com/3/album/${id}`)
       .then(album => album.json())
       .then(album =>
-        album.data.images.map(img => this.nodeForImage(img.link))
+        album.data.images.map(img => this.nodeForImage({data: img}))
       );
   }
 
