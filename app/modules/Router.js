@@ -76,16 +76,18 @@ class Router {
     if (path === window.location.pathname)
       return this.transition;
 
+    history.replaceState(document.scrollingElement.scrollTop, '', window.location.pathname);
     history.pushState(undefined, '', path);
     return this.transition
       .then(_ => Utils.rAFPromise())
       .then(_ => this.manageState());
   }
 
-  onPopState(e) {
-    e.preventDefault();
+  onPopState(event) {
+    event.preventDefault();
     this.transition
       .then(_ => Utils.rAFPromise())
-      .then(_ => this.manageState());
+      .then(_ => this.manageState())
+      .then(_ => document.scrollingElement.scrollTop = event.state);
   }
 }
