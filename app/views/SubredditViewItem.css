@@ -13,7 +13,7 @@
 .thread__upper {
   position: relative;
   background-color: white;
-  margin-left: 3px;
+  margin-left: 8px;
 }
 
 .thread__lower {
@@ -31,11 +31,15 @@
   font-size: 30px;
 }
 
+.thread:not(.thread--downloading):not(.thread--downloaded) .thread__lower:hover + .thread__upper {
+  transform: translateX(250px);
+}
+
 .thread--would-download .thread__lower {
   background-color: #DC7;
 }
 
-.thread--resetting .thread__upper {
+.thread--animatable .thread__upper {
   transition: transform 0.3s ease-in-out;
 }
 .thread--downloading .thread__lower {

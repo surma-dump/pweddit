@@ -27,10 +27,11 @@ export default class SubredditViewItem {
     this.lowerNode = this.node.querySelector('.thread__lower');
     this.clamp = Utils.clamp(0, 2*DOWNLOAD_THRESHOLD);
 
-    this.node.classList.add('thread');
+    this.node.classList.add('thread', 'thread--animatable');
     this.node.classList.toggle('thread--nsfw', this.thread.over_18);
 
     this.upperNode.addEventListener('click', ::this.onClick);
+    this.lowerNode.addEventListener('click', _ => this.download());
     this.upperNode.addEventListener('touchstart', ::this.onTouchStart);
     this.upperNode.addEventListener('touchmove', ::this.onTouchMove);
     this.upperNode.addEventListener('touchend', ::this.onTouchEnd);
@@ -49,6 +50,7 @@ export default class SubredditViewItem {
 
   onTouchStart(event) {
     this.startPosition = event.touches[0];
+    this.node.classList.remove('thread--animatable');
     this.lock = false;
     this.deltaX = 0;
   }
@@ -59,7 +61,7 @@ export default class SubredditViewItem {
 
     if(this.node.classList.contains('thread--downloading') ||
        this.node.classList.contains('thread--downloaded') ||
-       this.node.classList.contains('thread--resetting'))
+       this.node.classList.contains('thread--animatable'))
       return;
 
     this.deltaX = this.clamp(event.touches[0].clientX - this.startPosition.clientX);
@@ -74,15 +76,19 @@ export default class SubredditViewItem {
       this.node.classList.remove('thread--would-download');
   }
 
+  download() {
+    this.node.classList.add('thread--downloading');
+    console.error('Not implemented');
+    return Promise.resolve();
+  }
+
   onTouchEnd(event) {
     this.startPosition = null;
     this.node.classList.remove('thread--would-download');
-    this.node.classList.add('thread--resetting');
+    this.node.classList.add('thread--animatable');
     this.upperNode.style.transform = '';
     if(this.deltaX > DOWNLOAD_THRESHOLD) {
-      this.node.classList.add('thread--downloading');
+      this.download();
     }
-    this.upperNode::Utils.transitionEndPromise()
-      .then(_ => this.node.classList.remove('thread--resetting'));
   }
 }

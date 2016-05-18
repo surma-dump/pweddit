@@ -46,8 +46,8 @@
 }
 
 .linkviewer__container > * {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
   will-change: transform;
 }
 
@@ -56,11 +56,11 @@
 }
 
 .linkviewer--left .linkviewer__container > * {
-  transform: translateX(-100%);
+  transform: translateX(-100vw);
 }
 
 .linkviewer--right .linkviewer__container > * {
-  transform: translateX(100%);
+  transform: translateX(100vw);
 }
 
 .linkviewer__container > .external {
