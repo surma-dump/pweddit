@@ -14,7 +14,8 @@ export default class ServiceWorkerController {
       'api.imgur.com': Imgur,
       'i.imgur.com': Imgur,
       'gfycat.com': Gfycat,
-      'giant.gfycat.com': Gfycat
+      'giant.gfycat.com': Gfycat,
+      'zippy.gfycat.com': Gfycat
     };
 
     self.addEventListener('message', ::this.onMessage);
