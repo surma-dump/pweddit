@@ -3,17 +3,17 @@ import Router from 'modules/Router';
 import Template from 'modules/Template';
 import Utils from 'modules/Utils';
 
-const nodeTemplate = new Template(`
+const nodeTemplate = Template.compile`
   <div class="thread__lower">
     <span class="fa fa-cloud-download"></span>
   </div>
   <div class="thread__upper">
-    <img src="%thumbnail%" class="thread__thumbnail">
+    <img src="${'thumbnail'}" class="thread__thumbnail">
     <div class="thread__details">
-      <span class="thread__title">%title%</span>
+      <span class="thread__title">${'title'}</span>
     </div>
   </div>
-`);
+`;
 
 const DOWNLOAD_THRESHOLD = 80;
 

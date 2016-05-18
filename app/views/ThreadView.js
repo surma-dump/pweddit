@@ -16,17 +16,19 @@ export default class ThreadView extends View {
     `
     this.postContainer = this.node.querySelector('.post');
     this.commentsContainer = this.node.querySelector('.comments')
-    this.commentTemplate = new Template(`
+    this.commentTemplate = Template.compile`
       <li class="comment">
-        <div class="comment__body">%body_html%</div>
+        <div class="comment__body">${'body_html'}</div>
         <ul class="comment__replies"></ul>
       </li>
-    `, {unescapeHTML: true});
-    this.postTemplate = new Template(`
-      <h1 class="post__title">%title%</h1>
-      <div class="post__media"><a href="%url%"><img src="%thumbnail%"></a></div>
-      <div class="post__body">%selftext_html%</div>
-    `, {unescapeHTML: true});
+    `;
+    this.commentTemplate.filter = Template.unescapeHTML;
+    this.postTemplate = Template.compile`
+      <h1 class="post__title">${'title'}</h1>
+      <div class="post__media"><a href="${'url'}"><img src="${'thumbnail'}"></a></div>
+      <div class="post__body">${'selftext_html'}</div>
+    `;
+    this.postTemplate.filter = Template.unescapeHTML;
   }
 
   in(data) {

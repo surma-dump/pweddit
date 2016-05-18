@@ -1,37 +1,29 @@
-const MARKER_START = '%';
-const MARKER_END = '%'
-const r = new RegExp(`${MARKER_START}(.+?)${MARKER_END}`, 'g')
-
+const id = x => x;
 export default class Template {
-  constructor(template, opts) {
-    this.template = template;
-    this.keys = new Map();
-    this.options = Object.assign({
-      unescapeHTML: false
-    }, opts);
+  static compile(strings, ...keys) {
+    return new Template((dict, filter) =>
+      keys.reduce(
+        (prev, cur, idx) =>
+          prev + filter(dict[cur]) + strings[idx + 1], strings[0]
+      )
+    );
+  }
 
-    let match;
-    while((match = r.exec(template)) !== null)
-      this.keys.set(match[1], new RegExp(`${MARKER_START}${match[1]}${MARKER_END}`, 'g'));
+  constructor(compiler) {
+    this.compiler = compiler;
   }
+
   render(data) {
-    let result = this.template;
-    this.keys.forEach((regexp, name) => {
-      let value = data[name];
-      if(this.options.unescapeHTML) {
-        value = this.unescapeHTML(value);
-      }
-      result = result.replace(regexp, value);
-    });
-    return result;
+    return this.compiler(data, this.filter || id);
   }
+
   renderAsDOM(data) {
     const container = document.createElement('div');
     container.innerHTML = this.render(data);
     return Array.from(container.children);
   }
 
-  unescapeHTML(t) {
+  static unescapeHTML(t) {
     const node = document.createElement('div');
     node.innerHTML = t;
     return node.innerText;
