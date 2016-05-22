@@ -27,7 +27,12 @@ export default class Reddit {
       if(!Utils.isWorkerRuntime()) {
         scriptNode = document.createElement('script');
         scriptNode.src = url;
-        scriptNode.addEventListener('error', reject);
+        scriptNode.addEventListener('error', err => {
+          if(!Utils.isWorkerRuntime()) {
+            document.head.removeChild(scriptNode);
+          }
+          reject(err);
+        });
       }
 
       self[cbName] = function(v) {
