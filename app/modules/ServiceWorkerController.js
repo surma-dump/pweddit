@@ -8,8 +8,8 @@ export default class ServiceWorkerController {
   constructor() {
     this.fetchMap = {
       'api.reddit.com': Reddit,
-      'a.thumbs.redditmedia.com': new SimpleCache('redditmedia'),
-      'b.thumbs.redditmedia.com': new SimpleCache('redditmedia'),
+      'a.thumbs.redditmedia.com': new SimpleCache('redditmedia', {cacheFirst: true}),
+      'b.thumbs.redditmedia.com': new SimpleCache('redditmedia', {cacheFirst: true}),
       'imgur.com': Imgur,
       'api.imgur.com': Imgur,
       'i.imgur.com': Imgur,
