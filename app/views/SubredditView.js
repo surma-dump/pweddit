@@ -9,6 +9,10 @@ import SubredditViewItem from 'views/SubredditViewItem';
 export default class SubredditView extends View {
   constructor() {
     super('subreddit');
+
+    this.errorTemplate = Template.compile`
+      <div class="error">${'errorMsg'}</div>
+    `;
   }
 
   in(data) {
@@ -18,22 +22,31 @@ export default class SubredditView extends View {
       HeaderBar().showDrawer(),
       Reddit.subredditThreads(this.subreddit, this.sorting)
         .then(posts => {
+          this.errorMsg = null;
           this.posts = posts;
-          this.updateDOM();
         })
-    ]).then(_ => super.in(data));
+        .catch(err => {
+          this.posts = [];
+          this.errorMsg = 'Nothing in cache';
+        })
+    ]).then(_ => {
+      this.updateDOM();
+      return super.in(data)
+    });
   }
 
   updateDOM() {
     this.node::Utils.removeAllChildren();
+    if(this.errorMsg)
+      this.node.appendChild(this.errorTemplate.renderAsDOM({errorMsg: this.errorMsg})[0]);
     this.threadViewItems = this.posts.map(t => new SubredditViewItem(t));
     this.threadViewItems.forEach(tvi => this.node.appendChild(tvi.node));
   }
 
   refresh() {
     return this.out()
-      .then(_ => Reddit.forgetSubredditThreads(this.subreddit))
-      .then(_ => this.in(this.subreddit));
+      .then(_ => Reddit.subredditThreads(this.subreddit, this.sorting, {fromNetwork: true}))
+      .then(_ => this.in(`${this.subreddit}/${this.sorting}`));
   }
 
   update(data) {

@@ -1,6 +1,9 @@
 import Utils from 'modules/Utils';
 
 const CACHE_NAME = 'reddit';
+const DEFAULT_OPTS = {
+  fromNetwork: false
+};
 
 export default class Reddit {
   static get threadSortings() {
@@ -13,15 +16,18 @@ export default class Reddit {
     return 'https://api.reddit.com';
   }
 
-  static _apiCall(url) {
-    return new Promise(resolve => {
-      const cbName = `jsonp_${Math.floor(self.performance.now()*1000)}`
-      url += ((url.indexOf('?') === -1)?'?':'&') + `jsonp=${cbName}`;
+  static _apiCall(url, opts = {}) {
+    opts = Object.assign({}, DEFAULT_OPTS, opts);
+    const cbName = `jsonp_${Math.floor(self.performance.now()*1000)}`
+    url += ((url.indexOf('?') === -1)?'?':'&') + `jsonp=${cbName}`;
+    url += `&_from_network=${opts.fromNetwork}`;
 
+    return new Promise((resolve, reject) => {
       let scriptNode;
       if(!Utils.isWorkerRuntime()) {
         scriptNode = document.createElement('script');
         scriptNode.src = url;
+        scriptNode.addEventListener('error', reject);
       }
 
       self[cbName] = function(v) {
@@ -40,19 +46,9 @@ export default class Reddit {
     });
   }
 
-  static subredditThreads(subreddit, sorting = 'hot') {
-    return this._apiCall(`${this._apiBase}/r/${subreddit}/${sorting}`)
+  static subredditThreads(subreddit, sorting = 'hot', opts = {}) {
+    return this._apiCall(`${this._apiBase}/r/${subreddit}/${sorting}`, opts)
       .then(data => data.data.children.map(post => post.data));
-  }
-
-  static forgetSubredditThreads(subreddit, sorting = 'hot') {
-    if(!('caches' in self)) {
-      return Promise.resolve();
-    }
-    return caches.open(CACHE_NAME)
-      .then(cache => {
-        cache.delete(`${this._apiBase}/r/${subreddit}/${sorting}`)
-      })
   }
 
   static thread(subreddit, id, sorting = 'top') {
@@ -91,10 +87,11 @@ export default class Reddit {
       );
   }
 
-  // Canonicalizes a URL, i.e. removes the `jsonp` search parameter
+  // Canonicalizes a URL, i.e. removes parameters that are pweddit specific
   static _canonicalURL(url) {
     const searchParams = new URLSearchParams(url.search.slice(1));
     searchParams.delete('jsonp');
+    searchParams.delete('_from_network');
     url.search = '?' + searchParams.toString();
     return url.toString();
   }
@@ -115,6 +112,15 @@ export default class Reddit {
           if(cachedResponse) {
             return cachedResponse.text();
           }
+
+          // If we don’t have a response in cache and are not supposed
+          // to hit the network, return 404.
+          if(searchParams.get('_from_network') !== 'true') {
+            return new Response(null, {
+              status: 404,
+              statusText: 'Not in cache'
+            });
+          }
           // Otherwise fetch the from the API and parse it,
           // store it in the cache and return that.
           return this._apiCall(canonicalURL)
@@ -133,10 +139,14 @@ export default class Reddit {
             );
         })
         // Assemble a new response with the correct JSONP callback
-        .then(data => new Response(
-          `/**/${callback}(${data});`,
-          {url: url.toString()}
-        ))
+        .then(data => {
+          if(data instanceof Response)
+            return data;
+          return new Response(
+            `/**/${callback}(${data});`,
+            {url: url.toString()}
+          );
+        })
     );
   }
 }
