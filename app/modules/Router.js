@@ -13,6 +13,7 @@ class Router {
     this.transition = Promise.resolve();
 
     window.addEventListener('popstate', ::this.onPopState);
+    window.addEventListener('hashchange', ::this.onHashChange);
     this.manageState();
   }
 
@@ -38,7 +39,7 @@ class Router {
   }
 
   manageState() {
-    const path = document.location.pathname.replace(/^\//, '');
+    const path = document.location.hash.replace(/^#\//, '');
     // Assume the first part of the path is the
     // verb we want to action, with the rest of the path
     // being the data to pass to the handler.
@@ -73,11 +74,11 @@ class Router {
   }
 
   go(path) {
-    if (path === window.location.pathname)
+    if (`#${path}` === window.location.hash)
       return this.transition;
 
-    history.replaceState(document.scrollingElement.scrollTop, '', window.location.pathname);
-    history.pushState(undefined, '', path);
+    history.replaceState(document.scrollingElement.scrollTop, '', `${window.location.pathname}${window.location.hash}`);
+    history.pushState(undefined, '', `${window.location.pathname}#${path}`);
     return this.transition
       .then(_ => Utils.rAFPromise())
       .then(_ => this.manageState());
@@ -89,5 +90,12 @@ class Router {
       .then(_ => Utils.rAFPromise())
       .then(_ => this.manageState())
       .then(_ => document.scrollingElement.scrollTop = event.state);
+  }
+
+  onHashChange(event) {
+    event.preventDefault();
+    this.transition
+      .then(_ => Utils.rAFPromise())
+      .then(_ => this.manageState());
   }
 }

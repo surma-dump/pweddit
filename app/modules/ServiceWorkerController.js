@@ -37,19 +37,16 @@ export default class ServiceWorkerController {
     if(url.host in this.fetchMap)
       return this.fetchMap[url.host].onFetch(event);
 
-    // If this is our host, do 404 checks for SPA handling
-    if(self.location.host === url.host) {
+    // Special stuff for our origin
+    if(self.location.origin === url.origin) {
       // Never look in cache for ServiceWorker file
       if(url.pathname === '/sw.js') {
         return event.respondWith(fetch(event.request));
       }
 
       return event.respondWith(
-        caches.match(event.request).then(
-          response => response ||
-            fetch(event.request).then(
-              response => response.ok?response:caches.match('/')
-            ).catch(_ => caches.match('/'))
+        caches.match(event.request).then(response =>
+          response || new Response(null, {status: 404})
         )
       );
     }
