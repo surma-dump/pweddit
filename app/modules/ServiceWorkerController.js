@@ -13,6 +13,7 @@ export default class ServiceWorkerController {
       'imgur.com': Imgur,
       'api.imgur.com': Imgur,
       'i.imgur.com': Imgur,
+      'm.imgur.com': Imgur,
       'gfycat.com': Gfycat,
       'giant.gfycat.com': Gfycat,
       'zippy.gfycat.com': Gfycat

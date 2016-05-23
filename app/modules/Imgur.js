@@ -9,7 +9,7 @@ const imgurCache = new SimpleCache(CACHE_NAME, {
 
 export default class Imgur {
   static canHandle(url) {
-    return ['imgur.com', 'i.imgur.com'].indexOf(url.host) !== -1;
+    return ['imgur.com', 'i.imgur.com', 'm.imgur.com'].indexOf(url.host) !== -1;
   }
 
   static _apiCall(url) {
@@ -63,9 +63,11 @@ export default class Imgur {
   }
 
   static handle(url) {
-    if(url.pathname.indexOf('/a/') === 0) {
+    if(url.pathname.indexOf('/a/') === 0
+      || url.pathname.indexOf('/album/') === 0) {
       return this.loadAlbum(url);
     }
+
     url.host = 'i.imgur.com';
     url.pathname = url.pathname.replace(/\.[^.\/]*$/, '')
     return this.loadImage(url);
