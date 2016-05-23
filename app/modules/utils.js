@@ -47,4 +47,8 @@ export default class Utils {
     return (v) => Math.max(Math.min(max, v), min);
   }
 
+  static areArraysEqual(a, b) {
+    return a.length == b.length
+      && a.reduce((old, _, idx) => old && a[idx] == b[idx], true);
+  }
 }

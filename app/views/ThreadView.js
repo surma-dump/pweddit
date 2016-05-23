@@ -29,38 +29,54 @@ export default class ThreadView extends View {
       <div class="post__body">${'selftext_html'}</div>
     `;
     this.postTemplate.filter = Template.unescapeHTML;
+
+    this.errorTemplate = Template.compile`
+      <div class="error">${'errorMsg'}</div>
+    `;
   }
 
   in(data) {
-    data = data.split('/');
-    this.subreddit = data[0];
-    this.threadId = data[1];
+    [this.subreddit, this.threadId, this.sorting] = this.parseData(data);
     return Promise.all([
       HeaderBar().setTitle(`/r/${this.subreddit}`),
       HeaderBar().showDrawer(),
       Reddit.thread(this.subreddit, this.threadId)
         .then(thread => {
+          this.errorMsg = null;
           this.thread = thread;
-          this.updatePost(thread.post);
-          this.updateComments(thread.comments);
         })
-    ]).then(_ => super.in(data));
+        .catch(err => {
+          this.thread = {};
+          this.errorMsg = 'Nothing in cache';
+        })
+    ]).then(_ => {
+      this.updatePost(this.thread.post, this.errorMsg);
+      this.updateComments(this.thread.comments);
+      return super.in(data);
+    });
   }
 
   refresh() {
     return this.out()
-    .then(_ => Reddit.forgetThread(this.subreddit, this.threadId))
+    .then(_ => Reddit.thread(this.subreddit, this.threadId, this.sorting, {fromNetwork: true}))
     .then(_ => this.in(`${this.subreddit}/${this.threadId}`));
   }
 
-  updatePost(post) {
+  updatePost(post, errorMsg) {
     this.postContainer::Utils.removeAllChildren();
-    Array.from(this.postTemplate.renderAsDOM(post))
-     .forEach(::this.postContainer.appendChild);
+    if(post)
+      Array.from(this.postTemplate.renderAsDOM(post))
+       .forEach(::this.postContainer.appendChild);
+    if(errorMsg)
+      this.postContainer.appendChild(
+        this.errorTemplate.renderAsDOM({errorMsg})[0]
+      );
   }
 
   updateComments(comments) {
     this.commentsContainer::Utils.removeAllChildren();
+    if(!comments)
+      return;
     this.renderComments(this.commentsContainer, comments);
   }
 
@@ -82,5 +98,23 @@ export default class ThreadView extends View {
       });
   }
 
-  update() {}
+  update(data) {
+    const parsedData = this.parseData(data);
+    if(Utils.areArraysEqual(
+      parsedData,
+      [this.subreddit, this.threadId, this.sorting]
+    )) {
+      return Promise.resolve();
+    }
+    return super.update(data);
+  }
+
+  parseData(data) {
+    data = data.split('/');
+    return [
+      data[0],
+      data[1],
+      data[2] || 'top'
+    ];
+  }
 }

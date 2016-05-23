@@ -56,22 +56,12 @@ export default class Reddit {
       .then(data => data.data.children.map(post => post.data));
   }
 
-  static thread(subreddit, id, sorting = 'top') {
-    return this._apiCall(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`)
+  static thread(subreddit, id, sorting = 'top', opts = {}) {
+    return this._apiCall(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`, opts)
       .then(data => { return {
         post: data[0].data.children[0].data,
         comments: data[1].data.children.map(c => c.data)
       };});
-  }
-
-  static forgetThread(subreddit, id, sorting = 'top') {
-    if(!('caches' in self)) {
-      return Promise.resolve();
-    }
-    return caches.open(CACHE_NAME)
-      .then(cache => {
-        cache.delete(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`)
-      });
   }
 
   static isThreadInCache(subreddit, id) {
