@@ -34,10 +34,6 @@
   font-size: 30px;
 }
 
-.thread--would-download .thread__lower {
-  background-color: #DC7;
-}
-
 .thread:not(.thread--downloading):not(.thread--downloaded) .thread__lower:hover + .thread__upper {
   will-change: transform;
   transform: translateX(250px) translateZ(0);
@@ -50,17 +46,9 @@
 .thread--dragging .thread__upper,
 .thread--resetting .thread__upper {
   will-change: transform;
+  z-index: 1;
 }
 
 .thread--resetting .thread__upper {
-  transform: translateX(0);
-}
-
-.thread--downloading .thread__lower {
-  background-color: #FD0;
-  color: rgba(0,0,0,0);
-}
-
-.thread--downloaded .thread__lower {
-  background-color: #0D0;
+  transform: translateX(0) translateZ(0);
 }

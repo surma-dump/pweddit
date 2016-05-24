@@ -67,12 +67,14 @@ export default class SubredditViewItem {
        this.node.classList.contains('thread--resetting'))
       return;
 
-    // preventDefault() causes Chrome to not throttle touchMove events
-    event.preventDefault();
 
     this.deltaX = this.clamp(event.touches[0].pageX - this.startPosition.pageX);
     if(!this.lock && this.deltaX <= 5)
       return;
+
+    // preventDefault() causes Chrome to not throttle touchMove events
+    event.preventDefault();
+
     this.lock = true;
     event.preventDefault();
     this.upperNode.style.transform = `translateX(${this.deltaX}px)`;

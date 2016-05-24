@@ -1,12 +1,14 @@
 .view {
   transition: transform 0.3s ease-in-out;
   transform: translateX(0);
-  will-change: transform;
   max-width: 800px;
   margin: 0 auto;
   margin-top: 70px;
   margin-bottom: 35px;
   min-height: 100%;
+}
+.view.invisible {
+  will-change: transform;
 }
 .view.invisible.in {
   transform: translateX(100%);
