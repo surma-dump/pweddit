@@ -30,7 +30,7 @@ export default class SubredditViewItem {
     this.lowerNode = this.node.querySelector('.thread__lower');
     this.clamp = Utils.clamp(0, 2*DOWNLOAD_THRESHOLD);
 
-    this.node.classList.add('thread', 'thread--animatable');
+    this.node.classList.add('thread');
     this.node.classList.toggle('thread--nsfw', this.thread.over_18);
 
     this.upperNode.addEventListener('click', ::this.onClick);
@@ -53,7 +53,7 @@ export default class SubredditViewItem {
 
   onTouchStart(event) {
     this.startPosition = event.touches[0];
-    this.node.classList.remove('thread--animatable');
+    this.node.classList.add('thread--dragging');
     this.lock = false;
     this.deltaX = 0;
   }
@@ -64,10 +64,13 @@ export default class SubredditViewItem {
 
     if(this.node.classList.contains('thread--downloading') ||
        this.node.classList.contains('thread--downloaded') ||
-       this.node.classList.contains('thread--animatable'))
+       this.node.classList.contains('thread--resetting'))
       return;
 
-    this.deltaX = this.clamp(event.touches[0].clientX - this.startPosition.clientX);
+    // preventDefault() causes Chrome to not throttle touchMove events
+    event.preventDefault();
+
+    this.deltaX = this.clamp(event.touches[0].pageX - this.startPosition.pageX);
     if(!this.lock && this.deltaX <= 5)
       return;
     this.lock = true;
@@ -79,6 +82,21 @@ export default class SubredditViewItem {
       this.node.classList.remove('thread--would-download');
   }
 
+  onTouchEnd(event) {
+    this.startPosition = null;
+    this.node.classList.remove('thread--would-download', 'thread--dragging');
+    this.upperNode.style.transform = '';
+    if(this.deltaX > DOWNLOAD_THRESHOLD)
+      this.download();
+    if(this.deltaX !== 0) {
+      this.node.classList.add('thread--resetting');
+      Utils.rAFPromise()
+        .then(_ => Utils.rAFPromise())
+        .then(_ => this.node::Utils.transitionEndPromise())
+        .then(_ => this.node.classList.remove('thread--resetting'));
+    }
+  }
+
   download() {
     this.node.classList.add('thread--downloading');
     return Reddit.thread(this.thread.subreddit, this.thread.id, 'top', {fromNetwork: true})
@@ -86,7 +104,6 @@ export default class SubredditViewItem {
         const node = document.createElement('div');
         ThreadView.renderComments(node, thread.comments);
         const links = node.querySelectorAll('a');
-        console.log('>>>', links);
         return Promise.all(
           [
             thread.url,
@@ -94,7 +111,6 @@ export default class SubredditViewItem {
           ].map(url => {
             try {
               url = new URL(url);
-              console.log('>>', url);
               return LinkViewer().loadLink(url);
             } catch(e) {}
           })
@@ -106,13 +122,4 @@ export default class SubredditViewItem {
       });
   }
 
-  onTouchEnd(event) {
-    this.startPosition = null;
-    this.node.classList.remove('thread--would-download');
-    this.node.classList.add('thread--animatable');
-    this.upperNode.style.transform = '';
-    if(this.deltaX > DOWNLOAD_THRESHOLD) {
-      this.download();
-    }
-  }
 }

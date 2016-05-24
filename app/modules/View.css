@@ -1,6 +1,7 @@
 .view {
   transition: transform 0.3s ease-in-out;
   transform: translateX(0);
+  will-change: transform;
   max-width: 800px;
   margin: 0 auto;
   margin-top: 70px;
