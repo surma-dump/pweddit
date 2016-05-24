@@ -5,6 +5,25 @@ import Reddit from 'modules/Reddit';
 import Utils from 'modules/Utils';
 import HeaderBar from 'modules/HeaderBar';
 
+const commentTemplate = Template.compile`
+  <li class="comment">
+    <div class="comment__body">${'body_html'}</div>
+    <ul class="comment__replies"></ul>
+  </li>
+`;
+commentTemplate.filter = Template.unescapeHTML;
+
+const postTemplate = Template.compile`
+  <h1 class="post__title">${'title'}</h1>
+  <div class="post__media"><a href="${'url'}"><img src="${'thumbnail'}"></a></div>
+  <div class="post__body">${'selftext_html'}</div>
+`;
+postTemplate.filter = Template.unescapeHTML;
+
+const errorTemplate = Template.compile`
+  <div class="error">${'errorMsg'}</div>
+`;
+
 export default class ThreadView extends View {
   constructor() {
     super('thread');
@@ -16,23 +35,6 @@ export default class ThreadView extends View {
     `
     this.postContainer = this.node.querySelector('.post');
     this.commentsContainer = this.node.querySelector('.comments')
-    this.commentTemplate = Template.compile`
-      <li class="comment">
-        <div class="comment__body">${'body_html'}</div>
-        <ul class="comment__replies"></ul>
-      </li>
-    `;
-    this.commentTemplate.filter = Template.unescapeHTML;
-    this.postTemplate = Template.compile`
-      <h1 class="post__title">${'title'}</h1>
-      <div class="post__media"><a href="${'url'}"><img src="${'thumbnail'}"></a></div>
-      <div class="post__body">${'selftext_html'}</div>
-    `;
-    this.postTemplate.filter = Template.unescapeHTML;
-
-    this.errorTemplate = Template.compile`
-      <div class="error">${'errorMsg'}</div>
-    `;
   }
 
   in(data) {
@@ -65,11 +67,11 @@ export default class ThreadView extends View {
   updatePost(post, errorMsg) {
     this.postContainer::Utils.removeAllChildren();
     if(post)
-      Array.from(this.postTemplate.renderAsDOM(post))
+      Array.from(postTemplate.renderAsDOM(post))
        .forEach(::this.postContainer.appendChild);
     if(errorMsg)
       this.postContainer.appendChild(
-        this.errorTemplate.renderAsDOM({errorMsg})[0]
+        errorTemplate.renderAsDOM({errorMsg})[0]
       );
   }
 
@@ -77,14 +79,14 @@ export default class ThreadView extends View {
     this.commentsContainer::Utils.removeAllChildren();
     if(!comments)
       return;
-    this.renderComments(this.commentsContainer, comments);
+    ThreadView.renderComments(this.commentsContainer, comments);
   }
 
-  renderComments(container, comments) {
+  static renderComments(container, comments) {
     comments
       .filter(comment => !!comment.body)
       .forEach(comment => {
-        const commentNode = this.commentTemplate.renderAsDOM(comment)[0];
+        const commentNode = commentTemplate.renderAsDOM(comment)[0];
 
         // TODO: Remove this
         commentNode._comment = comment;

@@ -95,13 +95,16 @@ class LinkViewer {
       });
   }
 
-  showLink(url) {
+  loadLink(url) {
     if(!(url instanceof URL) && !(typeof url === 'string'))
-      throw 'handleLink()) expects a URL or a string';
+      throw 'loadLink()) expects a URL or a string';
     if(typeof url === 'string')
       url = new URL(url);
+    return this.contentForURL(url);
+  }
 
-    return this.contentForURL(url).then(content => {
+  showLink(url) {
+    return this.loadLink(url).then(content => {
       if(!content || content.length <= 0) {
         return Promise.resolve();
       }

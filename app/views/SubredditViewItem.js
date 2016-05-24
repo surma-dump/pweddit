@@ -2,6 +2,8 @@ import Reddit from 'modules/Reddit';
 import Router from 'modules/Router';
 import Template from 'modules/Template';
 import Utils from 'modules/Utils';
+import ThreadView from 'views/ThreadView';
+import LinkViewer from 'modules/LinkViewer';
 
 const nodeTemplate = Template.compile`
   <div class="thread__lower">
@@ -78,8 +80,29 @@ export default class SubredditViewItem {
 
   download() {
     this.node.classList.add('thread--downloading');
-    console.error('Not implemented');
-    return Promise.resolve();
+    return Reddit.thread(this.thread.subreddit, this.thread.id, 'top', {fromNetwork: true})
+      .then(thread => {
+        const node = document.createElement('div');
+        ThreadView.renderComments(node, thread.comments);
+        const links = node.querySelectorAll('a');
+        console.log('>>>', links);
+        return Promise.all(
+          [
+            thread.url,
+            ...Array.from(links).map(link => link.href)
+          ].map(url => {
+            try {
+              url = new URL(url);
+              console.log('>>', url);
+              return LinkViewer().loadLink(url);
+            } catch(e) {}
+          })
+        );
+      })
+      .then(_ => {
+        this.node.classList.remove('thread--downloading');
+        this.node.classList.add('thread--downloaded');
+      });
   }
 
   onTouchEnd(event) {
