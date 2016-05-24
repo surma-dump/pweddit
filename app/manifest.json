@@ -1,0 +1,14 @@
+{
+  "name": "Pweddit",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#FFF",
+  "background_color": "#FFF"
+}

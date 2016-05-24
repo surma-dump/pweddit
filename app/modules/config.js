@@ -8,6 +8,9 @@ export default {
     '/main.js',
     '/normalize.css',
     '/require.js',
+    '/manifest.json',
+
+    '/images/logo.png',
 
     '/modules/Config.js',
     '/modules/Gfycat.js',

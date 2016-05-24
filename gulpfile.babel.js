@@ -16,6 +16,7 @@ const htmlmin = require('gulp-htmlmin');
 const sourcemaps = require('gulp-sourcemaps');
 const bump = require('gulp-bump');
 const handlebars = require('gulp-compile-handlebars')
+const s3 = require('gulp-s3');
 
 let pkg = JSON.parse(fs.readFileSync('package.json'));
 let templateContext = {pkg};
@@ -134,6 +135,21 @@ gulp.task('build', gulp.series(
 ));
 gulp.task('serve', gulp.series('build', watch));
 gulp.task('default', gulp.series('build'));
+
+gulp.task('deploy', _ => {
+  const s3conf = JSON.parse(fs.readFileSync('s3conf.json'));
+
+  Object.keys(s3conf).forEach(key => {
+    s3conf[key] = process.env[key.toUpperCase()] || s3conf[key];
+  });
+
+  return gulp.src('dist/**/*')
+    .pipe(s3(s3conf, {
+      headers: {
+        'Cache-Control': 'public, no-cache'
+      }
+    }));
+});
 
 function src(glob) {
   return gulp.src(

@@ -1,6 +1,6 @@
 {
   "name": "pweddit",
-  "version": "0.0.1660",
+  "version": "0.0.1671",
   "private": true,
   "dependencies": {
     "babel-core": "^6.3.15",
@@ -18,6 +18,7 @@
     "gulp-imagemin": "^2.4.0",
     "gulp-minify-inline": "^0.1.1",
     "gulp-replace": "^0.5.4",
+    "gulp-s3": "^0.3.0",
     "gulp-sass": "^2.1.0",
     "gulp-uglify": "^1.5.1",
     "merge-stream": "^1.0.0",
