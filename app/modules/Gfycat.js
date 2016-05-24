@@ -8,7 +8,12 @@ const gfycatCache = new SimpleCache(CACHE_NAME, {
 
 export default class Gfycat {
   static canHandle(url) {
-    return ['gfycat.com', 'giant.gfycat.com'].indexOf(url.host) !== -1;
+    return [
+      'gfycat.com',
+      'giant.gfycat.com',
+      'zippy.gfycat.com',
+      'fat.gfycat.com'
+    ].indexOf(url.host) !== -1;
   }
 
   static createVideoSource(url, type) {
@@ -24,7 +29,7 @@ export default class Gfycat {
     node.appendChild(this.createVideoSource(`https://giant.gfycat.com${url.pathname}.mp4`, 'video/mp4'));
     node.appendChild(this.createVideoSource(`https://zippy.gfycat.com${url.pathname}.webm`, 'video/webm'));
     node.appendChild(this.createVideoSource(`https://zippy.gfycat.com${url.pathname}.mp4`, 'video/mp4'));
-
+    node.appendChild(this.createVideoSource(`https://fat.gfycat.com${url.pathname}.webm`, 'video/webm'));
     node.autoplay = true;
     node.loop = true;
     return Promise.resolve([node]);

@@ -42,12 +42,12 @@ export default class Imgur {
   static nodeForImage(image) {
     if(!image.data.animated) {
       const node = document.createElement('img');
-      node.src = image.data.link;
+      node.src = image.data.link.replace('http://', 'https://');
       return node;
     }
     const node = document.createElement('video');
-    node.appendChild(this.createVideoSource(image.data.webm, 'video/webm'));
-    node.appendChild(this.createVideoSource(image.data.mp4, 'video/mp4'));
+    node.appendChild(this.createVideoSource(image.data.webm.replace('http://', 'https://'), 'video/webm'));
+    node.appendChild(this.createVideoSource(image.data.mp4.replace('http://', 'https://'), 'video/mp4'));
     node.autoplay = true;
     node.loop = true;
     return node;

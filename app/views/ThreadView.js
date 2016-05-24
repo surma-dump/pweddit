@@ -46,6 +46,7 @@ export default class ThreadView extends View {
         .then(thread => {
           this.errorMsg = null;
           this.thread = thread;
+          this.thread.thumbnail = this.thread.thumbnail.replace('http://', 'https://');
         })
         .catch(err => {
           this.thread = {};

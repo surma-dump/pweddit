@@ -22,6 +22,7 @@ const DOWNLOAD_THRESHOLD = 80;
 export default class SubredditViewItem {
   constructor(thread) {
     this.thread = thread;
+    this.thread.thumbnail = this.thread.thumbnail.replace('http://', 'https://');
     this.node = document.createElement('div');
     this.node.innerHTML = nodeTemplate.render(thread)
 
