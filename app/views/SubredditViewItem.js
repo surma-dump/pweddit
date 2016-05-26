@@ -68,15 +68,13 @@ export default class SubredditViewItem {
       return;
 
     this.deltaX = this.clamp(event.touches[0].pageX - this.startPosition.pageX);
+    this.upperNode.style.transform = `translateX(${this.deltaX}px)`;
     if(!this.lock && this.deltaX <= 5)
       return;
 
     // preventDefault() causes Chrome to not throttle touchMove events
     event.preventDefault();
-
     this.lock = true;
-    event.preventDefault();
-    this.upperNode.style.transform = `translateX(${this.deltaX}px)`;
     if(this.deltaX > {{config.PULLBACK.THRESHOLD}})
       this.node.classList.add('thread--would-download');
     else
