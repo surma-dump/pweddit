@@ -4,19 +4,20 @@ import View from 'modules/View';
 import SubredditView from 'views/SubredditView';
 import ThreadView from 'views/ThreadView';
 import RootView from 'views/RootView';
+import LinkView from 'views/LinkView';
 
 Router().add('_root', RootView);
 Router().add('r', SubredditView);
 Router().add('thread', ThreadView);
+Router().add('external', LinkView);
 
 import HeaderBar from 'modules/HeaderBar';
 HeaderBar();
 
-import LinkViewer from 'modules/LinkViewer';
 import Imgur from 'modules/Imgur';
 import Gfycat from 'modules/Gfycat';
-LinkViewer().registerHandler(Imgur);
-LinkViewer().registerHandler(Gfycat);
+LinkView().registerHandler(Imgur);
+LinkView().registerHandler(Gfycat);
 
 import Lazyload from 'modules/Lazyload';
 Lazyload();

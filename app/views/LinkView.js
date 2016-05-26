@@ -1,3 +1,4 @@
+import Router from 'modules/Router';
 import Template from 'modules/Template';
 import Utils from 'modules/Utils';
 
@@ -27,7 +28,7 @@ class LinkViewer {
 
     this.forwardNode.addEventListener('click', _ => this.next());
     this.backwardNode.addEventListener('click', _ => this.previous());
-    this.closeNode.addEventListener('click', _ => this.hide());
+    this.closeNode.addEventListener('click', _ => history.back());
     this.containerNode.addEventListener('touchstart', ::this.onTouchStart);
     this.containerNode.addEventListener('touchmove', ::this.onTouchMove);
     this.containerNode.addEventListener('touchend', ::this.onTouchEnd);
@@ -76,6 +77,22 @@ class LinkViewer {
       );
   }
 
+  in(data) {
+    this.url = data;
+    return this.showLink(this.url);
+  }
+
+  out() {
+    return this.hide();
+  }
+
+  update(data) {
+    if(this.url === data)
+      return;
+    return this.out()
+      .then(_ => this.in(data));
+  }
+
   show() {
     this.node.classList.remove('linkviewer--hidden');
     return Utils.rAFPromise()
@@ -91,7 +108,6 @@ class LinkViewer {
       .then(_ => {
         this.node.classList.add('linkviewer--hidden');
         this.containerNode.removeChild(this.containerNode.children[0]);
-        document.body.focus();
       });
   }
 
@@ -187,14 +203,15 @@ class LinkViewer {
       return;
     }
     event.preventDefault();
-    this.showLink(url);
+    Router().go(`/external/${url}`);
+    // this.showLink(url);
   }
 
   globalKeyDown(event) {
     if(!this.node.classList.contains('linkviewer--visible'))
       return;
     if(event.keyCode === 27) // Escape
-        this.hide();
+        history.back();
     if(event.keyCode === 37) // Arrow left
       this.previous();
     if(event.keyCode === 39) // Arrow right

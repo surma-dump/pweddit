@@ -23,8 +23,6 @@
     "/modules/HeaderBar.js",
     "/modules/Imgur.js",
     "/modules/Lazyload.js",
-    "/modules/LinkViewer.css",
-    "/modules/LinkViewer.js",
     "/modules/Reddit.js",
     "/modules/Router.js",
     "/modules/ServiceWorkerController.js",
@@ -34,6 +32,8 @@
     "/modules/View.css",
     "/modules/View.js",
 
+    "/views/LinkView.css",
+    "/views/LinkView.js",
     "/views/RootView.js",
     "/views/SubredditView.js",
     "/views/SubredditViewItem.css",
