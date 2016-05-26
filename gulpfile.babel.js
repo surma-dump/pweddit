@@ -4,6 +4,7 @@ const browserSync = require('browser-sync');
 const through = require('through2');
 const fs = require('fs');
 const url = require('url');
+const Handlebars = require('handlebars');
 
 // Gulp plugins
 const uglify = require('gulp-uglify');
@@ -15,18 +16,25 @@ const minifyInline = require('gulp-minify-inline');
 const htmlmin = require('gulp-htmlmin');
 const sourcemaps = require('gulp-sourcemaps');
 const bump = require('gulp-bump');
-const handlebars = require('gulp-compile-handlebars')
+const handlebarsCompiler = require('gulp-compile-handlebars')
 const s3 = require('gulp-s3');
 
-let pkg = JSON.parse(fs.readFileSync('package.json'));
-let templateContext = {pkg};
+let pkg, config;
+const refreshTemplateContext = _ => {
+  let pkg = JSON.parse(fs.readFileSync('package.json'));
+  let config = JSON.parse(fs.readFileSync('config.json'));
+  return {pkg, config};
+};
+let templateContext = refreshTemplateContext();
 const FILES_FROM_MODULES = [
   'normalize.css/normalize.css'
 ]
 
+Handlebars.registerHelper('json', o => JSON.stringify(o));
+
 function scripts() {
   return src('*.js')
-    .pipe(handlebars(templateContext))
+    .pipe(handlebarsCompiler(templateContext))
     .pipe(sourcemaps.init())
     .pipe(skip(['sw.js', 'require.js']))
     .pipe(babel({
@@ -43,7 +51,7 @@ function serviceWorker() {
       'app/sw.js',
       'node_modules/requirejs/require.js'
     ])
-    .pipe(handlebars(templateContext))
+    .pipe(handlebarsCompiler(templateContext))
     .pipe(sourcemaps.init())
     // This uses the defaults provided in the `package.json`.
     .pipe(babel())
@@ -54,7 +62,7 @@ function serviceWorker() {
 
 function styles() {
   return src('*.{scss,sass,css}')
-    .pipe(handlebars(templateContext))
+    .pipe(handlebarsCompiler (templateContext))
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(autoprefixer())
@@ -65,7 +73,7 @@ function styles() {
 
 function markup() {
   return src('*.html')
-    .pipe(handlebars(templateContext))
+    .pipe(handlebarsCompiler(templateContext))
     .pipe(sourcemaps.init())
     .pipe(htmlmin({
       minifyCSS: true,
@@ -93,8 +101,7 @@ function incrementVersion() {
     .pipe(bump())
     .pipe(gulp.dest('.'));
 
-  pkg = JSON.parse(fs.readFileSync('package.json'));
-  templateContext = {pkg};
+  templateContext = refreshTemplateContext();
   return stream;
 }
 

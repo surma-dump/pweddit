@@ -1,3 +1,4 @@
+import Config from 'modules/Config';
 import Reddit from 'modules/Reddit';
 import Router from 'modules/Router';
 import Template from 'modules/Template';
@@ -17,7 +18,6 @@ const nodeTemplate = Template.compile`
   </div>
 `;
 
-const DOWNLOAD_THRESHOLD = 80;
 
 export default class SubredditViewItem {
   constructor(thread) {
@@ -28,7 +28,7 @@ export default class SubredditViewItem {
 
     this.upperNode = this.node.querySelector('.thread__upper');
     this.lowerNode = this.node.querySelector('.thread__lower');
-    this.clamp = Utils.clamp(0, 2*DOWNLOAD_THRESHOLD);
+    this.clamp = Utils.clamp(0, {{config.PULLBACK.MAX}});
 
     this.node.classList.add('thread');
     this.node.classList.toggle('thread--nsfw', this.thread.over_18);
@@ -52,6 +52,11 @@ export default class SubredditViewItem {
   }
 
   onTouchStart(event) {
+    if(this.node.classList.contains('thread--downloading') ||
+       this.node.classList.contains('thread--downloaded') ||
+       this.node.classList.contains('thread--resetting'))
+      return;
+
     this.startPosition = event.touches[0];
     this.node.classList.add('thread--dragging', 'thread--elevated');
     this.lock = false;
@@ -59,14 +64,8 @@ export default class SubredditViewItem {
   }
 
   onTouchMove(event) {
-    if(!this.startPosition)
+    if(!this.node.classList.contains('thread--dragging'))
       return;
-
-    if(this.node.classList.contains('thread--downloading') ||
-       this.node.classList.contains('thread--downloaded') ||
-       this.node.classList.contains('thread--resetting'))
-      return;
-
 
     this.deltaX = this.clamp(event.touches[0].pageX - this.startPosition.pageX);
     if(!this.lock && this.deltaX <= 5)
@@ -78,7 +77,7 @@ export default class SubredditViewItem {
     this.lock = true;
     event.preventDefault();
     this.upperNode.style.transform = `translateX(${this.deltaX}px)`;
-    if(this.deltaX > DOWNLOAD_THRESHOLD)
+    if(this.deltaX > {{config.PULLBACK.THRESHOLD}})
       this.node.classList.add('thread--would-download');
     else
       this.node.classList.remove('thread--would-download');
@@ -88,7 +87,7 @@ export default class SubredditViewItem {
     this.startPosition = null;
     this.node.classList.remove('thread--would-download', 'thread--dragging');
     this.upperNode.style.transform = '';
-    if(this.deltaX > DOWNLOAD_THRESHOLD)
+    if(this.deltaX > {{config.PULLBACK.THRESHOLD}})
       this.download();
 
     let transitions = Promise.resolve();

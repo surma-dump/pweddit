@@ -16,7 +16,7 @@
 .thread__upper {
   position: relative;
   background-color: white;
-  margin-left: 8px;
+  margin-left: {{config.PULLBACK.MIN}}px;
   transition: transform 0.3s ease-in-out;
 }
 
@@ -32,6 +32,26 @@
   padding-left: 10px;
   color: rgba(0,0,0,0.64);
   font-size: 30px;
+}
+
+.thread__lower:before {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  width: {{config.PULLBACK.MIN}}px;
+  bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+  background-color: #FC0;
+  transition: opacity 0.3s ease-in-out;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.thread__lower span {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .thread:not(.thread--downloading):not(.thread--downloaded) .thread__lower:hover + .thread__upper {
@@ -53,4 +73,22 @@
 
 .thread--resetting .thread__upper {
   transform: translateX(0) translateZ(0);
+}
+
+.thread--dragging .thread__lower span {
+  will-change: opacity;
+}
+
+.thread--would-download .thread__lower span,
+.thread__lower:hover span {
+  opacity: 1;
+}
+
+.thread--downloading .thread__lower:before {
+  will-change: opacity;
+  opacity: 1;
+}
+.thread--downloaded .thread__lower:before {
+  opacity: 1;
+  background-color: #0E0;
 }
