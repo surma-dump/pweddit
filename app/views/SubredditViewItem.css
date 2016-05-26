@@ -46,6 +46,8 @@
 .thread--dragging .thread__upper,
 .thread--resetting .thread__upper {
   will-change: transform;
+}
+.thread--elevated .thread__upper {
   z-index: 1;
 }
 

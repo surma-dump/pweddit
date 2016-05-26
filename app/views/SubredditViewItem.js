@@ -24,7 +24,7 @@ export default class SubredditViewItem {
     this.thread = thread;
     this.thread.thumbnail = this.thread.thumbnail.replace('http://', 'https://');
     this.node = document.createElement('div');
-    this.node.innerHTML = nodeTemplate.render(thread)
+    this.node.innerHTML = nodeTemplate.render(thread);
 
     this.upperNode = this.node.querySelector('.thread__upper');
     this.lowerNode = this.node.querySelector('.thread__lower');
@@ -53,7 +53,7 @@ export default class SubredditViewItem {
 
   onTouchStart(event) {
     this.startPosition = event.touches[0];
-    this.node.classList.add('thread--dragging');
+    this.node.classList.add('thread--dragging', 'thread--elevated');
     this.lock = false;
     this.deltaX = 0;
   }
@@ -90,13 +90,21 @@ export default class SubredditViewItem {
     this.upperNode.style.transform = '';
     if(this.deltaX > DOWNLOAD_THRESHOLD)
       this.download();
+
+    let transitions = Promise.resolve();
     if(this.deltaX !== 0) {
       this.node.classList.add('thread--resetting');
-      Utils.rAFPromise()
+      transitions = transitions
+        .then(_ => Utils.rAFPromise())
         .then(_ => Utils.rAFPromise())
         .then(_ => this.node::Utils.transitionEndPromise())
         .then(_ => this.node.classList.remove('thread--resetting'));
     }
+    // FIXME: WTF is going on?!! Why do I need to wait 3 seconds
+    // to avoid all SVIs being promoted to their own layers?
+    transitions
+      .then(_ => Utils.timeoutPromise(3000))
+      .then(_ => this.node.classList.remove('thread--elevated'));
   }
 
   download() {
