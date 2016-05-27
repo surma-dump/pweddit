@@ -64,7 +64,8 @@ export default class Imgur {
 
   static handle(url) {
     if(url.pathname.indexOf('/a/') === 0
-      || url.pathname.indexOf('/album/') === 0) {
+      || url.pathname.indexOf('/album/') === 0
+      || url.pathname.indexOf('/gallery/') === 0) {
       return this.loadAlbum(url);
     }
 
