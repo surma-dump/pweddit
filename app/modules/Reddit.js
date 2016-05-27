@@ -103,8 +103,9 @@ export default class Reddit {
     event.respondWith(
       caches.match(canonicalURL)
         .then(cachedResponse => {
-          // If we have an answer cached, use that.
-          if(cachedResponse) {
+          // If we have an answer cached and are not supposed to hit the
+          // the network, use that.
+          if(cachedResponse && searchParams.get('_from_network') !== 'true') {
             return cachedResponse.text();
           }
 
@@ -116,8 +117,9 @@ export default class Reddit {
               statusText: 'Not in cache'
             });
           }
-          // Otherwise fetch the from the API and parse it,
-          // store it in the cache and return that.
+          // If we don’t have a response in cache and are supposed
+          // to hit the network, hit the network, duh,
+          // and store it in the cache and return that.
           return this._apiCall(canonicalURL)
             .then(data => JSON.stringify(data))
             .then(data => caches.open(CACHE_NAME)
