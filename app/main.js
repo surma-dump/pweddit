@@ -16,8 +16,10 @@ HeaderBar();
 
 import Imgur from 'modules/Imgur';
 import Gfycat from 'modules/Gfycat';
+import Gyazo from 'modules/Gyazo';
 LinkView().registerHandler(Imgur);
 LinkView().registerHandler(Gfycat);
+LinkView().registerHandler(Gyazo);
 
 import Lazyload from 'modules/Lazyload';
 Lazyload();

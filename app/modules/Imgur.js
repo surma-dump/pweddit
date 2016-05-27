@@ -3,7 +3,7 @@ import Utils from 'modules/Utils';
 import SimpleCache from 'modules/SimpleCache';
 
 const CACHE_NAME = 'imgur';
-const imgurCache = new SimpleCache(CACHE_NAME, {
+const cache = new SimpleCache(CACHE_NAME, {
   cacheFirst: true
 });
 
@@ -74,6 +74,6 @@ export default class Imgur {
   }
 
   static onFetch(event) {
-    imgurCache.onFetch(event);
+    cache.onFetch(event);
   }
 }

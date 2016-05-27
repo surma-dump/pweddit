@@ -2,7 +2,7 @@ import Utils from 'modules/Utils';
 import SimpleCache from 'modules/SimpleCache';
 
 const CACHE_NAME = 'gfycat';
-const gfycatCache = new SimpleCache(CACHE_NAME, {
+const cache = new SimpleCache(CACHE_NAME, {
   cacheFirst: true
 });
 
@@ -36,6 +36,6 @@ export default class Gfycat {
   }
 
   static onFetch(event) {
-    gfycatCache.onFetch(event);
+    cache.onFetch(event);
   }
 }

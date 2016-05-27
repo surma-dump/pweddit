@@ -1,6 +1,7 @@
 import Reddit from 'modules/Reddit';
 import Imgur from 'modules/Imgur';
 import Gfycat from 'modules/Gfycat';
+import Gyazo from 'modules/Gyazo';
 import Config from 'modules/Config';
 import SimpleCache from 'modules/SimpleCache';
 
@@ -16,7 +17,9 @@ export default class ServiceWorkerController {
       'm.imgur.com': Imgur,
       'gfycat.com': Gfycat,
       'giant.gfycat.com': Gfycat,
-      'zippy.gfycat.com': Gfycat
+      'zippy.gfycat.com': Gfycat,
+      'gyazo.com': Gyazo,
+      'i.gyazo.com': Gyazo
     };
 
     self.addEventListener('message', ::this.onMessage);

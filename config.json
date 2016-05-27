@@ -19,6 +19,7 @@
 
     "/modules/Config.js",
     "/modules/Gfycat.js",
+    "/modules/Gyazo.js",
     "/modules/HeaderBar.css",
     "/modules/HeaderBar.js",
     "/modules/Imgur.js",
