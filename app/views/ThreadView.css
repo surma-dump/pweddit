@@ -1,7 +1,6 @@
 .post, .comments {
   overflow: hidden;
   margin: 5px;
-  padding: 5px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   position: relative;
   border-radius: 2px;
@@ -15,6 +14,10 @@
 .comments, .comments .comment__replies {
   list-style: none;
   -webkit-padding-start: 0;
+}
+
+.comments > .comment > .comment__body {
+  border-left: 0;
 }
 
 .comment {
@@ -42,4 +45,70 @@
 }
 .comment__body p {
   margin: 0;
+}
+.post__header {
+  display: flex;
+  align-items: stretch;
+}
+
+.post__thumbnail {
+  display: block;
+  width: 25%;
+  background-size: cover;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  flex-shrink: 0
+}
+
+.post__details {
+  display: block;
+  flex-grow: 1;
+  padding: 5px 10px;
+}
+
+.post__scores {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  flex-shrink: 0;
+  width: 12%;
+}
+
+.post__scores > * {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid rgba(0, 0, 0, 0.54);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.54);
+}
+
+.post__upvotes {
+  background-color: hsl(32, 100%, 85%);
+}
+
+.post__downvotes {
+  background-color: hsl(210, 100%, 85%);
+}
+
+.post__author {
+  font-size: 0.7em;
+  color: rgba(0,0,0,0.54);
+  margin-bottom: 10px;
+}
+
+.post__scores > *:last-child {
+  border-bottom: none;
+}
+
+.post__details {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.post__body {
+  padding: 5px;
 }

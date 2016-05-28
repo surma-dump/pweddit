@@ -13,9 +13,23 @@ const commentTemplate = new Template(o =>`
 `);
 
 const postTemplate = new Template(o => `
-  <h1 class="post__title">${o.title}</h1>
-  <div class="post__media"><a href="${o.url}"><img src="${o.thumbnail}"></a></div>
-  <div class="post__body">${Template.unescapeHTML(o.selftext_html)}</div>
+  <div class="post__header">
+    <a href="${o.url}" class="post__thumbnail" style="background-image: url(${o.thumbnail})"></a>
+    <div class="post__details">
+      <span class="post__author">${o.author} (${o.domain}) ${new Date(o.created_utc).toString()} </span>
+    </div>
+    <div class="post__scores">
+      <span class="post__upvotes">${o.ups}</span>
+      <span class="post__downvotes">${o.downs}</span>
+      <span class="post__comments">${o.num_comments}</span>
+    </div>
+  </div>
+  <div class="post__body">
+    <h1 class="post__title">${o.title}</h1>
+    <div class="post__text">
+      ${Template.unescapeHTML(o.selftext_html)}
+    </div>
+  </div>
 `);
 
 const errorTemplate = new Template(o =>`

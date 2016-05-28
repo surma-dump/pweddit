@@ -62,6 +62,7 @@
 .thread__downvotes {
   background-color: hsl(210, 100%, 85%);
 }
+
 .thread__author {
   font-size: 0.7em;
   color: rgba(0,0,0,0.54);
