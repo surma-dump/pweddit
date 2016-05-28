@@ -6,17 +6,17 @@ import Utils from 'modules/Utils';
 import ThreadView from 'views/ThreadView';
 import LinkViewer from 'modules/LinkViewer';
 
-const nodeTemplate = Template.compile`
+const nodeTemplate = new Template(o => `
   <div class="thread__lower">
     <span class="fa fa-cloud-download"></span>
   </div>
   <div class="thread__upper">
-    <a href="${'url'}"><img src="${'thumbnail'}" class="thread__thumbnail"></a>
+    <a href="${o.url}"><img src="${o.thumbnail}" class="thread__thumbnail"></a>
     <div class="thread__details">
-      <span class="thread__title">${'title'}</span>
+      <span class="thread__title">${o.title}</span>
     </div>
   </div>
-`;
+`);
 
 
 export default class SubredditViewItem {

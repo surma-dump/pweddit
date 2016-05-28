@@ -19,12 +19,12 @@ class LinkViewer {
     this.countNode = this.node.querySelector('.linkviewer__details__count');
     this.textNode = this.node.querySelector('.linkviewer__details__text');
 
-    this.externalLinkNode = Template.compile`
+    this.externalLinkNode = new Template(o => `
       <div class="external">
-        <a href="${'url'}" target="_blank" class="no-linkviewer">External link</a>
-        <p>${'url'}</p>
+        <a href="${o.url}" target="_blank" class="no-linkviewer">External link</a>
+        <p>${o.url}</p>
       </div>
-    `;
+    `);
 
     this.forwardNode.addEventListener('click', _ => this.next());
     this.backwardNode.addEventListener('click', _ => this.previous());

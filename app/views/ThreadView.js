@@ -5,24 +5,22 @@ import Reddit from 'modules/Reddit';
 import Utils from 'modules/Utils';
 import HeaderBar from 'modules/HeaderBar';
 
-const commentTemplate = Template.compile`
+const commentTemplate = new Template(o =>`
   <li class="comment">
-    <div class="comment__body">${'body_html'}</div>
+    <div class="comment__body">${Template.unescapeHTML(o.body_html)}</div>
     <ul class="comment__replies"></ul>
   </li>
-`;
-commentTemplate.filter = Template.unescapeHTML;
+`);
 
-const postTemplate = Template.compile`
-  <h1 class="post__title">${'title'}</h1>
-  <div class="post__media"><a href="${'url'}"><img src="${'thumbnail'}"></a></div>
-  <div class="post__body">${'selftext_html'}</div>
-`;
-postTemplate.filter = Template.unescapeHTML;
+const postTemplate = new Template(o => `
+  <h1 class="post__title">${o.title}</h1>
+  <div class="post__media"><a href="${o.url}"><img src="${o.thumbnail}"></a></div>
+  <div class="post__body">${Template.unescapeHTML(o.selftext_html)}</div>
+`);
 
-const errorTemplate = Template.compile`
-  <div class="error">${'errorMsg'}</div>
-`;
+const errorTemplate = new Template(o =>`
+  <div class="error">${o.errorMsg}</div>
+`);
 
 export default class ThreadView extends View {
   constructor() {

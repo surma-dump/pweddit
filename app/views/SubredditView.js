@@ -10,9 +10,9 @@ export default class SubredditView extends View {
   constructor() {
     super('subreddit');
 
-    this.errorTemplate = Template.compile`
-      <div class="error">${'errorMsg'}</div>
-    `;
+    this.errorTemplate = new Template(o => `
+      <div class="error">${o.errorMsg}</div>
+    `);
   }
 
   in(data) {

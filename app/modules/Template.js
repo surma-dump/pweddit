@@ -1,20 +1,11 @@
 const id = x => x;
 export default class Template {
-  static compile(strings, ...keys) {
-    return new Template((dict, filter) =>
-      keys.reduce(
-        (prev, cur, idx) =>
-          prev + filter(dict[cur]) + strings[idx + 1], strings[0]
-      )
-    );
-  }
-
-  constructor(compiler) {
-    this.compiler = compiler;
+  constructor(template) {
+    this.template = template;
   }
 
   render(data) {
-    return this.compiler(data, this.filter || id);
+    return this.template(data);
   }
 
   renderAsDOM(data) {
