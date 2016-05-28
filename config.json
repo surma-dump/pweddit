@@ -22,6 +22,7 @@
     "/modules/Gyazo.js",
     "/modules/HeaderBar.css",
     "/modules/HeaderBar.js",
+    "/modules/ImageCatchall.js",
     "/modules/Imgur.js",
     "/modules/Lazyload.js",
     "/modules/Reddit.js",

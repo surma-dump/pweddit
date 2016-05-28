@@ -2,6 +2,7 @@ import Reddit from 'modules/Reddit';
 import Imgur from 'modules/Imgur';
 import Gfycat from 'modules/Gfycat';
 import Gyazo from 'modules/Gyazo';
+import ImageCatchall from 'modules/ImageCatchall';
 import Config from 'modules/Config';
 import SimpleCache from 'modules/SimpleCache';
 
@@ -52,6 +53,10 @@ export default class ServiceWorkerController {
           response || new Response(null, {status: 404})
         )
       );
+    }
+
+    if(ImageCatchall.canHandle(url)) {
+      return ImageCatchall.onFetch(event);
     }
 
     event.respondWith(
