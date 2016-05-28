@@ -11,9 +11,15 @@ const nodeTemplate = new Template(o => `
     <span class="fa fa-cloud-download"></span>
   </div>
   <div class="thread__upper">
-    <a href="${o.url}"><img src="${o.thumbnail}" class="thread__thumbnail"></a>
+    <a href="${o.url}" class="thread__thumbnail" style="background-image: url(${o.thumbnail})"></a>
     <div class="thread__details">
+      <span class="thread__author">${o.author} (${o.domain}) ${new Date(o.created_utc).toString()} </span>
       <span class="thread__title">${o.title}</span>
+    </div>
+    <div class="thread__scores">
+      <span class="thread__upvotes">${o.ups}</span>
+      <span class="thread__downvotes">${o.downs}</span>
+      <span class="thread__comments">${o.num_comments}</span>
     </div>
   </div>
 `);
@@ -46,7 +52,7 @@ export default class SubredditViewItem {
   }
 
   onClick(event) {
-    if(event.target.nodeName === 'IMG')
+    if(event.target.classList.contains('thread__thumbnail'))
       return;
     Router().go(`/thread/${this.thread.subreddit}/${this.thread.id}`);
   }
