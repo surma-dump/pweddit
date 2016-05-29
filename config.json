@@ -4,8 +4,8 @@
   },
   "PULLBACK": {
     "MIN": 10,
-    "THRESHOLD": 50,
-    "MAX": 80
+    "THRESHOLD": 120,
+    "MAX": 250
   },
   "APP_CACHE": "pweddit",
   "APP_FILES": [

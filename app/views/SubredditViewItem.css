@@ -111,10 +111,11 @@
 
 .thread__lower span {
   opacity: 0;
+  margin-left: 10px;
   transition: opacity 0.3s ease-in-out;
 }
 
-.thread:not(.thread--downloading):not(.thread--downloaded) .thread__lower:hover + .thread__upper {
+.thread:not(.thread--downloading):not(.thread--resetting) .thread__lower:hover + .thread__upper {
   will-change: transform;
   transform: translateX(250px) translateZ(0);
 }

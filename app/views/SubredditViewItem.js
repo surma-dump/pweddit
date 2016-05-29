@@ -59,7 +59,6 @@ export default class SubredditViewItem {
 
   onTouchStart(event) {
     if(this.node.classList.contains('thread--downloading') ||
-       this.node.classList.contains('thread--downloaded') ||
        this.node.classList.contains('thread--resetting'))
       return;
 
