@@ -50,6 +50,7 @@ export default class Imgur {
     node.appendChild(this.createVideoSource(image.data.mp4.replace('http://', 'https://'), 'video/mp4'));
     node.autoplay = true;
     node.loop = true;
+    node.controls = true;
     return node;
   }
 

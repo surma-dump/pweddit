@@ -32,6 +32,7 @@ export default class Gfycat {
     node.appendChild(this.createVideoSource(`https://fat.gfycat.com${url.pathname}.webm`, 'video/webm'));
     node.autoplay = true;
     node.loop = true;
+    node.controls = true;
     return Promise.resolve([node]);
   }
 
