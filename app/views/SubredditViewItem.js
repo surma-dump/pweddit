@@ -13,7 +13,7 @@ const nodeTemplate = new Template(o => `
   <div class="thread__upper">
     <a href="${o.url}" class="thread__thumbnail" style="background-image: url(${o.thumbnail})"></a>
     <div class="thread__details">
-      <span class="thread__author">${o.author} (${o.domain}) ${new Date(o.created_utc).toString()} </span>
+      <span class="thread__author">${o.author} (${o.domain}) ${new Date(o.created_utc*1000).toString()} </span>
       <span class="thread__title">${o.title}</span>
     </div>
     <div class="thread__scores">

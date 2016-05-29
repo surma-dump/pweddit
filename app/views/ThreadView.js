@@ -7,7 +7,21 @@ import HeaderBar from 'modules/HeaderBar';
 
 const commentTemplate = new Template(o =>`
   <li class="comment">
-    <div class="comment__body">${Template.unescapeHTML(o.body_html)}</div>
+    <div class="comment__body">
+      <div class="comment__details">
+        <div class="comment__author">
+          ${o.author} ${new Date(o.created_utc*1000).toString()}
+        </div>
+        <div class="comment__text">
+          ${Template.unescapeHTML(o.body_html)}
+        </div>
+      </div>
+      <div class="comment__scores">
+        <span class="comment__upvotes">${o.ups}</span>
+        <span class="comment__downvotes">${o.downs}</span>
+        <span class="comment__gilded">${o.gilded}</span>
+      </div>
+    </div>
     <ul class="comment__replies"></ul>
   </li>
 `);
@@ -16,7 +30,7 @@ const postTemplate = new Template(o => `
   <div class="post__header">
     <a href="${o.url}" class="post__thumbnail" style="background-image: url(${o.thumbnail})"></a>
     <div class="post__details">
-      <span class="post__author">${o.author} (${o.domain}) ${new Date(o.created_utc).toString()} </span>
+      <span class="post__author">${o.author} (${o.domain}) ${new Date(o.created_utc*1000).toString()} </span>
     </div>
     <div class="post__scores">
       <span class="post__upvotes">${o.ups}</span>

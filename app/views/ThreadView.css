@@ -1,4 +1,4 @@
-.post, .comments {
+.post, .comments > .comment {
   overflow: hidden;
   margin: 5px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
@@ -16,36 +16,93 @@
   -webkit-padding-start: 0;
 }
 
+.comments .comment__replies {
+  margin-left: 10px;
+}
+
 .comments > .comment > .comment__body {
   border-left: 0;
 }
 
 .comment {
-  padding: 0 5px;
   margin: 5px 0;
 }
 .comment__body {
   border-left: 3px solid rgba(0,0,0,0.25);
-  padding-left: 5px;
+  display: flex;
+  align-items: stretch;
 }
-.comment__body > .md > *:first-child,
-.comment__body > *:first-child {
+
+.comment_text > .md > *:first-child,
+.comment_text > *:first-child {
   margin-top: 0;
 }
-.comment__body > .md > *:last-child,
-.comment__body > *:last-child {
+.comment_text > .md > *:last-child,
+.comment_text > *:last-child {
   margin-bottom: 0;
 }
 
-.comment__body blockquote {
+.comment_text blockquote {
   color: rgba(0, 0, 0, 0.74);
   font-style: italic;
   margin: 0;
   margin-left: 10px
 }
+
 .comment__body p {
   margin: 0;
 }
+
+.comment__scores {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  flex-shrink: 0;
+  width: 12%;
+}
+
+
+.comment__scores > * {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid rgba(0, 0, 0, 0.54);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.54);
+}
+
+.comment__replies .comment__scores > *:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0.54);
+}
+
+.comment__upvotes {
+  background-color: hsl(32, 100%, 85%);
+}
+
+.comment__downvotes {
+  background-color: hsl(210, 100%, 85%);
+}
+
+.comment__gilded {
+  background-color: hsl(50, 100%, 60%);
+}
+
+.comment__author {
+  font-size: 0.7em;
+  color: rgba(0,0,0,0.54);
+  margin-bottom: 10px;
+}
+
+.comment__details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 5px;
+}
+
 .post__header {
   display: flex;
   align-items: stretch;
@@ -96,10 +153,6 @@
   font-size: 0.7em;
   color: rgba(0,0,0,0.54);
   margin-bottom: 10px;
-}
-
-.post__scores > *:last-child {
-  border-bottom: none;
 }
 
 .post__details {
