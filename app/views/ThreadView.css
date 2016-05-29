@@ -59,12 +59,11 @@
   align-items: stretch;
   justify-content: stretch;
   flex-shrink: 0;
-  width: 12%;
+  width: 10vw;
 }
 
 
 .comment__scores > * {
-  flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,6 +100,7 @@
   align-items: stretch;
   justify-content: stretch;
   padding: 5px;
+  word-break: break-all;
 }
 
 .post__header {
@@ -129,7 +129,7 @@
   align-items: stretch;
   justify-content: stretch;
   flex-shrink: 0;
-  width: 12%;
+  width: 10vw;
 }
 
 .post__scores > * {
