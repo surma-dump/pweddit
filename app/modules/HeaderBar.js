@@ -145,12 +145,20 @@ class HeaderBar {
   showDrawer() {
     if(!this.drawerNode.classList.contains('headerbar__drawer--hidden'))
       return Promise.resolve();
-    this.drawerNode.classList.remove('headerbar__drawer--hidden');
+    this.drawerNode.classList.remove('headerbar__drawer--hidden', 'headerbar__drawer--new-notifications');
     return this.drawerNode::Utils.transitionEndPromise();
   }
 
   searchKeyDown(event) {
     if(event.keyCode === 27) // Escape
       this.hideSearch();
+  }
+
+  addNotification(text) {
+    const node = document.createElement('div');
+    node.classList.add('notification');
+    node.innerText = text;
+    this.drawerNode.appendChild(node);
+    this.drawerNode.classList.add('headerbar__drawer--new-notifications');
   }
 }

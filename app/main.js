@@ -28,6 +28,9 @@ Lazyload();
 
 
 if('serviceWorker' in navigator)
-  navigator.serviceWorker.register('/sw.js', {scope: '/'});
+  navigator.serviceWorker.register('/sw.js', {scope: '/'})
+    .then(registration =>
+      registration.onupdatefound = _ =>
+        HeaderBar().addNotification('New version loaded. Refresh!'));
 
 console.info('Version {{pkg.version}}');
