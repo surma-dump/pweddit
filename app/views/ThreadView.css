@@ -87,20 +87,39 @@
   background-color: hsl(50, 100%, 60%);
 }
 
-.comment__author {
+.post--moderator .post__author,
+.comment--moderator > .comment__body .comment__author {
+  color: hsl(120, 100%, 30%);
+}
+
+.post--admin .post__author,
+.comment--admin > .comment__body .comment__author {
+  color: hsl(0, 100%, 40%);
+}
+
+.post--stickied .post__title {
+  color: hsl(120, 100%, 30%);
+}
+
+.post--nsfw {
+  background-color: #fbb;
+}
+
+
+.comment__details {
   font-size: 0.7em;
   color: rgba(0,0,0,0.54);
   margin-bottom: 10px;
 }
 
-.comment__details {
+.comment__content {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: stretch;
   padding: 5px;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .post__header {
@@ -115,12 +134,6 @@
   background-position: 50%;
   background-repeat: no-repeat;
   flex-shrink: 0
-}
-
-.post__details {
-  display: block;
-  flex-grow: 1;
-  padding: 5px 10px;
 }
 
 .post__scores {
@@ -149,17 +162,12 @@
   background-color: hsl(210, 100%, 85%);
 }
 
-.post__author {
+.post__details {
   font-size: 0.7em;
   color: rgba(0,0,0,0.54);
   margin-bottom: 10px;
-}
-
-.post__details {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: stretch;
+  flex-grow: 1;
+  padding: 5px 10px;
 }
 
 .post__body {

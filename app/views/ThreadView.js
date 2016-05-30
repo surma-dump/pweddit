@@ -8,9 +8,9 @@ import HeaderBar from 'modules/HeaderBar';
 const commentTemplate = new Template(o =>`
   <li class="comment">
     <div class="comment__body">
-      <div class="comment__details">
-        <div class="comment__author">
-          ${o.author} ${new Date(o.created_utc*1000).toString()}
+      <div class="comment__content">
+        <div class="comment__details">
+          <span class="comment__author">${o.author}</span> ${new Date(o.created_utc*1000).toString()}
         </div>
         <div class="comment__text">
           ${Template.unescapeHTML(o.body_html)}
@@ -30,7 +30,7 @@ const postTemplate = new Template(o => `
   <div class="post__header">
     <a href="${o.url}" class="post__thumbnail" style="background-image: url(${o.thumbnail})"></a>
     <div class="post__details">
-      <span class="post__author">${o.author} (${o.domain}) ${new Date(o.created_utc*1000).toString()} </span>
+      <span class="post__author">${o.author}</span> (${o.domain}) ${new Date(o.created_utc*1000).toString()}
     </div>
     <div class="post__scores">
       <span class="post__upvotes">${o.ups}</span>
@@ -93,9 +93,15 @@ export default class ThreadView extends View {
 
   updatePost(post, errorMsg) {
     this.postContainer::Utils.removeAllChildren();
-    if(post)
+    if(post) {
       Array.from(postTemplate.renderAsDOM(post))
        .forEach(::this.postContainer.appendChild);
+      this.postContainer.classList.toggle('post--stickied', post.stickied);
+      this.postContainer.classList.toggle('post--edited', post.edited);
+      this.postContainer.classList.toggle('post--moderator', post.distinguished === 'moderator');
+      this.postContainer.classList.toggle('post--admin', post.distinguished === 'admin');
+      this.postContainer.classList.toggle('post--nsfw', post.over_18);
+    }
     if(errorMsg)
       this.postContainer.appendChild(
         errorTemplate.renderAsDOM({errorMsg})[0]
@@ -117,6 +123,10 @@ export default class ThreadView extends View {
 
         // TODO: Remove this
         commentNode._comment = comment;
+        commentNode.classList.toggle('comment--stickied', comment.stickied);
+        commentNode.classList.toggle('comment--edited', comment.edited);
+        commentNode.classList.toggle('comment--moderator', comment.distinguished === 'moderator');
+        commentNode.classList.toggle('comment--admin', comment.distinguished === 'admin');
 
         if(comment.replies && comment.replies.data && comment.replies.data.children)
           this.renderComments(

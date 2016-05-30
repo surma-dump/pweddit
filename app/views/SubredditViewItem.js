@@ -12,9 +12,11 @@ const nodeTemplate = new Template(o => `
   </div>
   <div class="thread__upper">
     <a href="${o.url}" class="thread__thumbnail" style="background-image: url(${o.thumbnail})"></a>
-    <div class="thread__details">
-      <span class="thread__author">${o.author} (${o.domain}) ${new Date(o.created_utc*1000).toString()} </span>
-      <span class="thread__title">${o.title}</span>
+    <div class="thread__content">
+      <div class="thread__details">
+        <span class="thread__author">${o.author}</span> (${o.domain}) ${new Date(o.created_utc*1000).toString()}
+      </div>
+      <div class="thread__title">${o.title}</div>
     </div>
     <div class="thread__scores">
       <span class="thread__upvotes">${o.ups}</span>
@@ -38,6 +40,11 @@ export default class SubredditViewItem {
 
     this.node.classList.add('thread');
     this.node.classList.toggle('thread--nsfw', this.thread.over_18);
+    this.node.classList.toggle('thread--stickied', this.thread.stickied);
+    this.node.classList.toggle('thread--edited', this.thread.edited);
+    this.node.classList.toggle('thread--moderator', this.thread.distinguished === 'moderator');
+    this.node.classList.toggle('thread--admin', this.thread.distinguished === 'admin');
+
 
     this.upperNode.addEventListener('click', ::this.onClick);
     this.lowerNode.addEventListener('click', _ => this.download());

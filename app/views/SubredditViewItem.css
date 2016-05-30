@@ -12,6 +12,17 @@
 .thread--nsfw .thread__upper {
   background-color: #fbb;
 }
+.thread--moderator .thread__author {
+  color: hsl(120, 100%, 30%);
+}
+
+.thread--admin .thread__author {
+  color: hsl(0, 100%, 40%);
+}
+
+.thread--stickied .thread__title {
+  color: hsl(120, 100%, 30%);
+}
 
 .thread__upper {
   position: relative;
@@ -31,7 +42,7 @@
   flex-shrink: 0
 }
 
-.thread__details {
+.thread__content {
   display: block;
   flex-grow: 1;
   padding: 5px 10px;
@@ -63,7 +74,7 @@
   background-color: hsl(210, 100%, 85%);
 }
 
-.thread__author {
+.thread__details {
   font-size: 0.7em;
   color: rgba(0,0,0,0.54);
   margin-bottom: 10px;
@@ -71,13 +82,6 @@
 
 .thread__scores > *:last-child {
   border-bottom: none;
-}
-
-.thread__details {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: stretch;
 }
 
 .thread__lower {
