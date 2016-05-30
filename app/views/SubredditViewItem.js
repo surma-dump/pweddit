@@ -69,6 +69,9 @@ export default class SubredditViewItem {
        this.node.classList.contains('thread--resetting'))
       return;
 
+    if(event.touches.length > 1)
+      return;
+
     this.startPosition = event.touches[0];
     this.node.classList.add('thread--dragging', 'thread--elevated');
     this.lock = false;
@@ -77,6 +80,9 @@ export default class SubredditViewItem {
 
   onTouchMove(event) {
     if(!this.node.classList.contains('thread--dragging'))
+      return;
+
+    if(event.touches.length > 1)
       return;
 
     this.deltaX = this.clamp(event.touches[0].pageX - this.startPosition.pageX);

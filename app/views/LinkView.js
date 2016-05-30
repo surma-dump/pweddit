@@ -221,12 +221,16 @@ class LinkViewer {
   onTouchStart(event) {
     if(this.node.classList.contains('linkviewer--animating'))
       return;
+    if(event.touches.length > 1)
+      return;
     this.startPosition = event.touches[0];
     this.deltaX = 0;
   }
 
   onTouchMove(event) {
     if(!this.startPosition)
+      return;
+    if(event.touches.length > 1)
       return;
     event.preventDefault();
 
@@ -236,6 +240,10 @@ class LinkViewer {
 
   onTouchEnd(event) {
     this.startPosition = null;
+    if(this.deltaX === 0)
+      return;
+    if(this.node.classList.contains('linkviewer--animating'))
+      return;
     if(this.deltaX > 100 && !this.isFirst()) {
       this.previous();
       return;
