@@ -1,6 +1,6 @@
-import Router from 'modules/Router';
-import Template from 'modules/Template';
-import Utils from 'modules/Utils';
+import Router from '/modules/Router.js';
+import Template from '/modules/Template.js';
+import Utils from '/modules/Utils.js';
 
 export default function() {
   if(typeof window._linkViewer === 'undefined')

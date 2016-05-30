@@ -1,10 +1,10 @@
-import Config from 'modules/Config';
-import Reddit from 'modules/Reddit';
-import Router from 'modules/Router';
-import Template from 'modules/Template';
-import Utils from 'modules/Utils';
-import ThreadView from 'views/ThreadView';
-import LinkViewer from 'modules/LinkViewer';
+import Config from '/modules/Config.js';
+import Reddit from '/modules/Reddit.js';
+import Router from '/modules/Router.js';
+import Template from '/modules/Template.js';
+import Utils from '/modules/Utils.js';
+import ThreadView from '/views/ThreadView.js';
+import LinkView from '/views/LinkView.js';
 
 const nodeTemplate = new Template(o => `
   <div class="thread__lower">
@@ -136,7 +136,7 @@ export default class SubredditViewItem {
           ].map(url => {
             try {
               url = new URL(url);
-              return LinkViewer().loadLink(url);
+              return LinkView().loadLink(url);
             } catch(e) {}
           })
         );

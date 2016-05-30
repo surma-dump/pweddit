@@ -1,5 +1,5 @@
-import Utils from 'modules/Utils';
-import Router from 'modules/Router';
+import Utils from '/modules/Utils.js';
+import Router from '/modules/Router.js';
 
 export default function() {
   if(typeof window._headerbar === 'undefined') {

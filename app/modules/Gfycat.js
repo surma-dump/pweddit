@@ -1,5 +1,5 @@
-import Utils from 'modules/Utils';
-import SimpleCache from 'modules/SimpleCache';
+import Utils from '/modules/Utils.js';
+import SimpleCache from '/modules/SimpleCache.js';
 
 const CACHE_NAME = 'gfycat';
 const cache = new SimpleCache(CACHE_NAME, {

@@ -1,4 +1,4 @@
-import Utils from 'modules/Utils';
+import Utils from '/modules/Utils.js';
 
 export default function() {
   if (typeof window._router === 'undefined')

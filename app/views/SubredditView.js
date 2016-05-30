@@ -1,10 +1,10 @@
-import Router from 'modules/Router';
-import View from 'modules/View';
-import Template from 'modules/Template';
-import Reddit from 'modules/Reddit';
-import Utils from 'modules/Utils';
-import HeaderBar from 'modules/HeaderBar';
-import SubredditViewItem from 'views/SubredditViewItem';
+import Router from '/modules/Router.js';
+import View from '/modules/View.js';
+import Template from '/modules/Template.js';
+import Reddit from '/modules/Reddit.js';
+import Utils from '/modules/Utils.js';
+import HeaderBar from '/modules/HeaderBar.js';
+import SubredditViewItem from '/views/SubredditViewItem.js';
 
 export default class SubredditView extends View {
   constructor() {

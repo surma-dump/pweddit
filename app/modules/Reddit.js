@@ -1,4 +1,4 @@
-import Utils from 'modules/Utils';
+import Utils from '/modules/Utils.js';
 
 const CACHE_NAME = 'reddit';
 const DEFAULT_OPTS = {

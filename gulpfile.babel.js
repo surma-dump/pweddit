@@ -27,8 +27,14 @@ const refreshTemplateContext = _ => {
 };
 let templateContext = refreshTemplateContext();
 const FILES_FROM_MODULES = [
-  'normalize.css/normalize.css'
+  'normalize.css/normalize.css',
+  'systemjs/dist/system.js'
 ]
+
+const es5Scripts = [
+  'sw.es5.js',
+  'bootstrap.es5.js'
+];
 
 Handlebars.registerHelper('json', o => JSON.stringify(o));
 
@@ -36,25 +42,28 @@ function scripts() {
   return src('*.js')
     .pipe(handlebarsCompiler(templateContext))
     .pipe(sourcemaps.init())
-    .pipe(skip(['sw.js', 'require.js']))
+    .pipe(skip(es5Scripts.concat('system.js')))
     .pipe(babel({
       presets: ['stage-0'],
-      plugins: ['transform-es2015-modules-amd']
+      plugins: ['transform-es2015-modules-systemjs']
     }))
     .pipe(uglify())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist'));
 }
 
-function serviceWorker() {
-  return gulp.src([
-      'app/sw.js',
-      'node_modules/requirejs/require.js'
-    ])
+function notranspileScripts() {
+  return gulp.src(
+      es5Scripts
+        .map(f => `app/${f}`)
+        .concat(
+          FILES_FROM_MODULES
+            .filter(f => /\.js$/.test(f))
+            .map(f => `node_modules/${f}`)
+        )
+    )
     .pipe(handlebarsCompiler(templateContext))
     .pipe(sourcemaps.init())
-    // This uses the defaults provided in the `package.json`.
-    .pipe(babel())
     .pipe(uglify())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist'));
@@ -134,7 +143,7 @@ gulp.task('build', gulp.series(
   incrementVersion,
   gulp.parallel(
     scripts,
-    serviceWorker,
+    notranspileScripts,
     styles,
     markup,
     staticFiles
@@ -158,6 +167,8 @@ gulp.task('deploy', _ => {
     }));
 });
 
+// Wrapper around gulp.src that always includes a fixed set of files
+// from node_modules (see FILES_FROM_MODULES)
 function src(glob) {
   return gulp.src(
     [`app/**/${glob}`].concat(
