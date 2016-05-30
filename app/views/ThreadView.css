@@ -89,12 +89,16 @@
 
 .post--moderator .post__author,
 .comment--moderator > .comment__body .comment__author {
-  color: hsl(120, 100%, 30%);
+  color: hsl(120, 100%, 30%) !important;
 }
 
 .post--admin .post__author,
 .comment--admin > .comment__body .comment__author {
-  color: hsl(0, 100%, 40%);
+  color: hsl(0, 100%, 40%) !important;
+}
+
+.comment--submitter > .comment__body .comment__author {
+  color: hsl(240, 100%, 40%);
 }
 
 .post--stickied .post__title {

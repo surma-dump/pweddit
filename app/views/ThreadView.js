@@ -112,10 +112,10 @@ export default class ThreadView extends View {
     this.commentsContainer::Utils.removeAllChildren();
     if(!comments)
       return;
-    ThreadView.renderComments(this.commentsContainer, comments);
+    ThreadView.renderComments(this.commentsContainer, comments, this.thread.post.author);
   }
 
-  static renderComments(container, comments) {
+  static renderComments(container, comments, author) {
     comments
       .filter(comment => !!comment.body)
       .forEach(comment => {
@@ -127,11 +127,13 @@ export default class ThreadView extends View {
         commentNode.classList.toggle('comment--edited', comment.edited);
         commentNode.classList.toggle('comment--moderator', comment.distinguished === 'moderator');
         commentNode.classList.toggle('comment--admin', comment.distinguished === 'admin');
+        commentNode.classList.toggle('comment--submitter', comment.author === author);
 
         if(comment.replies && comment.replies.data && comment.replies.data.children)
           this.renderComments(
             commentNode.querySelector('.comment__replies'),
-            comment.replies.data.children.map(c => c.data)
+            comment.replies.data.children.map(c => c.data),
+            author
           );
         container.appendChild(commentNode);
       });
