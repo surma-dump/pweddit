@@ -1,36 +1,60 @@
-import Router from '/modules/Router.js';
-import View from '/modules/View.js';
+function loadAll(files) {
+  return Promise.all(files.map(f => System.import(f)))
+}
 
-import SubredditView from '/views/SubredditView.js';
-import ThreadView from '/views/ThreadView.js';
-import RootView from '/views/RootView.js';
-import LinkView from '/views/LinkView.js';
+const routes = {
+  '_root': _ => System.import('/views/RootView.js'),
+  'r': _ => System.import('/views/SubredditView.js'),
+  'thread': _ => System.import('/views/ThreadView.js'),
+  'external': _ => loadAll([
+                      '/views/LinkView.js',
+                      '/modules/Imgur.js',
+                      '/modules/Gfycat.js',
+                      '/modules/Gyazo.js',
+                      '/modules/ImageCatchall.js'
+                    ])
+                    .then(([LinkView, ...handlers]) => {
+                      handlers.forEach(h => LinkView.default().registerHandler(h));
+                      return LinkView;
+                    })
+};
 
-Router().add('_root', RootView);
-Router().add('r', SubredditView);
-Router().add('thread', ThreadView);
-Router().add('external', LinkView);
+// Load Router and Headerbar first.
+// Use Router to figure out which view is needed first and only load that bit.
+// After the first view has been loaded and slid into view, load the remaining
+// views.
+// Once that is done, register the service worker.
+loadAll([
+    '/modules/Router.js',
+    '/modules/Headerbar.js'
+  ])
+  .then(([Router, Headerbar]) => {
+    Headerbar.default();
+    Router = Router.default;
+    const [viewName] = Router().parseLocation(document.location);
+    if(!(viewName in routes))
+      return;
 
-import HeaderBar from '/modules/HeaderBar.js';
-HeaderBar();
-
-import Imgur from '/modules/Imgur.js';
-import Gfycat from '/modules/Gfycat.js';
-import Gyazo from '/modules/Gyazo.js';
-import ImageCatchall from '/modules/ImageCatchall.js';
-LinkView().registerHandler(Imgur);
-LinkView().registerHandler(Gfycat);
-LinkView().registerHandler(Gyazo);
-LinkView().registerHandler(ImageCatchall);
+    routes[viewName]()
+      .then(view => Router().add(viewName, view.default))
+      .then(_ => {
+        Object.keys(routes)
+          .filter(v => v !== viewName)
+          .forEach(v => routes[v]().then(view => Router().add(v, view.default)));
+      })
+      .then(_ => new Promise(resolve => {
+        requestIdleCallback(resolve);
+      }))
+      .then(_ => {
+        if('serviceWorker' in navigator)
+          navigator.serviceWorker.register('/sw.es5.js', {scope: '/'})
+            .then(registration =>
+              registration.onupdatefound = _ =>
+                HeaderBar().addNotification('New version loaded. Refresh!'));
+      });
+  });
 
 import Lazyload from '/modules/Lazyload.js';
 Lazyload();
-
-
-if('serviceWorker' in navigator)
-  navigator.serviceWorker.register('/sw.es5.js', {scope: '/'})
-    .then(registration =>
-      registration.onupdatefound = _ =>
-        HeaderBar().addNotification('New version loaded. Refresh!'));
 
 console.info('Version {{pkg.version}}');

@@ -14,6 +14,7 @@ export default class RootView extends View {
     return Promise.all([
       HeaderBar().setTitle(),
       HeaderBar().hideDrawer()
-    ]).then(_ => super.in(data));
+    ])
+    .then(_ => super.in(data));
   }
 }

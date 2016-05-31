@@ -25,11 +25,16 @@ export default class Utils {
 
   static rAFPromise() {
     return new Promise(resolve => {
-      requestAnimationFrame(_ => {
-        resolve();
-      });
+      requestAnimationFrame(resolve);
     });
   }
+
+  static rICPromise() {
+    return new Promise(resolve => {
+      requestIdleCallback(resolve);
+    });
+  }
+
 
   static timeoutPromise(delay) {
     return new Promise(resolve => {
