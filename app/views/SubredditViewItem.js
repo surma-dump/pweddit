@@ -11,7 +11,7 @@ const nodeTemplate = new Template(o => `
     <span class="fa fa-cloud-download"></span>
   </div>
   <div class="thread__upper">
-    <a href="${o.url}" class="thread__thumbnail" style="background-image: url(${o.thumbnail})"></a>
+    <a href="${o.url}" class="thread__thumbnail" data-style="background-image: url(${o.thumbnail})"></a>
     <div class="thread__content">
       <div class="thread__details">
         <span class="thread__author">${o.author}</span> (${o.domain}) ${new Date(o.created_utc*1000).toString()}

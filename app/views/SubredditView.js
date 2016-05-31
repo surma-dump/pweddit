@@ -29,9 +29,15 @@ export default class SubredditView extends View {
           this.posts = [];
           this.errorMsg = 'Nothing in cache';
         })
-    ]).then(_ => {
+    ])
+    .then(_ => {
       this.updateDOM();
       return super.in(data)
+    })
+    .then(_ => {
+      // Activate thumb images *after* slide in
+      Array.from(this.node.querySelectorAll('.thread__thumbnail'))
+        .forEach(thumb => thumb.style = thumb.dataset.style)
     });
   }
 
