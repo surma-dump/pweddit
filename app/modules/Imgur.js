@@ -1,6 +1,6 @@
-import Config from 'modules/Config';
-import Utils from 'modules/Utils';
-import SimpleCache from 'modules/SimpleCache';
+import Config from '/modules/Config.js';
+import Utils from '/modules/Utils.js';
+import SimpleCache from '/modules/SimpleCache.js';
 
 const CACHE_NAME = 'imgur';
 const cache = new SimpleCache(CACHE_NAME, {

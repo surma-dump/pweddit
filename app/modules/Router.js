@@ -1,4 +1,4 @@
-import Utils from 'modules/Utils';
+import Utils from '/modules/Utils.js';
 
 export default function() {
   if (typeof window._router === 'undefined')
@@ -17,6 +17,22 @@ class Router {
     this.manageState();
   }
 
+  parseLocation(loc) {
+    const path = loc.hash.replace(/^#\//, '');
+    // Assume the first part of the path is the
+    // verb we want to action, with the rest of the path
+    // being the data to pass to the handler.
+    const pathParts = path.split('/');
+    let view = pathParts.shift();
+    const data = pathParts.join('/');
+
+    // Add a special case for the root.
+    if (view === '')
+      view = '_root';
+
+    return [view, data];
+  }
+
   add(path, state) {
     // Assume the first part of the path is the
     // verb we want to action, with the rest of the path
@@ -28,7 +44,8 @@ class Router {
       throw `A handler already exists for the action "${view}"`;
 
     this.routes[view] = new state();
-    requestAnimationFrame(_ => this.manageState());
+    return Utils.rAFPromise()
+      .then(_ => this.manageState());
   }
 
   remove(path) {
@@ -39,17 +56,7 @@ class Router {
   }
 
   manageState() {
-    const path = document.location.hash.replace(/^#\//, '');
-    // Assume the first part of the path is the
-    // verb we want to action, with the rest of the path
-    // being the data to pass to the handler.
-    const pathParts = path.split('/');
-    let view = pathParts.shift();
-    const data = pathParts.join('/');
-
-    // Add a special case for the root.
-    if (view === '')
-      view = '_root';
+    let [view, data] = this.parseLocation(document.location);
 
     if (this.currentView === this.routes[view]) {
       const currentView = this.currentView

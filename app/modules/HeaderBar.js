@@ -1,12 +1,5 @@
-import Utils from 'modules/Utils';
-import Router from 'modules/Router';
-
-export default function() {
-  if(typeof window._headerbar === 'undefined') {
-    window._headerbar = new HeaderBar(document.querySelector('.headerbar'));
-  }
-  return window._headerbar;
-}
+import Utils from '/modules/Utils.js';
+import Router from '/modules/Router.js';
 
 class HeaderBar {
   constructor(node) {
@@ -162,4 +155,11 @@ class HeaderBar {
     this.drawerNode.appendChild(node);
     this.drawerNode.classList.add('headerbar__drawer--new-notifications');
   }
+}
+
+
+export default function() {
+  if (typeof window._headerbar === 'undefined')
+    window._headerbar = new HeaderBar(document.querySelector('.headerbar'));
+  return window._headerbar;
 }

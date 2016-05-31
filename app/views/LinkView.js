@@ -1,12 +1,6 @@
-import Router from 'modules/Router';
-import Template from 'modules/Template';
-import Utils from 'modules/Utils';
-
-export default function() {
-  if(typeof window._linkViewer === 'undefined')
-    window._linkViewer = new LinkViewer(document.querySelector('.linkviewer'));
-  return window._linkViewer;
-}
+import Router from '/modules/Router.js';
+import Template from '/modules/Template.js';
+import Utils from '/modules/Utils.js';
 
 class LinkViewer {
   constructor(node) {
@@ -263,4 +257,10 @@ class LinkViewer {
       })
       .then(_ => this.node.classList.remove('linkviewer--animating'));
   }
+}
+
+export default function() {
+  if(typeof window._linkViewer === 'undefined')
+    window._linkViewer = new LinkViewer(document.querySelector('.linkviewer'));
+  return window._linkViewer;
 }

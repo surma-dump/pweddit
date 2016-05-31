@@ -10,9 +10,10 @@
   "APP_CACHE": "pweddit",
   "APP_FILES": [
     "/",
-    "/main.js",
+    "/bootstrap.es5.js",
+    "/init.js",
     "/normalize.css",
-    "/require.js",
+    "/system.js",
     "/manifest.json",
 
     "/images/logo.png",
@@ -24,7 +25,6 @@
     "/modules/HeaderBar.js",
     "/modules/ImageCatchall.js",
     "/modules/Imgur.js",
-    "/modules/Lazyload.js",
     "/modules/Reddit.js",
     "/modules/Router.js",
     "/modules/ServiceWorkerController.js",

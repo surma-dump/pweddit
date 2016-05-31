@@ -1,10 +1,10 @@
-import Reddit from 'modules/Reddit';
-import Imgur from 'modules/Imgur';
-import Gfycat from 'modules/Gfycat';
-import Gyazo from 'modules/Gyazo';
-import ImageCatchall from 'modules/ImageCatchall';
-import Config from 'modules/Config';
-import SimpleCache from 'modules/SimpleCache';
+import Reddit from '/modules/Reddit.js';
+import Imgur from '/modules/Imgur.js';
+import Gfycat from '/modules/Gfycat.js';
+import Gyazo from '/modules/Gyazo.js';
+import ImageCatchall from '/modules/ImageCatchall.js';
+import Config from '/modules/Config.js';
+import SimpleCache from '/modules/SimpleCache.js';
 
 export default class ServiceWorkerController {
   constructor() {
@@ -44,7 +44,7 @@ export default class ServiceWorkerController {
     // Special stuff for our origin
     if(self.location.origin === url.origin) {
       // Never look in cache for ServiceWorker file
-      if(url.pathname === '/sw.js') {
+      if(url.pathname === '/sw.es5.js') {
         return event.respondWith(fetch(event.request));
       }
 

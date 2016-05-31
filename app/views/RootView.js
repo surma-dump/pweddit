@@ -1,9 +1,9 @@
-import Router from 'modules/Router';
-import View from 'modules/View';
-import Template from 'modules/Template';
-import Reddit from 'modules/Reddit';
-import Utils from 'modules/Utils';
-import HeaderBar from 'modules/HeaderBar';
+import Router from '/modules/Router.js';
+import View from '/modules/View.js';
+import Template from '/modules/Template.js';
+import Reddit from '/modules/Reddit.js';
+import Utils from '/modules/Utils.js';
+import HeaderBar from '/modules/HeaderBar.js';
 
 export default class RootView extends View {
   constructor() {
@@ -14,6 +14,7 @@ export default class RootView extends View {
     return Promise.all([
       HeaderBar().setTitle(),
       HeaderBar().hideDrawer()
-    ]).then(_ => super.in(data));
+    ])
+    .then(_ => super.in(data));
   }
 }
