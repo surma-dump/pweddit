@@ -3,7 +3,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <link rel="stylesheet" href="/normalize.css"></link>
-  <link rel="stylesheet" href="/fa/css/font-awesome.min.css"></link>
   <link rel="manifest" href="/manifest.json"></link>
   <style>
     * {
@@ -46,23 +45,25 @@
     .button {
       padding: 10px;
       cursor: pointer;
+      box-sizing: content-box;
     }
   </style>
 </head>
 <header class="headerbar headerbar--uninitialized">
   <aside class="headerbar__drawer">
-    <span class="headerbar__drawer__icon fa fa-caret-down"></span>
+    <span class="headerbar__drawer__icon"></span>
   </aside>
   <div class="headerbar__container">
-    <a class="headerbar__back button fa fa-arrow-left"></a>
+    <a class="headerbar__back button"></a>
     <span class="headerbar__title">
       Pweddit 💙
     </span>
     <form style="display: none" class="headerbar__search">
       <input>
-      <a class="button headerbar__search__go fa fa-sign-in"></a>
+      <a class="button headerbar__search__go"></a>
     </form>
-    <a class="headerbar__refresh button fa fa-refresh"></a>
+    <a class="headerbar__share button"></a>
+    <a class="headerbar__refresh button"></a>
   </div>
 </header>
 <div class="linkviewer linkviewer--hidden">

@@ -7,6 +7,14 @@
     "THRESHOLD": 120,
     "MAX": 250
   },
+  "HEADER": {
+    "DRAWER_OVERLAP": 16,
+    "BUTTON_SIZE": 20
+  },
+  "LINKVIEW": {
+    "BUTTON_SIZE": 30
+  },
+
   "APP_CACHE": "pweddit",
   "APP_FILES": [
     "/",
@@ -17,6 +25,15 @@
     "/manifest.json",
 
     "/images/logo.png",
+    "/images/arrow-left.svg",
+    "/images/arrow-right.svg",
+    "/images/sign-in.svg",
+    "/images/times.svg",
+    "/images/share-alt.svg",
+    "/images/caret-down.svg",
+    "/images/chevron-left.svg",
+    "/images/chevron-right.svg",
+    "/images/refresh.svg",
 
     "/modules/Config.js",
     "/modules/Gfycat.js",
@@ -41,14 +58,6 @@
     "/views/SubredditViewItem.css",
     "/views/SubredditViewItem.js",
     "/views/ThreadView.css",
-    "/views/ThreadView.js",
-
-    "/fa/css/font-awesome.min.css",
-    "/fa/fonts/fontawesome-webfont.eot",
-    "/fa/fonts/fontawesome-webfont.svg",
-    "/fa/fonts/fontawesome-webfont.ttf",
-    "/fa/fonts/fontawesome-webfont.woff",
-    "/fa/fonts/fontawesome-webfont.woff2",
-    "/fa/fonts/FontAwesome.otf"
+    "/views/ThreadView.js"
   ]
 }

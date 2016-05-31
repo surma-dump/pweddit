@@ -44,11 +44,39 @@
   width: 100%;
   left: 0;
   bottom: 0;
-  transform: translateY(16px);
+  transform: translateY({{config.HEADER.DRAWER_OVERLAP}}px);
   background-color: white;
   min-height: 100px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   transition: transform 0.3s ease-in-out;
+}
+
+.headerbar__back,
+.headerbar__search__go,
+.headerbar__share,
+.headerbar__refresh {
+  display: block;
+  width: {{config.HEADER.BUTTON_SIZE}}px;
+  height: {{config.HEADER.BUTTON_SIZE}}px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: {{config.HEADER.BUTTON_SIZE}}px {{config.HEADER.BUTTON_SIZE}}px;
+}
+
+.headerbar__back {
+  background-image: url('/images/arrow-left.svg');
+}
+
+.headerbar__search__go {
+  background-image: url('/images/sign-in.svg');
+}
+
+.headerbar__share {
+  background-image: url('/images/share-alt.svg');
+}
+
+.headerbar__refresh {
+  background-image: url('/images/refresh.svg');
 }
 
 .headerbar__drawer--hidden {
@@ -72,7 +100,10 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  text-align: center;
-  color: rgba(0,0,0,0.5);
+  height: {{config.HEADER.DRAWER_OVERLAP}}px;
+  background-image: url('/images/caret-down.svg');
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
   transition: transform 0.3s ease-in-out;
 }

@@ -22,19 +22,33 @@
   visibility: hidden;
 }
 
-.linkviewer__forward, .linkviewer__backward {
-  display: flex;
-  align-items: center;
-  color: white;
+.linkviewer__forward,
+.linkviewer__backward,
+.linkviewer__close {
+  display: block;
+  width: {{config.LINKVIEW.BUTTON_SIZE}}px;
+  height: {{config.LINKVIEW.BUTTON_SIZE}}px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: {{config.LINKVIEW.BUTTON_SIZE}}px {{config.LINKVIEW.BUTTON_SIZE}}px;
+  text-shadow: 1px 0px black, -1px 0px black, 0px 1px black, 0px -1px black;
+  margin: 0 !important;
+  align-self: center;
+}
+
+.linkviewer__forward {
+  background-image: url('/images/chevron-right.svg');
+}
+
+.linkviewer__backward {
+  background-image: url('/images/chevron-left.svg');
 }
 
 .linkviewer__close {
   position: absolute;
   top: 20px;
   right: 20px;
-  color: white;
-  text-shadow: 1px 0px black, -1px 0px black, 0px 1px black, 0px -1px black;
-  margin: 0 !important;
+  background-image: url('/images/times.svg');
 }
 
 .linkviewer__container {
