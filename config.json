@@ -25,7 +25,6 @@
     "/modules/HeaderBar.js",
     "/modules/ImageCatchall.js",
     "/modules/Imgur.js",
-    "/modules/Lazyload.js",
     "/modules/Reddit.js",
     "/modules/Router.js",
     "/modules/ServiceWorkerController.js",

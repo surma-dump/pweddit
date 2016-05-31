@@ -1,22 +1,43 @@
-function loadAll(files) {
-  return Promise.all(files.map(f => System.import(f)))
+function loadCSS(path) {
+  return new Promise(resolve => {
+    const node = document.createElement('link');
+    node.rel = 'stylesheet';
+    node.onload = resolve;
+    node.onerror = resolve;
+    node.href = path;
+    document.head.appendChild(node);
+  });
 }
 
 const routes = {
-  '_root': _ => System.import('/views/RootView.js'),
-  'r': _ => System.import('/views/SubredditView.js'),
-  'thread': _ => System.import('/views/ThreadView.js'),
-  'external': _ => loadAll([
-                      '/views/LinkView.js',
-                      '/modules/Imgur.js',
-                      '/modules/Gfycat.js',
-                      '/modules/Gyazo.js',
-                      '/modules/ImageCatchall.js'
-                    ])
-                    .then(([LinkView, ...handlers]) => {
-                      handlers.forEach(h => LinkView.default().registerHandler(h));
-                      return LinkView;
-                    })
+  '_root': _ =>
+    Promise.all([
+      System.import('/views/RootView.js')
+    ]),
+  'r': _ =>
+    Promise.all([
+      System.import('/views/SubredditView.js'),
+      loadCSS('/views/SubredditViewItem.css')
+    ]),
+  'thread': _ =>
+    Promise.all([
+      System.import('/views/ThreadView.js'),
+      loadCSS('/views/ThreadView.css')
+    ]),
+  'external': _ =>
+    Promise.all([
+      System.import('/views/LinkView.js'),
+      loadCSS('/views/LinkView.css'),
+      System.import('/modules/Imgur.js'),
+      System.import('/modules/Gfycat.js'),
+      System.import('/modules/Gyazo.js'),
+      System.import('/modules/ImageCatchall.js')
+    ])
+    .then(([LinkView, _, ...handlers]) => {
+      LinkView.default();
+      handlers.forEach(h => LinkView.default().registerHandler(h.default));
+      return [LinkView];
+    })
 };
 
 // Load Router and Headerbar first.
@@ -24,23 +45,25 @@ const routes = {
 // After the first view has been loaded and slid into view, load the remaining
 // views.
 // Once that is done, register the service worker.
-loadAll([
-    '/modules/Router.js',
-    '/modules/Headerbar.js'
+Promise.all([
+    System.import('/modules/Router.js'),
+    System.import('/modules/HeaderBar.js'),
+    loadCSS('/modules/View.css'),
+    loadCSS('/modules/HeaderBar.css')
   ])
-  .then(([Router, Headerbar]) => {
-    Headerbar.default();
+  .then(([Router, HeaderBar]) => {
+    HeaderBar.default();
     Router = Router.default;
     const [viewName] = Router().parseLocation(document.location);
     if(!(viewName in routes))
       return;
 
     routes[viewName]()
-      .then(view => Router().add(viewName, view.default))
+      .then(([view]) => Router().add(viewName, view.default))
       .then(_ => {
         Object.keys(routes)
           .filter(v => v !== viewName)
-          .forEach(v => routes[v]().then(view => Router().add(v, view.default)));
+          .forEach(v => routes[v]().then(([view]) => Router().add(v, view.default)));
       })
       .then(_ => new Promise(resolve => {
         requestIdleCallback(resolve);
@@ -50,11 +73,8 @@ loadAll([
           navigator.serviceWorker.register('/sw.es5.js', {scope: '/'})
             .then(registration =>
               registration.onupdatefound = _ =>
-                HeaderBar().addNotification('New version loaded. Refresh!'));
+                HeaderBar.default().addNotification('New version loaded. Refresh!'));
       });
   });
-
-import Lazyload from '/modules/Lazyload.js';
-Lazyload();
 
 console.info('Version {{pkg.version}}');

@@ -44,7 +44,7 @@ export default class ServiceWorkerController {
     // Special stuff for our origin
     if(self.location.origin === url.origin) {
       // Never look in cache for ServiceWorker file
-      if(url.pathname === '/sw.js') {
+      if(url.pathname === '/sw.es5.js') {
         return event.respondWith(fetch(event.request));
       }
 
