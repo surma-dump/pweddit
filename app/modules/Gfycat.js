@@ -33,6 +33,7 @@ export default class Gfycat {
     node.autoplay = true;
     node.loop = true;
     node.controls = true;
+    node.preload = 'auto';
     return Promise.resolve([node]);
   }
 

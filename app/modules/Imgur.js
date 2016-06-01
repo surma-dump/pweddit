@@ -51,6 +51,7 @@ export default class Imgur {
     node.autoplay = true;
     node.loop = true;
     node.controls = true;
+    node.preload = 'auto';
     return node;
   }
 
