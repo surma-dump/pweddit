@@ -130,7 +130,7 @@ export default class SubredditViewItem {
         const links = node.querySelectorAll('a');
         return Promise.all(
           [
-            thread.url,
+            thread.post.url,
             ...Array.from(links).map(link => link.href)
           ].map(url => {
             try {
