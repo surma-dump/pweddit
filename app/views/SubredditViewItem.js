@@ -118,7 +118,11 @@ export default class SubredditViewItem {
     // to avoid all SVIs being promoted to their own layers?
     transitions
       .then(_ => Utils.timeoutPromise(3000))
-      .then(_ => this.node.classList.remove('thread--elevated'));
+      .then(_ => {
+        if(!this.node.classList.contains('thread--resetting')
+          || !this.node.classList.contains('thread--dragging'))
+          this.node.classList.remove('thread--elevated')
+      });
   }
 
   download() {

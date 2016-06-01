@@ -6,10 +6,9 @@
   margin-top: 70px;
   margin-bottom: 35px;
   min-height: 100%;
-}
-.view.invisible {
   will-change: transform;
 }
+
 .view.invisible.in {
   transform: translateX(100%);
 }
