@@ -105,6 +105,7 @@ class HeaderBar {
       .then(_ => {
         this.titleNode.textContent = title;
         this.titleNode.classList.remove('headerbar__title--changing');
+        return this.titleNode::Utils.transitionEndPromise();
       });
   }
 

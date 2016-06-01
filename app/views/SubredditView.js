@@ -16,7 +16,9 @@ export default class SubredditView extends View {
   }
 
   in(data) {
-    [this.subreddit, this.sorting] = this.parseData(data);
+    const {subreddit, sorting} = this.parseData(data);
+    this.subreddit = subreddit;
+    this.sorting = sorting;
     return Promise.all([
       HeaderBar().setTitle(`/r/${this.subreddit}`),
       HeaderBar().showDrawer(),
@@ -56,14 +58,15 @@ export default class SubredditView extends View {
   }
 
   update(data) {
-    const [newSubreddit, newSorting] = this.parseData(data);
-    if(newSubreddit !== this.subreddit) {
+    const {subreddit, sorting} = this.parseData(data);
+    if(subreddit !== this.subreddit) {
       return this.out()
         .then(_ => this.in(data));
     }
-    if(newSorting == this.sorting) {
+    if(sorting === this.sorting) {
       return Promise.resolve();
     }
+    this.sorting = sorting;
     return Reddit.subredditThreads(this.subreddit, this.sorting)
       .then(posts => {
         this.posts = posts;
@@ -73,9 +76,9 @@ export default class SubredditView extends View {
 
   parseData(data) {
     const parts = data.split('/');
-    return [
-      parts[0],
-      parts[1] || 'hot'
-    ];
+    return {
+      subreddit: parts[0],
+      sorting: parts[1] || 'hot'
+    };
   }
 }
