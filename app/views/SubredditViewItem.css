@@ -96,6 +96,20 @@
   padding-left: 10px;
   color: rgba(0,0,0,0.64);
   font-size: 30px;
+  overflow: hidden;
+}
+
+.thread__lower:after {
+  display: block;
+  content: '';
+  background-image: url('/images/cloud-download.svg');
+  background-size: contain;
+  background-position: 50% 50%;
+  width: 30px;
+  height: 30px;
+  opacity: 0;
+  margin-left: 10px;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .thread__lower:before {
@@ -108,15 +122,8 @@
   opacity: 0;
   pointer-events: none;
   background-color: #FC0;
-  transition: opacity 0.3s ease-in-out;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
-}
-
-.thread__lower span {
-  opacity: 0;
-  margin-left: 10px;
-  transition: opacity 0.3s ease-in-out;
 }
 
 .thread:not(.thread--downloading):not(.thread--resetting) .thread__lower:hover + .thread__upper {
@@ -140,17 +147,18 @@
   transform: translateX(0) translateZ(0);
 }
 
-.thread--dragging .thread__lower span {
+.thread--dragging .thread__lower:after {
   will-change: opacity;
 }
 
-.thread--would-download .thread__lower span,
-.thread__lower:hover span {
+.thread--would-download .thread__lower:after,
+.thread__lower:hover:after  {
   opacity: 1;
 }
 
 .thread--downloading .thread__lower:before {
   will-change: opacity;
+  transition: opacity 0.3s ease-in-out;
   opacity: 1;
 }
 .thread--downloaded .thread__lower:before {

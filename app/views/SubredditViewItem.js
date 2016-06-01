@@ -8,7 +8,6 @@ import LinkView from '/views/LinkView.js';
 
 const nodeTemplate = new Template(o => `
   <div class="thread__lower">
-    <span class="fa fa-cloud-download"></span>
   </div>
   <div class="thread__upper">
     <a href="${o.url}" class="thread__thumbnail" data-style="background-image: url(${o.thumbnail})"></a>
