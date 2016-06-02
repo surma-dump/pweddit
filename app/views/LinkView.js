@@ -17,6 +17,7 @@ class LinkViewer {
       <div class="external">
         <a href="${o.url}" target="_blank" class="no-linkviewer">External link</a>
         <p>${o.url}</p>
+        <p>${o.message}</p>
       </div>
     `);
 
@@ -68,7 +69,13 @@ class LinkViewer {
         .reduce((prev, handler) => prev || handler.handle(url), null)
       ||
         [this.externalLinkNode.renderAsDOM({url: url.toString()})[0]]
-      );
+      )
+      .catch(err => {
+        return [this.externalLinkNode.renderAsDOM({
+          url: url.toString(),
+          message: err.toString()
+        })[0]]
+      })
   }
 
   in(data) {
