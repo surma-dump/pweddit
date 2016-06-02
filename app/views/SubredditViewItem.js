@@ -126,6 +126,7 @@ export default class SubredditViewItem {
   }
 
   download() {
+    this.node.classList.remove('thread--downloaded');
     this.node.classList.add('thread--downloading');
     return Reddit.thread(this.thread.subreddit, this.thread.id, 'top', {fromNetwork: true})
       .then(thread => {
