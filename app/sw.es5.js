@@ -7,7 +7,11 @@ self.addEventListener('install', function(event) {
 });
 
 System.config({
-  scriptLoad: true
+  meta: {
+    '*': {
+      scriptLoad: true
+    }
+  }
 });
 
 System.import('/modules/ServiceWorkerController.js')
