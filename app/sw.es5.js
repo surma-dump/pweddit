@@ -9,6 +9,7 @@ self.addEventListener('install', function(event) {
 System.config({
   meta: {
     '*': {
+      // Use <script> or importScripts() to load scripts rather than fetch()
       scriptLoad: true
     }
   }
