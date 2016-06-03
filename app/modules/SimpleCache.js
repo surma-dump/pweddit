@@ -20,7 +20,7 @@ export default class SimpleCache {
           }
           const freshResponse = fetch(event.request).then(freshResponse => {
             if(!this.options.checkResponseStatus || freshResponse.ok)
-              cache.put(event.request, freshResponse.clone());
+              event.waitUntil(cache.put(event.request, freshResponse.clone()));
             return freshResponse;
           });
 
