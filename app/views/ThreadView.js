@@ -113,6 +113,15 @@ export default class ThreadView extends View {
     if(!comments)
       return;
     ThreadView.renderComments(this.commentsContainer, comments, this.thread.post.author);
+    Array.from(this.commentsContainer.querySelectorAll('a'))
+      .forEach(a => {
+        if(!a.href)
+          return;
+        if(a.textContent === a.href)
+          return;
+        const url = new URL(a.href);
+        a.dataset.domain = url.hostname;
+      });
   }
 
   static renderComments(container, comments, author) {

@@ -177,3 +177,13 @@
 .post__body {
   padding: 5px;
 }
+
+.comments a[data-domain]:after {
+  content: attr(data-domain);
+  background-color: #ddd;
+  color: #333;
+  font-size: 0.3em;
+  vertical-align: top;
+  padding: 3px;
+  border-radius: 2px;
+}
