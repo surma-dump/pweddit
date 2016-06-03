@@ -13,9 +13,18 @@ export default class ImageCatchall {
   }
 
   static handle(url) {
+    const nodes = [];
     const node = document.createElement('img');
     node.src = url.toString();
-    return node;
+    nodes.push(node);
+
+    if(url.protocol === 'http:') {
+      const node = document.createElement('img');
+      url.protocol = 'https:';
+      node.src = url.toString();
+      nodes.push(node);
+    }
+    return nodes;
   }
 
   static onFetch(event) {
