@@ -10,7 +10,7 @@ class PwedditStore {
   getRecentSubreddits() {
     return this.dbHandle
       .then(db =>
-        db.transaction('recents')
+        db.transaction('recents', 'readonly')
           .objectStore('recents')
           .getAll()
       )
@@ -41,6 +41,16 @@ class PwedditStore {
         writeTx.objectStore('recents')
           .put(subreddit);
         return writeTx.complete;
+      });
+  }
+
+  removeFromRecents(subredditName) {
+    return this.dbHandle
+      .then(db => {
+        const tx = db.transaction('recents', 'readwrite');
+        tx.objectStore('recents')
+          .delete(subredditName);
+        return tx.complete;
       });
   }
 }

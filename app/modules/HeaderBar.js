@@ -24,8 +24,8 @@ class HeaderBar {
 
     this.suggestionItem = new Template(o => `
       <div class="headerbar__drawer__suggestion" data-subreddit="${o.subreddit}">
-        <span>${o.subreddit}</span>
-        <button class="button headerbar__drawer__suggestion__close"></button>
+        <a class="headerbar__drawer__suggestion__use">${o.subreddit}</a>
+        <a class="button headerbar__drawer__suggestion__delete"></a>
       </div>
     `);
 
@@ -38,6 +38,7 @@ class HeaderBar {
       .addEventListener('click', _ => this.search());
     this.drawerNode.querySelector('.headerbar__drawer__icon').
       addEventListener('click', ::this.drawerClick);
+    this.drawerControlsNode.addEventListener('click', ::this.drawerControlClick);
 
     this.node.classList.remove('headerbar--uninitialized');
   }
@@ -75,13 +76,14 @@ class HeaderBar {
       return Promise.resolve();
 
     return PwedditStore().getRecentSubreddits()
-      .then(recents =>
-          this.setDrawerControls(
+      .then(recents => {
+          this.oldDrawerControls = Array.from(this.drawerControlsNode.children);
+          return this.setDrawerControls(
             ...recents
               .map(::this.suggestionItem.renderAsDOM)
               .map(o => o[0])
-          )
-      )
+          );
+      })
       .then(_ => {
         this.searchInputNode.value = '';
         this.node.classList.add('headerbar--searching')
@@ -113,6 +115,10 @@ class HeaderBar {
           this.contractDrawer()
         ])
         .then(_ => {
+          if(this.oldDrawerControls) {
+            this.setDrawerControls(...this.oldDrawerControls)
+              .then(_ => this.oldDrawerControls = null);
+          }
           this.node.classList.add('headerbar--searching')
           this.containerNode.replaceChild(this.titleNode, this.searchNode);
         })
@@ -209,6 +215,22 @@ class HeaderBar {
     if(nodes.length > 0)
       nodes.forEach(::this.drawerControlsNode.appendChild);
     return Promise.resolve();
+  }
+
+  drawerControlClick(event) {
+    if(event.target.classList.contains('headerbar__drawer__suggestion__delete')) {
+      PwedditStore().removeFromRecents(event.target.parentNode.dataset.subreddit);
+      event.target.parentNode.parentNode.removeChild(event.target.parentNode);
+      event.preventDefault()
+      event.stopPropagation();
+      return;
+    }
+    if(event.target.classList.contains('headerbar__drawer__suggestion__use')) {
+      this.searchInputNode.value = event.target.parentNode.dataset.subreddit;
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
   }
 }
 
