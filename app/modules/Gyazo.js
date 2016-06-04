@@ -13,7 +13,11 @@ export default class Gyazo {
 
   static handle(url) {
     const node = document.createElement('img');
-    node.src = `https://i.gyazo.com${url.pathname}.png`;
+    if(url.hostname == 'i.gyazo.com')
+      node.src = url.toString();
+    else
+      // FIXME: Detect correct file extension
+      node.src = `https://i.gyazo.com${url.pathname}.png`;
     return node;
   }
 
