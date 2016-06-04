@@ -1,4 +1,5 @@
 import Utils from '/modules/Utils.js';
+import Template from '/modules/Template.js';
 import Router from '/modules/Router.js';
 import PwedditStore from '/modules/PwedditStore.js';
 
@@ -20,6 +21,13 @@ class HeaderBar {
     this.defaultTitle = this.titleNode.textContent;
     this.searchNode.style.cssText = '';
     this.containerNode.removeChild(this.searchNode);
+
+    this.suggestionItem = new Template(o => `
+      <div class="headerbar__drawer__suggestion" data-subreddit="${o.subreddit}">
+        <span>${o.subreddit}</span>
+        <button class="button headerbar__drawer__suggestion__close"></button>
+      </div>
+    `);
 
     this.searchInputNode.addEventListener('keydown', ::this.searchKeyDown);
     this.backButton.addEventListener('click', _ => this.back());
@@ -66,17 +74,32 @@ class HeaderBar {
     if(this.node.classList.contains('headerbar--searching'))
       return Promise.resolve();
 
-    this.node.classList.add('headerbar--searching')
-    this.searchInputNode.value = '';
-    return this.node::Utils.transitionEndPromise()
+    return PwedditStore().getRecentSubreddits()
+      .then(recents =>
+          this.setDrawerControls(
+            ...recents
+              .map(::this.suggestionItem.renderAsDOM)
+              .map(o => o[0])
+          )
+      )
       .then(_ => {
-        this.node.classList.remove('headerbar--searching')
+        this.searchInputNode.value = '';
+        this.node.classList.add('headerbar--searching')
+        return Promise.all([
+          this.node::Utils.transitionEndPromise(),
+          this.expandDrawer()
+        ])
+      })
+      .then(_ => {
+        this.node.classList.remove('headerbar--searching');
         this.containerNode.replaceChild(this.searchNode, this.titleNode);
+        return Utils.rAFPromise();
       })
       .then(_ => Utils.rAFPromise())
-      .then(_ => Utils.rAFPromise())
-      .then(_ => this.node.classList.add('headerbar--searching'))
-      .then(_ => this.node::Utils.transitionEndPromise())
+      .then(_ => {
+        this.node.classList.add('headerbar--searching');
+        return this.node::Utils.transitionEndPromise();
+      })
       .then(_ => this.searchInputNode.focus());
   }
 
@@ -85,7 +108,10 @@ class HeaderBar {
       return Promise.resolve();
 
       this.node.classList.remove('headerbar--searching')
-      return this.node::Utils.transitionEndPromise()
+      return Promise.all([
+          this.node::Utils.transitionEndPromise(),
+          this.contractDrawer()
+        ])
         .then(_ => {
           this.node.classList.add('headerbar--searching')
           this.containerNode.replaceChild(this.titleNode, this.searchNode);
@@ -178,10 +204,11 @@ class HeaderBar {
     this.notificationsNode::Utils.removeAllChildren();
   }
 
-  setDrawerControls(node) {
+  setDrawerControls(...nodes) {
     this.drawerControlsNode::Utils.removeAllChildren();
-    if(node)
-      this.drawerControlsNode.appendChild(node);
+    if(nodes.length > 0)
+      nodes.forEach(::this.drawerControlsNode.appendChild);
+    return Promise.resolve();
   }
 }
 

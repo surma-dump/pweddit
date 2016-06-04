@@ -17,7 +17,6 @@ class PwedditStore {
       .then(allRecents =>
           allRecents
             .sort((a, b) => a.count - b.count)
-            .map(x => x.subreddit)
             .reverse()
             .slice(0, 30)
       );
