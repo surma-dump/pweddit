@@ -28,8 +28,9 @@ const refreshTemplateContext = _ => {
 let templateContext = refreshTemplateContext();
 const FILES_FROM_MODULES = [
   'normalize.css/normalize.css',
-  'systemjs/dist/system.js'
-]
+  'systemjs/dist/system.js',
+  'idb/lib/idb.js'
+];
 
 const es5Scripts = [
   'sw.es5.js',
@@ -39,10 +40,10 @@ const es5Scripts = [
 Handlebars.registerHelper('json', o => JSON.stringify(o));
 
 function scripts() {
-  return src('*.js')
+  return gulp.src('app/**/*.js')
     .pipe(handlebarsCompiler(templateContext))
     .pipe(sourcemaps.init())
-    .pipe(skip(es5Scripts.concat('system.js')))
+    .pipe(skip(es5Scripts))
     .pipe(babel({
       presets: ['stage-0'],
       plugins: ['transform-es2015-modules-systemjs']

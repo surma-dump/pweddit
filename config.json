@@ -22,6 +22,7 @@
     "/init.js",
     "/normalize.css",
     "/system.js",
+    "/idb.js",
     "/manifest.json",
 
     "/images/logo.png",
@@ -62,5 +63,18 @@
     "/views/SubredditViewItem.js",
     "/views/ThreadView.css",
     "/views/ThreadView.js"
-  ]
+  ],
+
+  "SYSTEMJS_CONFIG": {
+    "meta": {
+      "*": {
+        "scriptLoad": true
+      },
+      "/idb.js": {
+        "scriptLoad": true,
+        "format": "global",
+        "exports": "idb"
+      }
+    }
+  }
 }

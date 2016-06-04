@@ -3,7 +3,6 @@ import Imgur from '/modules/Imgur.js';
 import Gfycat from '/modules/Gfycat.js';
 import Gyazo from '/modules/Gyazo.js';
 import ImageCatchall from '/modules/ImageCatchall.js';
-import Config from '/modules/Config.js';
 import SimpleCache from '/modules/SimpleCache.js';
 
 export default class ServiceWorkerController {
@@ -25,10 +24,8 @@ export default class ServiceWorkerController {
 
     self.addEventListener('message', ::this.onMessage);
     self.addEventListener('fetch', ::this.onFetch);
-    caches.open(Config.APP_CACHE)
-      .then(cache => cache.addAll(Config.APP_FILES))
-      .then(_ => {console.log('App has been cached offline')});
-
+    this.initPromise = caches.open({{{json config.APP_CACHE}}})
+      .then(cache => cache.addAll({{{json config.APP_FILES}}}));
   }
 
   onMessage(msg) {

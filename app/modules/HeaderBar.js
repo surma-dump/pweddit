@@ -1,5 +1,6 @@
 import Utils from '/modules/Utils.js';
 import Router from '/modules/Router.js';
+import '/idb.js';
 
 class HeaderBar {
   constructor(node) {
