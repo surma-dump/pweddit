@@ -1,4 +1,3 @@
-import Config from '/modules/Config.js';
 import Reddit from '/modules/Reddit.js';
 import Router from '/modules/Router.js';
 import Template from '/modules/Template.js';

@@ -1,4 +1,3 @@
-import Config from '/modules/Config.js';
 import Utils from '/modules/Utils.js';
 import SimpleCache from '/modules/SimpleCache.js';
 
