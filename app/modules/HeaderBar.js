@@ -46,7 +46,11 @@ class HeaderBar {
     if(e)
       e.preventDefault();
     return this.hideSearch()
-      .then(_ => Router().go(`/r/${this.searchInputNode.value}`));
+      .then(_ => {
+        if(!this.searchInputNode.value)
+          return Router().go('/');
+        return Router().go(`/r/${this.searchInputNode.value}`);
+      });
   }
 
   showSearch() {
