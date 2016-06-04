@@ -35,6 +35,7 @@
     "/images/chevron-right.svg",
     "/images/refresh.svg",
     "/images/cloud-download.svg",
+    "/images/envelope.svg",
 
     "/modules/Config.js",
     "/modules/Gfycat.js",
@@ -54,6 +55,7 @@
 
     "/views/LinkView.css",
     "/views/LinkView.js",
+    "/views/RootView.css",
     "/views/RootView.js",
     "/views/SubredditView.js",
     "/views/SubredditViewItem.css",

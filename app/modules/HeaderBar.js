@@ -11,6 +11,8 @@ class HeaderBar {
     this.searchNode = this.node.querySelector('.headerbar__search');
     this.searchInputNode = this.searchNode.querySelector('input');
     this.drawerNode = this.node.querySelector('.headerbar__drawer');
+    this.notificationsNode = this.node.querySelector('.headerbar__drawer__notifications');
+    this.drawerControlsNode = this.node.querySelector('.headerbar__drawer__controls');
 
     this.defaultTitle = this.titleNode.textContent;
     this.searchNode.style.cssText = '';
@@ -23,7 +25,8 @@ class HeaderBar {
     this.searchNode.addEventListener('submit', ::this.search);
     this.searchNode.querySelector('.headerbar__search__go')
       .addEventListener('click', _ => this.search());
-    this.drawerNode.addEventListener('click', ::this.drawerClick);
+    this.drawerNode.querySelector('.headerbar__drawer__icon').
+      addEventListener('click', ::this.drawerClick);
 
     this.node.classList.remove('headerbar--uninitialized');
   }
@@ -131,7 +134,8 @@ class HeaderBar {
     if(!this.drawerNode.classList.contains('headerbar__drawer--expanded'))
       return Promise.resolve();
     this.drawerNode.classList.remove('headerbar__drawer--expanded');
-    return this.drawerNode::Utils.transitionEndPromise();
+    return this.drawerNode::Utils.transitionEndPromise()
+      .then(_ => this.clearNotifications());
   }
 
   hideDrawer() {
@@ -153,12 +157,25 @@ class HeaderBar {
       this.hideSearch();
   }
 
-  addNotification(text) {
-    const node = document.createElement('div');
-    node.classList.add('notification');
-    node.innerText = text;
-    this.drawerNode.appendChild(node);
+  addNotification(node) {
+    if(typeof node === 'string') {
+      const newNode = document.createElement('div');
+      newNode.classList.add('notification');
+      newNode.innerText = node;
+      node = newNode
+    }
+    this.notificationsNode.appendChild(node);
     this.drawerNode.classList.add('headerbar__drawer--new-notifications');
+  }
+
+  clearNotifications() {
+    this.notificationsNode::Utils.removeAllChildren();
+  }
+
+  setDrawerControls(node) {
+    this.drawerControlsNode::Utils.removeAllChildren();
+    if(node)
+      this.drawerControlsNode.appendChild(node);
   }
 }
 

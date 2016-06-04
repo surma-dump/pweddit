@@ -1,4 +1,5 @@
 import Utils from '/modules/Utils.js';
+import HeaderBar from '/modules/HeaderBar.js';
 
 export default class View {
   constructor(id) {
@@ -15,7 +16,8 @@ export default class View {
     const node = this.node;
     node.classList.add('invisible', 'in');
     this.addView(node);
-    return Utils.rAFPromise()
+    return HeaderBar().contractDrawer()
+      .then(_ => Utils.rAFPromise())
       .then(_ => Utils.rAFPromise())
       .then(_ => node.classList.remove('invisible'))
       .then(_ => node::Utils.transitionEndPromise())
@@ -25,8 +27,12 @@ export default class View {
   out() {
     const node = this.node;
     node.classList.add('invisible', 'out');
-    return node::Utils.transitionEndPromise()
+    return Promise.all([
+      HeaderBar().contractDrawer(),
+      node::Utils.transitionEndPromise()
+    ])
       .then(_ => {
+        HeaderBar().setDrawerControls();
         node.classList.remove('invisible', 'out');
         this.viewContainer.removeChild(node);
       });

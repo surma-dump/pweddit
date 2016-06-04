@@ -1,0 +1,12 @@
+.rootview__drawer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.rootview__drawer__btn {
+  display: block;
+  padding: 20px;
+  text-align: center;
+  border: 2px solid black;
+  margin: 10px;
+}

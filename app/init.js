@@ -12,7 +12,8 @@ function loadCSS(path) {
 const routes = {
   '_root': _ =>
     Promise.all([
-      System.import('/views/RootView.js')
+      System.import('/views/RootView.js'),
+      loadCSS('/views/RootView.css')
     ]),
   'r': _ =>
     Promise.all([
