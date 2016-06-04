@@ -18,7 +18,6 @@ export default class View {
     this.addView(node);
     return HeaderBar().contractDrawer()
       .then(_ => Utils.rAFPromise())
-      .then(_ => Utils.rAFPromise())
       .then(_ => node.classList.remove('invisible'))
       .then(_ => node::Utils.transitionEndPromise())
       .then(_ => node.classList.remove('in'));

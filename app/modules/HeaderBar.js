@@ -97,7 +97,6 @@ class HeaderBar {
         this.containerNode.replaceChild(this.searchNode, this.titleNode);
         return Utils.rAFPromise();
       })
-      .then(_ => Utils.rAFPromise())
       .then(_ => {
         this.node.classList.add('headerbar--searching');
         return this.node::Utils.transitionEndPromise();
@@ -122,7 +121,6 @@ class HeaderBar {
           this.node.classList.add('headerbar--searching')
           this.containerNode.replaceChild(this.titleNode, this.searchNode);
         })
-        .then(_ => Utils.rAFPromise())
         .then(_ => Utils.rAFPromise())
         .then(_ => this.node.classList.remove('headerbar--searching'))
         .then(_ => this.node::Utils.transitionEndPromise());

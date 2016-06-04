@@ -23,10 +23,17 @@ export default class Utils {
     });
   }
 
-  static rAFPromise() {
+  static _rAFPromise() {
     return new Promise(resolve => {
       requestAnimationFrame(resolve);
     });
+  }
+
+  // We are doing double rAFs at all times because waiting an extra frame
+  // won't cost much but apparently ensures rasterization
+  static rAFPromise() {
+    return Utils._rAFPromise()
+      .then(_ => Utils._rAFPromise());
   }
 
   static rICPromise() {

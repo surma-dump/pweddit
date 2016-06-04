@@ -97,7 +97,6 @@ class LinkViewer {
   show() {
     this.node.classList.remove('linkviewer--hidden');
     return Utils.rAFPromise()
-      .then(_ => Utils.rAFPromise())
       .then(_ => this.node.classList.add('linkviewer--visible'))
       .then(_ => this.node::Utils.transitionEndPromise())
       .then(_ => this.node.focus());
@@ -135,8 +134,7 @@ class LinkViewer {
     this.node.classList.toggle('linkviewer--first', this.isFirst());
     this.node.classList.toggle('linkviewer--last', this.isLast());
     this.node.classList.add('linkviewer--animating');
-    let p = Utils.rAFPromise()
-      .then(_ => Utils.rAFPromise())
+    let p = Utils.rAFPromise();
 
     if(this.containerNode.children.length > 0) {
       p = p.then(_ => {
@@ -155,7 +153,6 @@ class LinkViewer {
       this.containerNode.appendChild(this.content[this.index]);
       this.countNode.innerText = `${this.index+1}/${this.content.length}`;
     })
-      .then(_ => Utils.rAFPromise())
       .then(_ => Utils.rAFPromise())
       .then(_ => this.node.classList.remove(inClass))
       .then(_ => this.node::Utils.transitionEndPromise())
@@ -257,7 +254,6 @@ class LinkViewer {
     // back to center.
     this.node.classList.add('linkviewer--animating');
     Utils.rAFPromise()
-      .then(_ => Utils.rAFPromise())
       .then(_ => {
         this.containerNode.children[0].style.transform = '';
         return this.node::Utils.transitionEndPromise();

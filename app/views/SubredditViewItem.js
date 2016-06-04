@@ -109,7 +109,6 @@ export default class SubredditViewItem {
       this.node.classList.add('thread--resetting');
       transitions = transitions
         .then(_ => Utils.rAFPromise())
-        .then(_ => Utils.rAFPromise())
         .then(_ => this.node::Utils.transitionEndPromise())
         .then(_ => this.node.classList.remove('thread--resetting'));
     }
