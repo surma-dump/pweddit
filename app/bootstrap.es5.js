@@ -11,14 +11,7 @@
 
   loadScript('/system.js')
     .then(function() {
-      System.config({
-        meta: {
-          '*': {
-            // Use <script> or importScripts() to load scripts rather than fetch()
-            scriptLoad: true
-          }
-        }
-      });
+      System.config({{{json config.SYSTEMJS_CONFIG}}});
 
       System.import('/init.js');
     });

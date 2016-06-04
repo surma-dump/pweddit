@@ -1,5 +1,9 @@
 import Utils from '/modules/Utils.js';
+import Template from '/modules/Template.js';
 import Router from '/modules/Router.js';
+import PwedditStore from '/modules/PwedditStore.js';
+
+PwedditStore();
 
 class HeaderBar {
   constructor(node) {
@@ -18,6 +22,13 @@ class HeaderBar {
     this.searchNode.style.cssText = '';
     this.containerNode.removeChild(this.searchNode);
 
+    this.suggestionItem = new Template(o => `
+      <div class="headerbar__drawer__suggestion" data-subreddit="${o.subreddit}">
+        <a class="headerbar__drawer__suggestion__use">${o.subreddit}</a>
+        <a class="button headerbar__drawer__suggestion__delete"></a>
+      </div>
+    `);
+
     this.searchInputNode.addEventListener('keydown', ::this.searchKeyDown);
     this.backButton.addEventListener('click', _ => this.back());
     this.refreshButton.addEventListener('click', _ => this.refresh());
@@ -27,6 +38,7 @@ class HeaderBar {
       .addEventListener('click', _ => this.search());
     this.drawerNode.querySelector('.headerbar__drawer__icon').
       addEventListener('click', ::this.drawerClick);
+    this.drawerControlsNode.addEventListener('click', ::this.drawerControlClick);
 
     this.node.classList.remove('headerbar--uninitialized');
   }
@@ -52,7 +64,10 @@ class HeaderBar {
       .then(_ => {
         if(!this.searchInputNode.value)
           return Router().go('/');
-        return Router().go(`/r/${this.searchInputNode.value}`);
+        return Promise.all([
+          Router().go(`/r/${this.searchInputNode.value}`),
+          PwedditStore().incrementSubredditCounter(this.searchInputNode.value)
+        ]);
       });
   }
 
@@ -60,17 +75,33 @@ class HeaderBar {
     if(this.node.classList.contains('headerbar--searching'))
       return Promise.resolve();
 
-    this.node.classList.add('headerbar--searching')
-    this.searchInputNode.value = '';
-    return this.node::Utils.transitionEndPromise()
+    return PwedditStore().getRecentSubreddits()
+      .then(recents => {
+          this.oldDrawerControls = Array.from(this.drawerControlsNode.children);
+          return this.setDrawerControls(
+            ...recents
+              .map(::this.suggestionItem.renderAsDOM)
+              .map(o => o[0])
+          );
+      })
       .then(_ => {
-        this.node.classList.remove('headerbar--searching')
+        this.searchInputNode.value = '';
+        this.node.classList.add('headerbar--searching')
+        return Promise.all([
+          this.node::Utils.transitionEndPromise(),
+          this.expandDrawer()
+        ])
+      })
+      .then(_ => {
+        this.node.classList.remove('headerbar--searching');
         this.containerNode.replaceChild(this.searchNode, this.titleNode);
+        return Utils.rAFPromise();
       })
       .then(_ => Utils.rAFPromise())
-      .then(_ => Utils.rAFPromise())
-      .then(_ => this.node.classList.add('headerbar--searching'))
-      .then(_ => this.node::Utils.transitionEndPromise())
+      .then(_ => {
+        this.node.classList.add('headerbar--searching');
+        return this.node::Utils.transitionEndPromise();
+      })
       .then(_ => this.searchInputNode.focus());
   }
 
@@ -79,8 +110,15 @@ class HeaderBar {
       return Promise.resolve();
 
       this.node.classList.remove('headerbar--searching')
-      return this.node::Utils.transitionEndPromise()
+      return Promise.all([
+          this.node::Utils.transitionEndPromise(),
+          this.contractDrawer()
+        ])
         .then(_ => {
+          if(this.oldDrawerControls) {
+            this.setDrawerControls(...this.oldDrawerControls)
+              .then(_ => this.oldDrawerControls = null);
+          }
           this.node.classList.add('headerbar--searching')
           this.containerNode.replaceChild(this.titleNode, this.searchNode);
         })
@@ -172,13 +210,29 @@ class HeaderBar {
     this.notificationsNode::Utils.removeAllChildren();
   }
 
-  setDrawerControls(node) {
+  setDrawerControls(...nodes) {
     this.drawerControlsNode::Utils.removeAllChildren();
-    if(node)
-      this.drawerControlsNode.appendChild(node);
+    if(nodes.length > 0)
+      nodes.forEach(::this.drawerControlsNode.appendChild);
+    return Promise.resolve();
+  }
+
+  drawerControlClick(event) {
+    if(event.target.classList.contains('headerbar__drawer__suggestion__delete')) {
+      PwedditStore().removeFromRecents(event.target.parentNode.dataset.subreddit);
+      event.target.parentNode.parentNode.removeChild(event.target.parentNode);
+      event.preventDefault()
+      event.stopPropagation();
+      return;
+    }
+    if(event.target.classList.contains('headerbar__drawer__suggestion__use')) {
+      this.searchInputNode.value = event.target.parentNode.dataset.subreddit;
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
   }
 }
-
 
 export default function() {
   if (typeof window._headerbar === 'undefined')

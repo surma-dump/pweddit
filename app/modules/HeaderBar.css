@@ -116,3 +116,23 @@
   align-items: stretch;
   padding: 10px 0;
 }
+
+.headerbar__drawer__suggestion {
+  display: flex;
+  margin: 5px 0;
+}
+
+.headerbar__drawer__suggestion__use {
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.headerbar__drawer__suggestion__delete {
+  background-image: url('/images/trash.svg');
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+}

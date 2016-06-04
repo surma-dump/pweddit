@@ -6,15 +6,7 @@ self.addEventListener('install', function(event) {
   event.waitUntil(self.skipWaiting());
 });
 
-System.config({
-  meta: {
-    '*': {
-      // Use <script> or importScripts() to load scripts rather than fetch()
-      scriptLoad: true
-    }
-  }
-});
-
+System.config({{{json config.SYSTEMJS_CONFIG}}});
 System.import('/modules/ServiceWorkerController.js')
   .then(function(ServiceWorkerController) {
     new ServiceWorkerController.default();
