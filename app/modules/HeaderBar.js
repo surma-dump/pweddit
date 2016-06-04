@@ -1,6 +1,8 @@
 import Utils from '/modules/Utils.js';
 import Router from '/modules/Router.js';
-import '/idb.js';
+import PwedditStore from '/modules/PwedditStore.js';
+
+PwedditStore();
 
 class HeaderBar {
   constructor(node) {
@@ -53,7 +55,10 @@ class HeaderBar {
       .then(_ => {
         if(!this.searchInputNode.value)
           return Router().go('/');
-        return Router().go(`/r/${this.searchInputNode.value}`);
+        return Promise.all([
+          Router().go(`/r/${this.searchInputNode.value}`),
+          PwedditStore().incrementSubredditCounter(this.searchInputNode.value)
+        ]);
       });
   }
 
@@ -179,7 +184,6 @@ class HeaderBar {
       this.drawerControlsNode.appendChild(node);
   }
 }
-
 
 export default function() {
   if (typeof window._headerbar === 'undefined')

@@ -44,6 +44,7 @@
     "/modules/HeaderBar.js",
     "/modules/ImageCatchall.js",
     "/modules/Imgur.js",
+    "/modules/PwedditStore.js",
     "/modules/Reddit.js",
     "/modules/Router.js",
     "/modules/ServiceWorkerController.js",
