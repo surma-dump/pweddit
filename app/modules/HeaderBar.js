@@ -170,6 +170,7 @@ class HeaderBar {
     if(!this.drawerNode.classList.contains('headerbar__drawer--expanded'))
       return Promise.resolve();
     this.drawerNode.classList.remove('headerbar__drawer--expanded');
+    this.drawerNode.classList.remove('headerbar__drawer--new-notifications');
     return this.drawerNode::Utils.transitionEndPromise()
       .then(_ => this.clearNotifications());
   }

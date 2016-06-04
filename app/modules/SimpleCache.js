@@ -7,6 +7,10 @@ export default class SimpleCache {
     this.cacheName = cacheName;
   }
 
+  wipe() {
+    return caches.delete(this.cacheName);
+  }
+
   onFetch(event) {
     event.respondWith(
       caches.open(this.cacheName).then(cache =>

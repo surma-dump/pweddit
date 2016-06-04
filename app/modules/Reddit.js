@@ -82,6 +82,13 @@ export default class Reddit {
       );
   }
 
+  static wipeCaches() {
+    return Promise.all([
+      caches.delete(CACHE_NAME),
+      caches.delete('redditmedia')
+    ]);
+  }
+
   // Canonicalizes a URL, i.e. removes parameters that are pweddit specific
   static _canonicalURL(url) {
     const searchParams = new URLSearchParams(url.search.slice(1));

@@ -2,9 +2,7 @@ import '/idb.js';
 
 class PwedditStore {
   constructor() {
-    this.dbHandle = idb.open('pweddit', 1, upgradeDB => {
-      const recents = upgradeDB.createObjectStore('recents', {keyPath: 'subreddit'});
-    });
+    this._createDB();
   }
 
   getRecentSubreddits() {
@@ -51,6 +49,21 @@ class PwedditStore {
         tx.objectStore('recents')
           .delete(subredditName);
         return tx.complete;
+      });
+  }
+
+  _createDB() {
+    this.dbHandle = idb.open('pweddit', 1, upgradeDB => {
+      const recents = upgradeDB.createObjectStore('recents', {keyPath: 'subreddit'});
+    });
+  }
+
+  wipe() {
+    return this.dbHandle
+      .then(db => db.close())
+      .then(_ => {
+        idb.delete('pweddit');
+        this._createDB();
       });
   }
 }

@@ -26,6 +26,11 @@ export default class ImageCatchall {
     return nodes;
   }
 
+
+  static wipeCache() {
+    return cache.wipe();
+  }
+
   static onFetch(event) {
     cache.onFetch(event);
   }

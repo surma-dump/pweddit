@@ -17,6 +17,11 @@ export default class Gyazo {
     return node;
   }
 
+  static wipeCache() {
+    return cache.wipe();
+  }
+
+
   static onFetch(event) {
     cache.onFetch(event);
   }

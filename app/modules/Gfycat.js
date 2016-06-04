@@ -37,6 +37,10 @@ export default class Gfycat {
     return Promise.resolve([node]);
   }
 
+  static wipeCache() {
+    return cache.wipe();
+  }
+
   static onFetch(event) {
     cache.onFetch(event);
   }

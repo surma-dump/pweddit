@@ -77,6 +77,10 @@ export default class Imgur {
     return this.loadImage(url);
   }
 
+  static wipeCache() {
+    return cache.wipe();
+  }
+
   static onFetch(event) {
     cache.onFetch(event);
   }

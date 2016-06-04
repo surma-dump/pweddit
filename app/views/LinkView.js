@@ -260,6 +260,11 @@ class LinkViewer {
       })
       .then(_ => this.node.classList.remove('linkviewer--animating'));
   }
+
+  wipeCaches() {
+    return Array.from(this.handlers.values())
+      .map(h => h.wipeCache());
+  }
 }
 
 export default function() {
