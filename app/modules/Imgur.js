@@ -1,4 +1,3 @@
-import Config from '/modules/Config.js';
 import Utils from '/modules/Utils.js';
 import SimpleCache from '/modules/SimpleCache.js';
 
@@ -15,7 +14,7 @@ export default class Imgur {
   static _apiCall(url) {
     return fetch(url, {
       headers: {
-        'Authorization': `Client-ID ${Config.IMGUR_CREDENTIALS.CLIENT_ID}`
+        'Authorization': `Client-ID {{config.IMGUR_CREDENTIALS.CLIENT_ID}}`
       },
       mode: 'cors'
     });
