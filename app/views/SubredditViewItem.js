@@ -146,7 +146,8 @@ export default class SubredditViewItem {
       .then(_ => {
         this.node.classList.remove('thread--downloading');
         this.node.classList.add('thread--downloaded');
-      });
+      })
+      .catch(_ => {}); // FIXME: Is this good? bad?
   }
 
 }
