@@ -27,10 +27,7 @@ export default class Gfycat {
 
   static _potentialSourcesForContent(url) {
     return this._contentHosts
-      .reduce(
-        (prev, cur) => [...prev, `https://${cur}${url.pathname}.webm`, `https://${cur}${url.pathname}.mp4`],
-        []
-      )
+      .map(host => `https://${host}${url.pathname}.${Utils.supportsWebm()?'webm':'mp4'}`);
   }
 
   // Currently, we have to try and load ALL resources. Using a <video> tag
