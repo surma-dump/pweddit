@@ -26,14 +26,25 @@ export default class RootView extends View {
   wipeCaches() {
     return Promise.all([
       LinkView().wipeCaches(),
-      Reddit.wipeCaches(),
-      PwedditStore().wipe()
+      Reddit.wipeCaches()
     ])
     .then(_ => HeaderBar().addNotification('Caches wiped!'));
   }
 
   resetApp() {
-    console.error('Not implemented yet');
+    return Promise.all([
+      LinkView().wipeCaches(),
+      Reddit.wipeCaches(),
+      PwedditStore().wipe(),
+    ])
+    .then(_ => {
+      if(!('serviceWorker' in navigator))
+        return;
+      return navigator.serviceWorker.getRegistration()
+        .then(registration => registration.unregister());
+    })
+    .then(_ => caches.delete('pweddit'))
+    .then(_ => HeaderBar().addNotification('Caches wiped & ServiceWorker uninstalled!'));
   }
 
   in(data) {
