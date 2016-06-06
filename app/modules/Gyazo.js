@@ -11,20 +11,29 @@ export default class Gyazo {
     return ['gyazo.com', 'i.gyazo.com'].indexOf(url.host) !== -1;
   }
 
-  static handle(url) {
-    const node = document.createElement('img');
+  static _sourceForUrl(url) {
+    let src = '';
     if(url.hostname == 'i.gyazo.com')
-      node.src = url.toString();
+      src = url.toString();
     else
       // FIXME: Detect correct file extension
-      node.src = `https://i.gyazo.com${url.pathname}.png`;
-    return node;
+      src = `https://i.gyazo.com${url.pathname}.png`;
+    return src;
+  }
+
+  static loadContent(url) {
+    return fetch(this._sourceForUrl(url));
+  }
+
+  static showContent(url) {
+    const node = document.createElement('img');
+    node.src = this._sourceForUrl(url);
+    return Promise.resolve([node]);
   }
 
   static wipeCache() {
     return cache.wipe();
   }
-
 
   static onFetch(event) {
     cache.onFetch(event);

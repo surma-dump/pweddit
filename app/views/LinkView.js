@@ -62,20 +62,11 @@ class LinkViewer {
   }
 
   // Find the first handler that doesn’t return `null`
-  contentForURL(url) {
-    return Promise.resolve(
+  handlerForUrl(url) {
+    return Promise.resolve (
       Array.from(this.handlers.values())
-        .filter(handler => handler.canHandle(url))
-        .reduce((prev, handler) => prev || handler.handle(url), null)
-      ||
-        [this.externalLinkNode.renderAsDOM({url: url.toString()})[0]]
-      )
-      .catch(err => {
-        return [this.externalLinkNode.renderAsDOM({
-          url: url.toString(),
-          message: err.toString()
-        })[0]]
-      })
+        .find(handler => handler.canHandle(url))
+    );
   }
 
   in(data) {
@@ -113,21 +104,36 @@ class LinkViewer {
 
   loadLink(url) {
     if(!(url instanceof URL) && !(typeof url === 'string'))
-      throw 'loadLink()) expects a URL or a string';
+      throw 'loadLink() expects a URL or a string';
     if(typeof url === 'string')
       url = new URL(url);
-    return this.contentForURL(url);
+
+    return this.handlerForUrl(url)
+      .then(handler => handler && handler.loadContent(url));
   }
 
   showLink(url) {
-    return this.loadLink(url).then(content => {
-      if(!content || content.length <= 0) {
-        return Promise.resolve();
-      }
-      this.content = content;
-      this.index = 0;
-      return this.show();
-    });
+    if(!(url instanceof URL) && !(typeof url === 'string'))
+      throw 'showLink() expects a URL or a string';
+    if(typeof url === 'string')
+      url = new URL(url);
+
+    return this.handlerForUrl(url)
+      .then(handler =>
+        (handler && handler.showContent(url))
+        || [this.externalLinkNode.renderAsDOM({url: url.toString(), message: ''})[0]]
+      )
+      .catch(err => {
+        return [this.externalLinkNode.renderAsDOM({
+          url: url.toString(),
+          message: err.toString()
+        })[0]]
+      })
+      .then(content => {
+        this.content = content;
+        this.index = 0;
+        return this.show();
+      });
   }
 
   updateView(outClass, inClass) {

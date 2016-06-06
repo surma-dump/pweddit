@@ -11,21 +11,29 @@ export default class ImageCatchall {
     return /\.(jpg|jpeg|gif|png|webp)$/i.test(url.pathname);
   }
 
-  static handle(url) {
-    const nodes = [];
-    const node = document.createElement('img');
-    node.src = url.toString();
-    nodes.push(node);
+  static _sourcesForUrl(url) {
+    const sources = [url];
 
     if(url.protocol === 'http:') {
-      const node = document.createElement('img');
       url.protocol = 'https:';
-      node.src = url.toString();
-      nodes.push(node);
+      sources.push(url);
     }
-    return nodes;
+    return sources;
   }
 
+  static loadContent(url) {
+    return Promise.all(this._sourcesForUrl(url)
+      .map(url => fetch(url.toString())));
+  }
+
+  static showContent(url) {
+    return this._sourcesForUrl(url)
+      .map(url => {
+        const n = document.createElement('img');
+        img.src = url.toString();
+        return n;
+      });
+  }
 
   static wipeCache() {
     return cache.wipe();

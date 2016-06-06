@@ -3,6 +3,11 @@ export default class Utils {
     return !!self.importScripts;
   }
 
+  static supportsWebm() {
+    const n = document.createElement('video');
+    return n.canPlayType('video/webm; codecs="vp8, vorbis"') !== '';
+  }
+
   static transitionEndPromise() {
     const elem = this;
     return new Promise(resolve => {
