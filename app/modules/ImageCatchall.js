@@ -16,7 +16,7 @@ export default class ImageCatchall {
 
     if(url.protocol === 'http:') {
       url.protocol = 'https:';
-      nodes.push(url);
+      sources.push(url);
     }
     return sources;
   }

@@ -46,6 +46,10 @@ export default class Imgur {
     node.loop = true;
     node.type = item._pweddit.type;
     node.src = item.data.link;
+    node.addEventListener('click', event => {
+      node.paused ? node.play() : node.pause();
+      event.preventDefault();
+    });
     return node;
   }
 

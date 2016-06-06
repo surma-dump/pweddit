@@ -28,7 +28,7 @@ export default class Gyazo {
   static showContent(url) {
     const node = document.createElement('img');
     node.src = this._sourceForUrl(url);
-    return node;
+    return Promise.resolve([node]);
   }
 
   static wipeCache() {

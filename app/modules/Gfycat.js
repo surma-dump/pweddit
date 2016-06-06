@@ -51,6 +51,10 @@ export default class Gfycat {
     const node = document.createElement('video');
     node.autoplay = true;
     node.loop = true;
+    node.addEventListener('click', event => {
+      node.paused ? node.play() : node.pause();
+      event.preventDefault();
+    });
 
     this._potentialSourcesForContent(url)
       .map(source => this._createVideoSource(source))
