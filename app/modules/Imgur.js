@@ -60,7 +60,7 @@ export default class Imgur {
     return this._apiCall(`https://api.imgur.com/3/album/${id}`)
       .then(album => album.json())
       .then(album =>
-        album.data.images.map(image => this._processItemData(image))
+        album.data.images.map(image => this._processItemData({data: image}))
       );
   }
 
