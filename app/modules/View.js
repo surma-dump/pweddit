@@ -45,7 +45,7 @@ export default class View {
   }
 
   addView(node) {
-    this.viewContainer.insertBefore(node, this.viewContainer.children[0]);
+    this.viewContainer.appendChild(node);
   }
 
   update(data) {
