@@ -57,27 +57,28 @@ class Router {
 
   manageState() {
     let [view, data] = this.parseLocation(document.location);
+    const inView = this.routes[view];
+    const outView = this.currentView;
 
-    if (this.currentView === this.routes[view]) {
+    if (this.currentView === inView) {
       const currentView = this.currentView
       return this.transition = this.transition
                                 .then(_ => currentView.update(data));
     }
 
-    if (this.currentView) {
-      const outView = this.currentView;
+    if (this.currentView && inView && !inView.options.keepPrevious) {
       this.transition = this.transition.then(_ => outView.out());
     }
 
-    if (!this.routes[view]) {
+    if (!inView) {
       this.currentView = null;
-      document.body.focus();
       return this.transition;
     }
 
-    const inView = this.routes[view];
     this.currentView = inView;
-    return this.transition = this.transition.then(_ => inView.in(data));
+    if(!outView || !outView.options.keepPrevious)
+      this.transition = this.transition.then(_ => inView.in(data));
+    return this.transition;
   }
 
   go(path) {

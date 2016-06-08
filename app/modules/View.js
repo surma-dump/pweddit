@@ -2,6 +2,12 @@ import Utils from '/modules/Utils.js';
 import HeaderBar from '/modules/HeaderBar.js';
 
 export default class View {
+  get options() {
+    return {
+      keepPrevious: false
+    };
+  }
+
   constructor(id) {
     this.node = document.createElement('section');
     this.node.id = id;

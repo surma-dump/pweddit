@@ -3,6 +3,12 @@ import Template from '/modules/Template.js';
 import Utils from '/modules/Utils.js';
 
 class LinkViewer {
+  get options() {
+    return {
+      keepPrevious: true
+    };
+  }
+
   constructor(node) {
     this.handlers = new Set();
     this.node = node;
