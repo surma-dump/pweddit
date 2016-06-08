@@ -39,7 +39,7 @@ export default class SubredditView extends View {
     .then(_ => {
       // Activate thumb images *after* slide in
       Array.from(this.node.querySelectorAll('.thread__thumbnail'))
-        .forEach(thumb => thumb.style = thumb.dataset.style)
+        .forEach(thumb => thumb.src = thumb.dataset.src);
     });
   }
 

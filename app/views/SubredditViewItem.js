@@ -9,7 +9,7 @@ const nodeTemplate = new Template(o => `
   <div class="thread__lower">
   </div>
   <div class="thread__upper">
-    <a href="${o.url}" class="thread__thumbnail" data-style="background-image: url(${o.thumbnail})"></a>
+    <img class="thread__thumbnail" data-src="${o.thumbnail}"></img>
     <div class="thread__content">
       <div class="thread__details">
         <span class="thread__author">${o.author}</span> (${o.domain}) ${new Date(o.created_utc*1000).toString()}
@@ -29,10 +29,12 @@ export default class SubredditViewItem {
   constructor(thread) {
     this.thread = thread;
     this.thread.thumbnail = this.thread.thumbnail.replace('http://', 'https://');
-    this.node = document.createElement('div');
+    this.node = document.createElement('a');
+    this.node.href = `/thread/${this.thread.subreddit}/${this.thread.id}`;
     this.node.innerHTML = nodeTemplate.render(thread);
 
     this.upperNode = this.node.querySelector('.thread__upper');
+    this.thumbnailNode = this.node.querySelector('.thread__thumbnail');
     this.lowerNode = this.node.querySelector('.thread__lower');
     this.clamp = Utils.clamp(0, {{config.PULLBACK.MAX}});
 
@@ -44,7 +46,7 @@ export default class SubredditViewItem {
     this.node.classList.toggle('thread--admin', this.thread.distinguished === 'admin');
 
 
-    this.upperNode.addEventListener('click', ::this.onClick);
+    this.thumbnailNode.addEventListener('click', ::this.showThumbnail);
     this.lowerNode.addEventListener('click', _ => this.download());
     this.upperNode.addEventListener('touchstart', ::this.onTouchStart);
     this.upperNode.addEventListener('touchmove', ::this.onTouchMove);
@@ -56,10 +58,10 @@ export default class SubredditViewItem {
     this.node._svi = this;
   }
 
-  onClick(event) {
-    if(event.target.classList.contains('thread__thumbnail'))
-      return;
-    Router().go(`/thread/${this.thread.subreddit}/${this.thread.id}`);
+  showThumbnail(event) {
+    Router().go(`/external/${this.thread.url}`);
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   onTouchStart(event) {
