@@ -7,11 +7,18 @@
   margin-bottom: 35px;
   min-height: 100%;
   will-change: transform;
+  overflow: auto;
 }
 
-.view.invisible.in {
+.view.transitioning {
+  height: 100vh;
+  overflow: hidden;
+  min-height: auto;
+}
+
+.view.transitioning.in {
   transform: translateX(100%);
 }
-.view.invisible.out {
+.view.transitioning.out {
   transform: translateX(-100%);
 }

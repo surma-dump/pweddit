@@ -14,27 +14,28 @@ export default class View {
 
   in(data) {
     const node = this.node;
-    node.classList.add('invisible', 'in');
+    node.classList.add('transitioning', 'in');
     this.addView(node);
-    return HeaderBar().contractDrawer()
+    return Utils.rAFPromise()
+      .then(_ => HeaderBar().contractDrawer())
       .then(_ => Utils.rAFPromise())
-      .then(_ => node.classList.remove('invisible'))
+      .then(_ => node.classList.remove('in'))
       .then(_ => node::Utils.transitionEndPromise())
-      .then(_ => node.classList.remove('in'));
+      .then(_ => node.classList.remove('transitioning'));
   }
 
   out() {
     const node = this.node;
-    node.classList.add('invisible', 'out');
+    node.classList.add('transitioning', 'out');
     return Promise.all([
       HeaderBar().contractDrawer(),
       node::Utils.transitionEndPromise()
     ])
-      .then(_ => {
-        HeaderBar().setDrawerControls();
-        node.classList.remove('invisible', 'out');
-        this.viewContainer.removeChild(node);
-      });
+    .then(_ => {
+      HeaderBar().setDrawerControls();
+      node.classList.remove('transitioning', 'out');
+      this.viewContainer.removeChild(node);
+    });
   }
 
   addView(node) {
