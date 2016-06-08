@@ -213,8 +213,17 @@ class LinkViewer {
       return;
     }
     event.preventDefault();
-    Router().go(`/external/${url}`);
-    // this.showLink(url);
+    if(url.hostname === location.hostname)
+        Router().go(url.pathname);
+    else if (/(www\.)?reddit\.com/.test(url.hostname))
+        Router().go(
+          url.pathname
+            .replace(/^\/r\/([^\/]+)\/?$/, '/r/$1')
+            .replace(/^\/r\/([^\/]+)\/comments\/([^\/]+)\/?$/, '/thread/$1/$2')
+            .replace(/^\/r\/([^\/]+)\/comments\/([^\/]+)(?:\/[^\/]+)?\/?$/, '/thread/$1/$2')
+        );
+    else
+      Router().go(`/external/${url}`);
   }
 
   globalKeyDown(event) {
