@@ -30,7 +30,7 @@ export default class ImageCatchall {
     return this._sourcesForUrl(url)
       .map(url => {
         const n = document.createElement('img');
-        img.src = url.toString();
+        n.src = url.toString();
         return n;
       });
   }
