@@ -48,6 +48,8 @@
       padding: 10px;
       cursor: pointer;
       box-sizing: content-box;
+      border: 0;
+      background-color: transparent;
     }
   </style>
 </head>
@@ -58,26 +60,26 @@
     <span class="headerbar__drawer__icon"></span>
   </aside>
   <div class="headerbar__container">
-    <a class="headerbar__back button"></a>
-    <span class="headerbar__title">
+    <button class="headerbar__back button"></button>
+    <button class="headerbar__title">
       Pweddit 💙
-    </span>
+    </button>
     <form style="display: none" class="headerbar__search">
       <input>
-      <a class="button headerbar__search__go"></a>
+      <button class="button headerbar__search__go"></button>
     </form>
-    <a class="headerbar__share button"></a>
-    <a class="headerbar__refresh button"></a>
+    <button class="headerbar__share button"></button>
+    <button class="headerbar__refresh button"></button>
   </div>
 </header>
 <div class="linkviewer linkviewer--hidden">
-  <a class="linkviewer__backward button fa fa-chevron-left"></a>
+  <button class="linkviewer__backward button fa fa-chevron-left"></button>
   <div class="linkviewer__container"></div>
-  <a class="linkviewer__forward button fa fa-chevron-right"></a>
+  <button class="linkviewer__forward button fa fa-chevron-right"></button>
   <footer class="linkviewer__details">
     <div class="linkviewer__details__count"></div>
     <div class="linkviewer__details__text"></div>
   </footer>
-  <a class="linkviewer__close button fa fa-times"></a>
+  <button class="linkviewer__close button fa fa-times"></button>
 </div>
 <script src="/bootstrap.es5.js"></script>

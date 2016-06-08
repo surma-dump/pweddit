@@ -48,7 +48,7 @@
 
 .linkviewer__close {
   position: absolute;
-  top: 20px;
+  top: 90px;
   right: 20px;
   background-image: url('/images/times.svg');
 }
