@@ -31,6 +31,14 @@ export default class SubredditViewItem {
     this.thread.thumbnail = this.thread.thumbnail.replace('http://', 'https://');
     this.node = document.createElement('a');
     this.node.href = `/thread/${this.thread.subreddit}/${this.thread.id}`;
+    this.node.setAttribute('aria-label', `
+      ${this.thread.title}.
+      Thread posted by ${this.thread.author} on
+      ${new Date(this.thread.created_utc*1000).toString()}.
+      ${this.thread.ups} upvotes,
+      ${this.thread.downs} downvotes,
+      ${this.thread.num_comments} comments.
+    `);
     this.node.innerHTML = nodeTemplate.render(thread);
 
     this.upperNode = this.node.querySelector('.thread__upper');
