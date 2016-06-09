@@ -3,8 +3,6 @@ import Template from '/modules/Template.js';
 import Router from '/modules/Router.js';
 import PwedditStore from '/modules/PwedditStore.js';
 
-PwedditStore();
-
 class HeaderBar {
   constructor(node) {
     this.node = node;

@@ -1,3 +1,7 @@
+.headerbar__container {
+  z-index: 5;
+}
+
 .headerbar__title, .headerbar__search {
   display: flex;
   align-items: center;
@@ -88,6 +92,10 @@
   transform: translateY(100%);
 }
 
+.headerbar__drawer:not(.headerbar__drawer--expanded) .headerbar__drawer__controls {
+  visibility: hidden;
+}
+
 .headerbar__drawer--new-notifications .headerbar__drawer__icon {
   background-image: url('/images/envelope.svg');
 }
@@ -101,11 +109,13 @@
   position: absolute;
   bottom: 0;
   width: 100%;
+  border: 0;
   height: {{config.HEADER.DRAWER_OVERLAP}}px;
   background-image: url('/images/caret-down.svg');
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;
+  background-color: transparent;
   transition: transform 0.3s ease-in-out;
 }
 
