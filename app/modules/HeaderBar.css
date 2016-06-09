@@ -130,6 +130,9 @@
 .headerbar__drawer__suggestion {
   display: flex;
   margin: 5px 0;
+  border: 0;
+  background-color: transparent;
+  text-align: left;
 }
 
 .headerbar__drawer__suggestion__use {
@@ -137,12 +140,21 @@
   flex-shrink: 1;
   text-overflow: ellipsis;
   cursor: pointer;
+  text-align: left;
+}
+
+.headerbar__drawer__suggestion__edit,
+.headerbar__drawer__suggestion__delete {
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin: 5px;
 }
 
 .headerbar__drawer__suggestion__delete {
   background-image: url('/images/trash.svg');
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: contain;
+}
 
+.headerbar__drawer__suggestion__edit {
+  background-image: url('/images/pencil.svg');
 }

@@ -22,8 +22,9 @@ class HeaderBar {
 
     this.suggestionItem = new Template(o => `
       <div class="headerbar__drawer__suggestion" data-subreddit="${o.subreddit}">
-        <a class="headerbar__drawer__suggestion__use">${o.subreddit}</a>
-        <a class="button headerbar__drawer__suggestion__delete"></a>
+        <button class="headerbar__drawer__suggestion__use">${o.subreddit}</button>
+        <button class="button headerbar__drawer__suggestion__edit"></button>
+        <button class="button headerbar__drawer__suggestion__delete"></button>
       </div>
     `);
 
@@ -222,8 +223,15 @@ class HeaderBar {
       event.stopPropagation();
       return;
     }
+    if(event.target.classList.contains('headerbar__drawer__suggestion__edit')) {
+      this.searchInputNode.value = event.target.parentNode.dataset.subreddit;
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     if(event.target.classList.contains('headerbar__drawer__suggestion__use')) {
       this.searchInputNode.value = event.target.parentNode.dataset.subreddit;
+      this.search();
       event.preventDefault();
       event.stopPropagation();
       return;
