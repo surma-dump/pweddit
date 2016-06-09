@@ -127,12 +127,26 @@ function addCachingHeader(req, res, next) {
   next();
 }
 
+function SPA(defaultFile) {
+  return (req, res, next) => {
+    var fileName = url.parse(req.url);
+    fileName = fileName.href.split(fileName.search).join('');
+    var fileExists = fs.existsSync(`dist/${fileName}`);
+    if (!fileExists && fileName.indexOf('browser-sync-client') < 0)
+      req.url = `/${defaultFile}`;
+    return next();
+  };
+}
+
 function watch() {
   browserSync.create().init({
     server: {
       baseDir: 'dist',
     },
-    middleware: addCachingHeader,
+    middleware: [
+      addCachingHeader,
+      SPA('index.html')
+    ],
     reloadOnRestart: true,
     open: false
   });

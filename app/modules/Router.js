@@ -13,12 +13,11 @@ class Router {
     this.transition = Promise.resolve();
 
     window.addEventListener('popstate', ::this.onPopState);
-    window.addEventListener('hashchange', ::this.onHashChange);
     this.manageState();
   }
 
   parseLocation(loc) {
-    const path = loc.hash.replace(/^#\//, '');
+    const path = loc.pathname.replace(/^\//, '');
     // Assume the first part of the path is the
     // verb we want to action, with the rest of the path
     // being the data to pass to the handler.
@@ -82,11 +81,11 @@ class Router {
   }
 
   go(path) {
-    if (`#${path}` === window.location.hash)
+    if (path === window.location.pathname)
       return this.transition;
 
-    history.replaceState(document.scrollingElement.scrollTop, '', `${window.location.pathname}${window.location.hash}`);
-    history.pushState(undefined, '', `${window.location.pathname}#${path}`);
+    history.replaceState(document.scrollingElement.scrollTop, '', `${window.location.pathname}`);
+    history.pushState(undefined, '', path);
     return this.transition
       .then(_ => Utils.rAFPromise())
       .then(_ => this.manageState());
@@ -98,12 +97,5 @@ class Router {
       .then(_ => Utils.rAFPromise())
       .then(_ => this.manageState())
       .then(_ => document.scrollingElement.scrollTop = event.state);
-  }
-
-  onHashChange(event) {
-    event.preventDefault();
-    this.transition
-      .then(_ => Utils.rAFPromise())
-      .then(_ => this.manageState());
   }
 }

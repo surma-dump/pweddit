@@ -45,9 +45,13 @@ export default class ServiceWorkerController {
         return event.respondWith(fetch(event.request));
       }
 
+      // On cache-miss respond with index.html
       return event.respondWith(
-        caches.match(event.request).then(response =>
-          response || new Response(null, {status: 404})
+        caches.match(event.request).then(
+          response => response ||
+            fetch(event.request).then(
+              response => response.ok?response:caches.match('/')
+            ).catch(_ => caches.match('/'))
         )
       );
     }

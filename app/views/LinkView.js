@@ -77,11 +77,20 @@ class LinkViewer {
 
   in(data) {
     this.url = data;
-    return this.showLink(this.url);
+    this._lastFocus = document.activeElement;
+    this._lastView = document.querySelector('.view');
+    return this.showLink(this.url)
+      .then(_ => {
+        this._lastView.setAttribute('aria-hidden', true);
+        this.closeNode.focus();
+      });
   }
 
   out() {
-    return this.hide();
+    return this.hide().then(_ => {
+      this._lastView.setAttribute('aria-hidden', false);
+      this._lastFocus.focus();
+    });
   }
 
   update(data) {
@@ -213,8 +222,17 @@ class LinkViewer {
       return;
     }
     event.preventDefault();
-    Router().go(`/external/${url}`);
-    // this.showLink(url);
+    if(url.hostname === location.hostname)
+        Router().go(url.pathname);
+    else if (/(www\.)?reddit\.com/.test(url.hostname))
+        Router().go(
+          url.pathname
+            .replace(/^\/r\/([^\/]+)\/?$/, '/r/$1')
+            .replace(/^\/r\/([^\/]+)\/comments\/([^\/]+)\/?$/, '/thread/$1/$2')
+            .replace(/^\/r\/([^\/]+)\/comments\/([^\/]+)(?:\/[^\/]+)?\/?$/, '/thread/$1/$2')
+        );
+    else
+      Router().go(`/external/${url}`);
   }
 
   globalKeyDown(event) {
