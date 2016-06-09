@@ -55,31 +55,31 @@
 </head>
 <header class="headerbar headerbar--uninitialized">
   <div class="headerbar__container">
-    <button class="headerbar__back button"></button>
-    <button class="headerbar__title">
+    <button class="headerbar__back button" aria-label="Back"></button>
+    <button class="headerbar__title" aria-label="Switch subreddit">
       Pweddit 💙
     </button>
     <form style="display: none" class="headerbar__search">
-      <input>
-      <button class="button headerbar__search__go"></button>
+      <input placeholder="Subreddit">
+      <button class="button headerbar__search__go" aria-label="Go to subreddit"></button>
     </form>
-    <button class="headerbar__share button"></button>
-    <button class="headerbar__refresh button"></button>
+    <button class="headerbar__share button" aria-label="Share"></button>
+    <button class="headerbar__refresh button" aria-label="Refresh data"></button>
   </div>
   <aside class="headerbar__drawer">
     <div class="headerbar__drawer__controls"></div>
     <div class="headerbar__drawer__notifications"></div>
-    <button class="headerbar__drawer__icon"></button>
+    <button class="headerbar__drawer__icon" aria-label="Open drawer"></button>
   </aside>
 </header>
 <div class="linkviewer linkviewer--hidden">
-  <button class="linkviewer__backward button fa fa-chevron-left"></button>
+  <button class="linkviewer__backward button fa fa-chevron-left" aria-label="Previous picture"></button>
   <div class="linkviewer__container"></div>
-  <button class="linkviewer__forward button fa fa-chevron-right"></button>
+  <button class="linkviewer__forward button fa fa-chevron-right" aria-label="Next picture"></button>
   <footer class="linkviewer__details">
     <div class="linkviewer__details__count"></div>
     <div class="linkviewer__details__text"></div>
   </footer>
-  <button class="linkviewer__close button fa fa-times"></button>
+  <button class="linkviewer__close button fa fa-times" aria-label="Close link viewer"></button>
 </div>
 <script src="/bootstrap.es5.js"></script>

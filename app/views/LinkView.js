@@ -77,11 +77,20 @@ class LinkViewer {
 
   in(data) {
     this.url = data;
-    return this.showLink(this.url);
+    this._lastFocus = document.activeElement;
+    this._lastView = document.querySelector('.view');
+    return this.showLink(this.url)
+      .then(_ => {
+        this._lastView.setAttribute('aria-hidden', true);
+        this.closeNode.focus();
+      });
   }
 
   out() {
-    return this.hide();
+    return this.hide().then(_ => {
+      this._lastView.setAttribute('aria-hidden', false);
+      this._lastFocus.focus();
+    });
   }
 
   update(data) {
