@@ -11,6 +11,11 @@
   transition: transform 0.3s ease-in-out;
 }
 
+.headerbar__title {
+  border: 0;
+  background-color: transparent;
+}
+
 .headerbar.headerbar--searching .headerbar__title,
 .headerbar:not(.headerbar--searching) .headerbar__search {
   transform: scaleX(0);
@@ -130,8 +135,6 @@
 .headerbar__drawer__suggestion {
   display: flex;
   margin: 5px 0;
-  border: 0;
-  background-color: transparent;
   text-align: left;
 }
 
@@ -141,6 +144,8 @@
   text-overflow: ellipsis;
   cursor: pointer;
   text-align: left;
+  border: 0;
+  background-color: transparent;
 }
 
 .headerbar__drawer__suggestion__edit,
@@ -149,6 +154,8 @@
   background-repeat: no-repeat;
   background-size: contain;
   margin: 5px;
+  border: 0;
+  background-color: transparent;
 }
 
 .headerbar__drawer__suggestion__delete {
