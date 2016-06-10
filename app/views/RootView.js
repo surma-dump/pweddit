@@ -12,23 +12,31 @@ export default class RootView extends View {
     super('root');
     this.drawerControlsNode = new Template(o => `
       <div class="rootview__drawer">
-        <button class="rootview__drawer__btn clear-caches-btn">Wipe caches</button>
+        <button class="rootview__drawer__btn clear-all-caches-btn">Wipe all caches</button>
+        <button class="rootview__drawer__btn clear-image-caches-btn">Wipe image caches</button>
         <button class="rootview__drawer__btn reset-app-btn">Reset app</button>
       </div>
     `).renderAsDOM({})[0];
 
-    this.drawerControlsNode.querySelector('.clear-caches-btn')
-      .addEventListener('click', _ => this.wipeCaches());
+    this.drawerControlsNode.querySelector('.clear-all-caches-btn')
+      .addEventListener('click', _ => this.wipeAllCaches());
+      this.drawerControlsNode.querySelector('.clear-image-caches-btn')
+        .addEventListener('click', _ => this.wipeImageCaches());
     this.drawerControlsNode.querySelector('.reset-app-btn')
       .addEventListener('click', _ => this.resetApp());
   }
 
-  wipeCaches() {
+  wipeAllCaches() {
     return Promise.all([
       LinkView().wipeCaches(),
       Reddit.wipeCaches()
     ])
-    .then(_ => HeaderBar().addNotification('Caches wiped!'));
+    .then(_ => HeaderBar().addNotification('All caches wiped!'));
+  }
+
+  wipeImageCaches() {
+    return LinkView().wipeCaches()
+      .then(_ => HeaderBar().addNotification('Image caches wiped!'));
   }
 
   resetApp() {

@@ -292,8 +292,10 @@ class LinkViewer {
   }
 
   wipeCaches() {
-    return Array.from(this.handlers.values())
-      .map(h => h.wipeCache());
+    return Promise.all(
+      Array.from(this.handlers.values())
+        .map(h => h.wipeCache())
+    );
   }
 }
 
