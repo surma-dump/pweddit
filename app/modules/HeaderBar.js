@@ -22,9 +22,9 @@ class HeaderBar {
 
     this.suggestionItem = new Template(o => `
       <div class="headerbar__drawer__suggestion" data-subreddit="${o.subreddit}">
-        <button class="headerbar__drawer__suggestion__use">${o.subreddit}</button>
-        <button class="button headerbar__drawer__suggestion__edit"></button>
-        <button class="button headerbar__drawer__suggestion__delete"></button>
+        <button class="headerbar__drawer__suggestion__use" aria-label="Go to subreddit ${o.subreddit}">${o.subreddit}</button>
+        <button class="button headerbar__drawer__suggestion__edit" aria-label="Put ${o.subreddit} into search box"></button>
+        <button class="button headerbar__drawer__suggestion__delete" aria-label="Delete ${o.subreddit} from recent subreddits"></button>
       </div>
     `);
 
