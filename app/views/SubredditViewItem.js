@@ -67,7 +67,7 @@ export default class SubredditViewItem {
   }
 
   showThumbnail(event) {
-    Router().go(`/external/${this.thread.url}`);
+    Router().go(`/external/${encodeURIComponent(this.thread.url)}`);
     event.preventDefault();
     event.stopPropagation();
   }

@@ -76,7 +76,7 @@ class LinkViewer {
   }
 
   in(data) {
-    this.url = data;
+    this.url = decodeURIComponent(data);
     this._lastFocus = document.activeElement;
     this._lastView = document.querySelector('.view');
     return this.showLink(this.url)
@@ -232,7 +232,7 @@ class LinkViewer {
             .replace(/^\/r\/([^\/]+)\/comments\/([^\/]+)(?:\/[^\/]+)?\/?$/, '/thread/$1/$2')
         );
     else
-      Router().go(`/external/${url}`);
+      Router().go(`/external/${encodeURIComponent(url.toString())}`);
   }
 
   globalKeyDown(event) {
