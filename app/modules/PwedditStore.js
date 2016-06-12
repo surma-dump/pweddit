@@ -1,4 +1,4 @@
-import '/idb.js';
+import idb from '/idb.js';
 
 class PwedditStore {
   constructor() {
@@ -53,9 +53,48 @@ class PwedditStore {
   }
 
   _createDB() {
-    this.dbHandle = idb.open('pweddit', 1, upgradeDB => {
-      const recents = upgradeDB.createObjectStore('recents', {keyPath: 'subreddit'});
+    this.dbHandle = idb.open('pweddit', 3, upgradeDB => {
+      if(!upgradeDB.oldVersion || upgradeDB.oldVersion < 1) {
+        upgradeDB.createObjectStore('recents', {keyPath: 'subreddit'});
+      }
+      if(!upgradeDB.oldVersion || upgradeDB.oldVersion < 2) {
+        upgradeDB.createObjectStore('dlqueue');
+      }
+      if(!upgradeDB.oldVersion || upgradeDB.oldVersion < 3) {
+        upgradeDB.deleteObjectStore('dlqueue');
+        upgradeDB.createObjectStore('dlqueue', {autoIncrement: true});
+      }
     });
+  }
+
+  queueThread(subreddit, threadid) {
+    return this.dbHandle
+      .then(db => {
+        const tx = db.transaction('dlqueue', 'readwrite');
+        tx.objectStore('dlqueue')
+          .put({
+            type: 'thread',
+            subreddit,
+            threadid,
+            commentLinks: true
+          });
+        return tx.complete;
+      });
+  }
+
+  popQueue() {
+    return this.dbHandle
+      .then(db => {
+        const tx = db.transaction('dlqueue', 'readwrite');
+        let val;
+        tx.objectStore('dlqueue').iterateCursor(cursor => {
+          if(!cursor)
+            return;
+          val = cursor.value;
+          cursor.delete();
+        });
+        return tx.complete.then(_ => val);
+      });
   }
 
   wipe() {

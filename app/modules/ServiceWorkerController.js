@@ -4,6 +4,7 @@ import Gfycat from '/modules/Gfycat.js';
 import Gyazo from '/modules/Gyazo.js';
 import ImageCatchall from '/modules/ImageCatchall.js';
 import SimpleCache from '/modules/SimpleCache.js';
+import PwedditStore from '/modules/PwedditStore.js';
 
 export default class ServiceWorkerController {
   constructor() {
@@ -24,6 +25,7 @@ export default class ServiceWorkerController {
 
     self.addEventListener('message', ::this.onMessage);
     self.addEventListener('fetch', ::this.onFetch);
+    self.addEventListener('sync', ::this.onSync);
     this.initPromise = caches.open({{{json config.APP_CACHE}}})
       .then(cache => cache.addAll({{{json config.APP_FILES}}}));
   }
@@ -65,5 +67,13 @@ export default class ServiceWorkerController {
         response => response || fetch(event.request)
       )
     );
+  }
+
+  onSync(event) {
+    switch(event.tag) {
+      case 'downloadThreads':
+        return event.waitUntil(
+        );
+    }
   }
 }

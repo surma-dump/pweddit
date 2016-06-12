@@ -1,6 +1,18 @@
 export default class Utils {
+  static isMainThread() {
+    return self === window;
+  }
+
   static isWorkerRuntime() {
     return !!self.importScripts;
+  }
+
+  static supportsServiceWorker() {
+    return 'serviceWorker' in navigator;
+  }
+
+  static supportsBgSync() {
+    return 'SyncManager' in window;
   }
 
   static supportsWebm() {
