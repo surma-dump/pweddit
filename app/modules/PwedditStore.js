@@ -67,7 +67,7 @@ class PwedditStore {
     });
   }
 
-  queueThread(subreddit, threadid) {
+  queuePushThread(subreddit, threadid) {
     return this.dbHandle
       .then(db => {
         const tx = db.transaction('dlqueue', 'readwrite');
@@ -82,7 +82,21 @@ class PwedditStore {
       });
   }
 
-  popQueue() {
+  queuePushUrl(url) {
+    return this.dbHandle
+      .then(db => {
+        const tx = db.transaction('dlqueue', 'readwrite');
+        tx.objectStore('dlqueue')
+          .put({
+            type: 'url',
+            url
+          });
+        return tx.complete;
+      });
+  }
+
+
+  queuePop() {
     return this.dbHandle
       .then(db => {
         const tx = db.transaction('dlqueue', 'readwrite');
@@ -108,7 +122,7 @@ class PwedditStore {
 }
 
 export default function () {
-  if (typeof window._pwedditStore === 'undefined')
-    window._pwedditStore = new PwedditStore();
-  return window._pwedditStore;
+  if (typeof self._pwedditStore === 'undefined')
+    self._pwedditStore = new PwedditStore();
+  return self._pwedditStore;
 }

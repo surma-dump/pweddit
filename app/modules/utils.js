@@ -15,6 +15,21 @@ export default class Utils {
     return 'SyncManager' in window;
   }
 
+  static isServiceWorker() {
+    return typeof ServiceWorkerGlobalScope !== 'undefined'
+      && self instanceof ServiceWorkerGlobalScope;
+  }
+
+  static allMatches(s) {
+    let matches = [];
+    let match;
+    while(match = this.exec(s)) {
+      if(match)
+        matches.push(match)
+    }
+    return matches;
+  }
+
   static supportsWebm() {
     const n = document.createElement('video');
     return n.canPlayType('video/webm; codecs="vp8, vorbis"') !== '';
