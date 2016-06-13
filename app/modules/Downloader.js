@@ -1,5 +1,6 @@
 import Utils from '/modules/Utils.js';
 import PwedditStore from '/modules/PwedditStore.js';
+import Reddit from '/modules/Reddit.js';
 
 export default class Downloader {
   static startDownloader() {
@@ -14,7 +15,7 @@ export default class Downloader {
   }
 
   static downloadAll() {
-    return PwedditStore.queuePop()
+    return PwedditStore().queuePop()
       .then(item => {
         let p = Promise.resolve();
         if(!item)
@@ -52,7 +53,7 @@ export default class Downloader {
       .then(thread =>
         thread.comments
         .map(::this._extractLinks)
-        .map(::PwedditStore.queuePushUrl)
+        .map(url => PwedditStore().queuePushUrl(url))
       );
   }
 

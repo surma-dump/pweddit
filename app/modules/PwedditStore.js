@@ -1,7 +1,8 @@
 import idb from '/idb.js';
 
-class PwedditStore {
-  constructor() {
+export class PwedditStore {
+  constructor(name) {
+    this._name = name;
     this._createDB();
   }
 
@@ -53,7 +54,7 @@ class PwedditStore {
   }
 
   _createDB() {
-    this.dbHandle = idb.open('pweddit', 3, upgradeDB => {
+    this.dbHandle = idb.open(this._name, 3, upgradeDB => {
       if(!upgradeDB.oldVersion || upgradeDB.oldVersion < 1) {
         upgradeDB.createObjectStore('recents', {keyPath: 'subreddit'});
       }
@@ -82,6 +83,15 @@ class PwedditStore {
       });
   }
 
+  queueLength() {
+    return this.dbHandle
+      .then(db => {
+        const tx = db.transaction('dlqueue', 'readonly');
+        const count = tx.objectStore('dlqueue').count();
+        return tx.complete.then(_ => count);
+      });
+  }
+
   queuePushUrl(url) {
     return this.dbHandle
       .then(db => {
@@ -94,7 +104,6 @@ class PwedditStore {
         return tx.complete;
       });
   }
-
 
   queuePop() {
     return this.dbHandle
@@ -111,6 +120,14 @@ class PwedditStore {
       });
   }
 
+  close() {
+    return this.dbHandle
+      .then(db => {
+        self._pwedditStore === 'undefined';
+        return db.close();
+      });
+  }
+
   wipe() {
     return this.dbHandle
       .then(db => db.close())
@@ -123,6 +140,6 @@ class PwedditStore {
 
 export default function () {
   if (typeof self._pwedditStore === 'undefined')
-    self._pwedditStore = new PwedditStore();
+    self._pwedditStore = new PwedditStore('pweddit');
   return self._pwedditStore;
 }
