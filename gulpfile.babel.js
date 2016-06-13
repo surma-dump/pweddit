@@ -131,6 +131,9 @@ function SPA(defaultFile) {
   return (req, res, next) => {
     var fileName = url.parse(req.url);
     fileName = fileName.href.split(fileName.search).join('');
+    if(fileName.startsWith('/test') || fileName.startsWith('/node_modules'))
+      return next();
+
     var fileExists = fs.existsSync(`dist/${fileName}`);
     if (!fileExists && fileName.indexOf('browser-sync-client') < 0)
       req.url = `/${defaultFile}`;
@@ -142,6 +145,10 @@ function watch() {
   browserSync.create().init({
     server: {
       baseDir: 'dist',
+      routes: {
+        '/test': 'test',
+        '/node_modules': 'node_modules'
+      }
     },
     middleware: [
       addCachingHeader,
