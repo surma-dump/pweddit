@@ -16,5 +16,12 @@ self.TestUtils = {
       System.set(System.normalizeSync(name), self.TestUtils._originals[name]);
       done();
     });
+  },
+
+  mochaPromise: function(done) {
+    return [
+      _ => done(),
+      err => done(err)
+    ];
   }
 }

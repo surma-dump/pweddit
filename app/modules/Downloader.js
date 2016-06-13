@@ -32,32 +32,36 @@ export default class Downloader {
       });
   }
 
-  static _extractLinks(comment) {
+  static _linksFromString(s) {
+    return /<a[^>]+href="([^"]+)"/g::Utils.allMatches(s)
+      .map(x => x[1]);
+
+  }
+
+  static _linksFromComment(comment) {
     let r = [];
     if(!!comment.body_html)
-      r = /<a[^>]+href="([^"]+)"/g::Utils.allMatches(comment.body_html)
-        .map(x => x[1]);
+      r = this._linksFromString(comment.body_html);
 
     if(comment.replies && comment.replies.data && comment.replies.data.children) {
-      r = [
-        ...r,
-        ...comment.replies.data.children
-          .map(::this._extractLinks)
-      ];
+      comment.replies.data.children.forEach(c => r.push(...this._linksFromComment(c)))
     }
     return r;
   }
 
   static _downloadThread(item) {
     return Reddit.thread(item.subreddit, item.threadid, item.sorting, {fromNetwork: true})
-      .then(thread =>
-        thread.comments
-        .map(::this._extractLinks)
+      .then(thread => [
+        ...this._linksFromString(thread.post.selftext_html),
+        ...thread.comments
+          .reduce((prev, cur) => [...prev, ...this._linksFromComment(cur)], [])
+      ]
         .map(url => PwedditStore().queuePushUrl(url))
       );
   }
 
   static _downloadUrl(item) {
+    return Promise.resolve();
   }
 
 }

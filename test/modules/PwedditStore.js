@@ -1,21 +1,4 @@
 describe('PwedditStore', function() {
-  before(function(done) {
-    System.import('/modules/PwedditStore.js')
-      .then(subject => this.subject = subject)
-      .then(_ => {
-        this.subject = new this.subject.PwedditStore('pweddit-test');
-        self._pwedditStore = this.subject;
-      })
-      .then(_ => done());
-  });
-
-  after(function(done) {
-    this.subject.close()
-      .then(_ => System.import('/idb.js'))
-      .then(idb => idb.delete('pweddit-test'))
-      .then(_ => done());
-  });
-
   it('should return the correct queue length', function(done) {
     this.subject.queueLength()
       .then(length => {
@@ -37,6 +20,24 @@ describe('PwedditStore', function() {
       .then(length => {
         expect(length).to.equal(0);
       })
+      .then(...TestUtils.mochaPromise(done));
+  });
+
+  before(function(done) {
+    System.import('/modules/PwedditStore.js')
+      .then(subject => this.subject = subject)
+      .then(_ => {
+        this.subject = new this.subject.PwedditStore('pweddit-test');
+        self._pwedditStore = this.subject;
+      })
       .then(_ => done());
   });
+
+  after(function(done) {
+    this.subject.close()
+      .then(_ => System.import('/idb.js'))
+      .then(idb => idb.delete('pweddit-test'))
+      .then(_ => done());
+  });
+
 });
