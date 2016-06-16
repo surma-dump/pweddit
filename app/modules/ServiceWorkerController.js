@@ -49,8 +49,10 @@ export default class ServiceWorkerController {
 
   onSync(event) {
     switch(event.tag) {
-      case 'downloadThreads':
+      case 'test-tag-from-devtools':
+      case 'downloadAll':
         return event.waitUntil(
+          Downloader.downloadAll()
         );
     }
   }

@@ -2,8 +2,11 @@ import Reddit from '/modules/Reddit.js';
 import Router from '/modules/Router.js';
 import Template from '/modules/Template.js';
 import Utils from '/modules/Utils.js';
+import PwedditStore from '/modules/PwedditStore.js';
+import Downloader from '/modules/Downloader.js';
 import ThreadView from '/views/ThreadView.js';
 import LinkView from '/views/LinkView.js';
+
 
 const nodeTemplate = new Template(o => `
   <div class="thread__lower">
@@ -55,7 +58,7 @@ export default class SubredditViewItem {
 
 
     this.thumbnailNode.addEventListener('click', ::this.showThumbnail);
-    this.lowerNode.addEventListener('click', _ => this.download());
+    this.lowerNode.addEventListener('click', ::this.lowerClick);
     this.upperNode.addEventListener('touchstart', ::this.onTouchStart);
     this.upperNode.addEventListener('touchmove', ::this.onTouchMove);
     this.upperNode.addEventListener('touchend', ::this.onTouchEnd);
@@ -136,28 +139,14 @@ export default class SubredditViewItem {
   download() {
     this.node.classList.remove('thread--downloaded');
     this.node.classList.add('thread--downloading');
-    return Reddit.thread(this.thread.subreddit, this.thread.id, 'top', {fromNetwork: true})
-      .then(thread => {
-        const node = document.createElement('div');
-        ThreadView.renderComments(node, thread.comments);
-        const links = node.querySelectorAll('a');
-        return Promise.all(
-          [
-            thread.post.url,
-            ...Array.from(links).map(link => link.href)
-          ].map(url => {
-            try {
-              url = new URL(url);
-              return LinkView().loadLink(url);
-            } catch(e) {}
-          })
-        );
-      })
-      .then(_ => {
-        this.node.classList.remove('thread--downloading');
-        this.node.classList.add('thread--downloaded');
-      })
-      .catch(_ => {}); // FIXME: Is this good? bad?
+    return PwedditStore().queuePushThread(this.thread.subreddit, this.thread.id)
+      .then(_ => Downloader.startDownloader());
+  }
+
+  lowerClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.download();
   }
 
 }

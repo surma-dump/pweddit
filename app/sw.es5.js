@@ -21,5 +21,6 @@ System.fetch = function(load) {
 System.config({{{json config.SYSTEMJS_CONFIG}}});
 System.import('/modules/ServiceWorkerController.js')
   .then(function(ServiceWorkerController) {
-    new ServiceWorkerController.default();
+    // TODO remove me
+    self._swc = new ServiceWorkerController.default();
   });

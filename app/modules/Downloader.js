@@ -27,7 +27,7 @@ export default class Downloader {
   static startDownloader() {
     if(Utils.isMainThread() && Utils.supportsServiceWorker() && Utils.supportsBgSync()) {
       return navigator.serviceWorker.ready
-        .then(swRegistration => swRegistration.sync.register('downloadThreads'))
+        .then(swRegistration => swRegistration.sync.register('downloadAll'))
         .catch(err => {
           console.error('Could not register for background sync:', err);
         })
@@ -73,6 +73,7 @@ export default class Downloader {
   static _downloadThread(item) {
     return Reddit.thread(item.subreddit, item.threadid, item.sorting, {fromNetwork: true})
       .then(thread => [
+        this.post.url,
         ...this._linksFromString(thread.post.selftext_html),
         ...thread.comments
           .reduce((prev, cur) => [...prev, ...this._linksFromComment(cur)], [])
@@ -103,7 +104,6 @@ export default class Downloader {
   }
 
   static _downloadUrl(item) {
-
     return new Promise((resolve, reject) => {
       this.onFetch({
         request: {url: item.url},
