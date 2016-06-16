@@ -1,34 +1,34 @@
 describe('Downloader', function() {
   const mockThread = {
     post: {
-      selftext_html: '<a href="link1a"> asdfdsaf <a href="link1b">'
+      selftext_html: '<a href="http://link1a.com"> asdfdsaf <a href="http://link1b.com">'
     },
     comments: [
       {
-        body_html: '<a href="link2">',
+        body_html: '<a href="http://link2.com">',
         replies: {
           data: {
             children: [
               {
-                body_html: '<a href="link3">'
+                body_html: '<a href="http://link3.com">'
               }
             ]
           }
         }
       },
       {
-        body_html: '<a href="link4">'
+        body_html: '<a href="http://link4.com">'
       }
     ]
   }
 
   it('should be able to extract links from posts', function() {
-    expect(this.subject._linksFromString(mockThread.post.selftext_html)).to.deep.equal(['link1a', 'link1b']);
+    expect(this.subject._linksFromString(mockThread.post.selftext_html)).to.deep.equal(['http://link1a.com', 'http://link1b.com']);
   })
 
   it('should be able to recursively extract links from comments', function() {
     const links = mockThread.comments.reduce((prev, cur) => [...prev, ...this.subject._linksFromComment(cur)], [])
-    expect(links).to.deep.equal(['link2', 'link3', 'link4']);
+    expect(links).to.deep.equal(['http://link2.com', 'http://link3.com', 'http://link4.com']);
   })
 
   it('should process all threads in queue', function(done) {

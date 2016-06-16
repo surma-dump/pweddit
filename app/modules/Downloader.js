@@ -1,6 +1,27 @@
 import Utils from '/modules/Utils.js';
 import PwedditStore from '/modules/PwedditStore.js';
 import Reddit from '/modules/Reddit.js';
+import Imgur from '/modules/Imgur.js';
+import Gfycat from '/modules/Gfycat.js';
+import Gyazo from '/modules/Gyazo.js';
+import RedditMedia from '/modules/RedditMedia.js';
+import SimpleCache from '/modules/SimpleCache.js';
+
+
+const fetchMap = {
+  'api.reddit.com': Reddit,
+  'a.thumbs.redditmedia.com': RedditMedia,
+  'b.thumbs.redditmedia.com': RedditMedia,
+  'imgur.com': Imgur,
+  'api.imgur.com': Imgur,
+  'i.imgur.com': Imgur,
+  'm.imgur.com': Imgur,
+  'gfycat.com': Gfycat,
+  'giant.gfycat.com': Gfycat,
+  'zippy.gfycat.com': Gfycat,
+  'gyazo.com': Gyazo,
+  'i.gyazo.com': Gyazo
+};
 
 export default class Downloader {
   static startDownloader() {
@@ -60,8 +81,36 @@ export default class Downloader {
       );
   }
 
+  static canHandle(url) {
+    return url.host in this.fetchMap;
+  }
+
+  static onFetch(event) {
+    let url;
+    try {
+      url = new URL(event.request.url);
+    } catch(e) {
+      return event.respondWith();
+    }
+
+    if(url.host in fetchMap)
+      return fetchMap[url.host].onFetch(event);
+
+    if(ImageCatchall.canHandle(url))
+      return ImageCatchall.onFetch(event);
+
+    return event.respondWith();
+  }
+
   static _downloadUrl(item) {
-    return Promise.resolve();
+
+    return new Promise((resolve, reject) => {
+      this.onFetch({
+        request: {url: item.url},
+        waitUntil: _ => {},
+        respondWith: resolve
+      });
+    });
   }
 
 }

@@ -61,11 +61,10 @@ Promise.all([
 
     routes[viewName]()
       .then(([view]) => Router().add(viewName, view.default))
-      .then(_ => {
-        Object.keys(routes)
-          .filter(v => v !== viewName)
-          .forEach(v => routes[v]().then(([view]) => Router().add(v, view.default)));
-      })
+      .then(_ =>  Object.keys(routes)
+        .filter(v => v !== viewName)
+        .forEach(v => routes[v]().then(([view]) => Router().add(v, view.default)))
+      )
       .then(_ => new Promise(resolve => {
         requestIdleCallback(resolve);
       }))

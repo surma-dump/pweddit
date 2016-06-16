@@ -12,7 +12,6 @@
   loadScript('/system.js')
     .then(function() {
       System.config({{{json config.SYSTEMJS_CONFIG}}});
-
       System.import('/init.js');
     });
 })();

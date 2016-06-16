@@ -40,6 +40,7 @@
     "/images/trash.svg",
     "/images/pencil.svg",
 
+    "/modules/Downloader.js",
     "/modules/Gfycat.js",
     "/modules/Gyazo.js",
     "/modules/HeaderBar.css",
@@ -48,6 +49,7 @@
     "/modules/Imgur.js",
     "/modules/PwedditStore.js",
     "/modules/Reddit.js",
+    "/modules/RedditMedia.js",
     "/modules/Router.js",
     "/modules/ServiceWorkerController.js",
     "/modules/SimpleCache.js",
