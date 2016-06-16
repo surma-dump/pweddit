@@ -82,7 +82,7 @@ export default class Downloader {
   }
 
   static canHandle(url) {
-    return url.host in this.fetchMap;
+    return url.host in fetchMap;
   }
 
   static onFetch(event) {
