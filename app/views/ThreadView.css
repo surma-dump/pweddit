@@ -124,6 +124,7 @@
   justify-content: stretch;
   padding: 5px;
   word-break: break-word;
+  overflow: auto;
 }
 
 .post__header {
