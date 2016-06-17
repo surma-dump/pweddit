@@ -260,6 +260,10 @@ class LinkViewer {
       return;
     if(event.touches.length > 1)
       return;
+    // If the user is zoomed in, don’t do touch stuff.
+    if(window.outerWidth / window.innerWidth !== 1)
+      return;
+      
     event.preventDefault();
 
     this.deltaX = event.touches[0].clientX - this.startPosition.clientX;
