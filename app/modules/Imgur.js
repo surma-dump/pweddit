@@ -8,7 +8,7 @@ const cache = new SimpleCache(CACHE_NAME, {
 
 export default class Imgur {
   static canHandle(url) {
-    return ['imgur.com', 'i.imgur.com', 'm.imgur.com'].indexOf(url.host) !== -1;
+    return ['imgur.com', 'i.imgur.com', 'm.imgur.com', 'api.imgur.com'].indexOf(url.host) !== -1;
   }
 
   static _apiCall(url, fetcher = fetch) {
@@ -68,7 +68,7 @@ export default class Imgur {
     const parts = url.pathname.split('/');
     const id = parts[parts.length - 1];
 
-    return this._apiCall(`https://api.imgur.com/3/image/${id}`)
+    return this._apiCall(`https://api.imgur.com/3/image/${id}`, fetcher)
       .then(image => image.json())
       .then(image => [this._processItemData(image)]);
   }

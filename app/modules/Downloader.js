@@ -114,7 +114,10 @@ export default class Downloader {
     const handler = this._handlerForURL(event.request.url);
     if(handler)
       return handler.onFetch(event);
-    return event.respondWith(fetch(event.request));
+    return event.respondWith(
+      caches.match(event.request)
+        .then(response => response || fetch(event.request))
+    );
   }
 
   static _downloadUrl(item, fetcher = fetch) {

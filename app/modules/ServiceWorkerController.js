@@ -48,12 +48,13 @@ export default class ServiceWorkerController {
   }
 
   onSync(event) {
+    console.log(`Sync ${event.tag}`)
     switch(event.tag) {
       case 'test-tag-from-devtools':
       case 'downloadAll':
         return event.waitUntil(
-          new Promise(resolve =>
-            Downloader.downloadAll(url =>
+          Downloader.downloadAll(url =>
+            new Promise(resolve =>
               Downloader.onFetch({
                 request: new Request(url),
                 waitUntil: _ => {},
