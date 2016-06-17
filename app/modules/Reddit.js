@@ -2,7 +2,9 @@ import Utils from '/modules/Utils.js';
 
 const CACHE_NAME = 'reddit';
 const DEFAULT_OPTS = {
-  fromNetwork: false
+  fromNetwork: false,
+  forceImport: false,
+  raw: false
 };
 
 export default class Reddit {
@@ -16,11 +18,15 @@ export default class Reddit {
     return 'https://api.reddit.com';
   }
 
+  static canHandle(url) {
+    return ['api.reddit.com', 'reddit.com'].indexOf(url.host) !== -1;
+  }
+
   static _apiCall(url, opts = {}) {
     opts = Object.assign({}, DEFAULT_OPTS, opts);
     const cbName = `jsonp_${Math.floor(self.performance.now()*1000)}`
     url += ((url.indexOf('?') === -1)?'?':'&') + `jsonp=${cbName}`;
-    url += `&_from_network=${opts.fromNetwork}`;
+    url += `&_from_network=${opts.fromNetwork}&_raw=${opts.raw}`;
 
     return new Promise((resolve, reject) => {
       let scriptNode;
@@ -45,10 +51,17 @@ export default class Reddit {
 
       if(!Utils.isWorkerRuntime()) {
         document.head.appendChild(scriptNode);
-      } else {
+      } else if(Utils.isWorkerRuntime() && !Utils.isServiceWorker() || opts.forceImport) {
         importScripts(url);
+      } else if(Utils.isServiceWorker()) {
+        this.onFetch({
+          request: {url},
+          waitUntil: _ => {},
+          respondWith: resolve
+        });
       }
-    });
+    })
+    .then(data => typeof data === 'object'?data:JSON.parse(data));
   }
 
   static subredditThreads(subreddit, sorting = 'hot', opts = {}) {
@@ -58,10 +71,10 @@ export default class Reddit {
 
   static thread(subreddit, id, sorting = 'top', opts = {}) {
     return this._apiCall(`${this._apiBase}/r/${subreddit}/comments/${id}/${sorting}`, opts)
-      .then(data => { return {
+      .then(data => ({
         post: data[0].data.children[0].data,
         comments: data[1].data.children.map(c => c.data)
-      };});
+      }));
   }
 
   static isThreadInCache(subreddit, id) {
@@ -94,6 +107,7 @@ export default class Reddit {
     const searchParams = new URLSearchParams(url.search.slice(1));
     searchParams.delete('jsonp');
     searchParams.delete('_from_network');
+    searchParams.delete('_raw');
     url.search = '?' + searchParams.toString();
     return url.toString();
   }
@@ -127,7 +141,7 @@ export default class Reddit {
           // If we don’t have a response in cache and are supposed
           // to hit the network, hit the network, duh,
           // and store it in the cache and return that.
-          return this._apiCall(canonicalURL)
+          return this._apiCall(canonicalURL, {forceImport: true})
             .then(data => JSON.stringify(data))
             .then(data => caches.open(CACHE_NAME)
               .then(cache =>
@@ -145,6 +159,8 @@ export default class Reddit {
         // Assemble a new response with the correct JSONP callback
         .then(data => {
           if(data instanceof Response)
+            return data;
+          if(searchParams.get('_raw') === 'true')
             return data;
           return new Response(
             `/**/${callback}(${data});`,

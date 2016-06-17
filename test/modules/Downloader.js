@@ -1,29 +1,34 @@
 describe('Downloader', function() {
   const mockThread = {
     post: {
-      selftext_html: '<a href="http://link1a.com"> asdfdsaf <a href="http://link1b.com">'
+      url: 'http://example.com',
+      selftext_html: '&lt;a href="http://link1a.com"&gt; asdfdsaf &lt;a href="http://link1b.com"&gt;'
     },
     comments: [
       {
-        body_html: '<a href="http://link2.com">',
+        body_html: '&lt;a href="http://link2.com"&gt;',
         replies: {
           data: {
             children: [
               {
-                body_html: '<a href="http://link3.com">'
+                body_html: '&lt;a href="http://link3.com"&gt;'
               }
             ]
           }
         }
       },
       {
-        body_html: '<a href="http://link4.com">'
+        body_html: '&lt;a href="http://link4.com"&gt;'
       }
     ]
   }
 
   it('should be able to extract links from posts', function() {
     expect(this.subject._linksFromString(mockThread.post.selftext_html)).to.deep.equal(['http://link1a.com', 'http://link1b.com']);
+  })
+
+  it('should handle posts with no links', function() {
+    expect(this.subject._linksFromString('there is no link in here')).to.deep.equal([]);
   })
 
   it('should be able to recursively extract links from comments', function() {
@@ -68,7 +73,7 @@ describe('Downloader', function() {
       .then(_ => this.PwedditStore.queueLength())
       .then(queueLength => {
         expect(queueLength).to.equal(0);
-        expect(callCount).to.equal(5);
+        expect(callCount).to.equal(6);
         this.subject._downloadUrl = originalDownloadUrl;
       })
       .then(...TestUtils.mochaPromise(done));

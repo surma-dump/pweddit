@@ -6,6 +6,7 @@ import Gfycat from '/modules/Gfycat.js';
 import Gyazo from '/modules/Gyazo.js';
 import RedditMedia from '/modules/RedditMedia.js';
 import SimpleCache from '/modules/SimpleCache.js';
+import ImageCatchall from '/modules/ImageCatchall.js';
 
 
 const fetchMap = {
@@ -35,7 +36,7 @@ export default class Downloader {
     console.error('Not implemented yet');
   }
 
-  static downloadAll() {
+  static downloadAll(fetcher = fetch) {
     return PwedditStore().queuePop()
       .then(item => {
         let p = Promise.resolve();
@@ -46,15 +47,15 @@ export default class Downloader {
             p = p.then(_ => this._downloadThread(item));
             break;
           case 'url':
-            p = p.then(_ => this._downloadUrl(item));
+            p = p.then(_ => this._downloadUrl(item, fetcher));
             break;
         }
-        return p.then(_ => this.downloadAll());
+        return p.then(_ => this.downloadAll(fetcher));
       });
   }
 
   static _linksFromString(s) {
-    return /<a[^>]+href="([^"]+)"/g::Utils.allMatches(s)
+    return /&lt;a.+?href="([^"]+)"/g::Utils.allMatches(s)
       .map(x => x[1]);
 
   }
@@ -71,46 +72,64 @@ export default class Downloader {
   }
 
   static _downloadThread(item) {
-    return Reddit.thread(item.subreddit, item.threadid, item.sorting, {fromNetwork: true})
-      .then(thread => [
-        this.post.url,
-        ...this._linksFromString(thread.post.selftext_html),
-        ...thread.comments
-          .reduce((prev, cur) => [...prev, ...this._linksFromComment(cur)], [])
-      ]
-        .map(url => PwedditStore().queuePushUrl(url))
-      );
+    return Reddit.thread(item.subreddit, item.threadid, item.sorting, {fromNetwork: true, raw: true})
+      .then(thread => {
+        let urls = [
+          thread.post.url,
+          ...this._linksFromString(thread.post.selftext_html),
+        ];
+        thread.comments.forEach(c => urls.push(...this._linksFromComment(c)))
+        return Promise.all(urls.map(url => PwedditStore().queuePushUrl(url)));
+        }
+      )
+      .catch(_ => {});
   }
 
   static canHandle(url) {
     return url.host in fetchMap;
   }
 
-  static onFetch(event) {
-    let url;
-    try {
-      url = new URL(event.request.url);
-    } catch(e) {
-      return event.respondWith();
+  static _handlerForURL(url) {
+    if(typeof url === 'string') {
+      try {
+        url = new URL(url);
+      } catch(e) {
+        return null;
+      }
     }
 
-    if(url.host in fetchMap)
-      return fetchMap[url.host].onFetch(event);
+    if(url.host in fetchMap) {
+      const handler = fetchMap[url.host];
+      if(handler.canHandle(url))
+        return fetchMap[url.host];
+    }
 
     if(ImageCatchall.canHandle(url))
-      return ImageCatchall.onFetch(event);
+      return ImageCatchall;
 
-    return event.respondWith();
+    return null;
   }
 
-  static _downloadUrl(item) {
-    return new Promise((resolve, reject) => {
-      this.onFetch({
-        request: {url: item.url},
-        waitUntil: _ => {},
-        respondWith: resolve
-      });
-    });
+  static onFetch(event) {
+    const handler = this._handlerForURL(event.request.url);
+    if(handler)
+      return handler.onFetch(event);
+    return event.respondWith(fetch(event.request));
+  }
+
+  static _downloadUrl(item, fetcher = fetch) {
+    try {
+      item.url = new URL(item.url);
+    } catch(e) {
+      return Promise.resolve();
+    }
+
+    const handler = this._handlerForURL(item.url);
+    if(!handler)
+      return Promise.resolve();
+
+    return handler.loadContent(item.url, fetcher)
+      .catch(_ => {});
   }
 
 }

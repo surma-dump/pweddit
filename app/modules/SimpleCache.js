@@ -11,6 +11,10 @@ export default class SimpleCache {
     return caches.delete(this.cacheName);
   }
 
+  loadContent(url, fetcher = fetch) {
+    return fetcher(url);
+  }
+
   onFetch(event) {
     event.respondWith(
       caches.open(this.cacheName).then(cache =>

@@ -52,7 +52,15 @@ export default class ServiceWorkerController {
       case 'test-tag-from-devtools':
       case 'downloadAll':
         return event.waitUntil(
-          Downloader.downloadAll()
+          new Promise(resolve =>
+            Downloader.downloadAll(url =>
+              Downloader.onFetch({
+                request: new Request(url),
+                waitUntil: _ => {},
+                respondWith: resolve
+              })
+            )
+          )
         );
     }
   }

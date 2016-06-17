@@ -33,10 +33,10 @@ export default class Gfycat {
   // Currently, we have to try and load ALL resources. Using a <video> tag
   // to sniff out the existing source doesn’t work as it leaves a incomplete
   // response in the cache that will never get updated.
-  static loadContent(url) {
+  static loadContent(url, fetcher = fetch) {
     return Promise.all(
       this._potentialSourcesForContent(url)
-        .map(source => fetch(source).catch(_ => {}))
+        .map(source => fetcher(source).catch(_ => {}))
     );
   }
 

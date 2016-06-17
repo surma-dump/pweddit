@@ -21,8 +21,8 @@ export default class Gyazo {
     return src;
   }
 
-  static loadContent(url) {
-    return fetch(this._sourceForUrl(url));
+  static loadContent(url, fetcher = fetch) {
+    return fetcher(this._sourceForUrl(url));
   }
 
   static showContent(url) {

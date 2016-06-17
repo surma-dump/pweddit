@@ -11,8 +11,8 @@ export default class Imgur {
     return ['imgur.com', 'i.imgur.com', 'm.imgur.com'].indexOf(url.host) !== -1;
   }
 
-  static _apiCall(url) {
-    return fetch(url, {
+  static _apiCall(url, fetcher = fetch) {
+    return fetcher(url, {
       headers: {
         'Authorization': `Client-ID {{config.IMGUR_CREDENTIALS.CLIENT_ID}}`
       },
@@ -53,18 +53,18 @@ export default class Imgur {
     return node;
   }
 
-  static _contentItemsForAlbum(url) {
+  static _contentItemsForAlbum(url, fetcher) {
     const parts = url.pathname.split('/');
     const id = parts[parts.length - 1];
 
-    return this._apiCall(`https://api.imgur.com/3/album/${id}`)
+    return this._apiCall(`https://api.imgur.com/3/album/${id}`, fetcher)
       .then(album => album.json())
       .then(album =>
         album.data.images.map(image => this._processItemData({data: image}))
       );
   }
 
-  static _contentItemForImage(url) {
+  static _contentItemForImage(url, fetcher = fetch) {
     const parts = url.pathname.split('/');
     const id = parts[parts.length - 1];
 
@@ -73,22 +73,22 @@ export default class Imgur {
       .then(image => [this._processItemData(image)]);
   }
 
-  static _contentItems(url) {
+  static _contentItems(url, fetcher = fetch) {
     if(url.pathname.indexOf('/a/') === 0
       || url.pathname.indexOf('/album/') === 0)
-      return this._contentItemsForAlbum(url);
+      return this._contentItemsForAlbum(url, fetcher);
 
     if(url.pathname.indexOf('/gallery/') === 0)
       url.pathname = url.pathname.replace(/^\/gallery\//, '');
 
     url.host = 'i.imgur.com';
     url.pathname = url.pathname.replace(/\.[^.\/]*$/, '')
-    return this._contentItemForImage(url)
+    return this._contentItemForImage(url, fetcher)
   }
 
-  static loadContent(url) {
-    return this._contentItems(url)
-      .then(items => Promise.all(items.map(item => fetch(item.data.link))));
+  static loadContent(url, fetcher = fetch) {
+    return this._contentItems(url, fetcher)
+      .then(items => Promise.all(items.map(item => fetcher(item.data.link))));
   }
 
   static showContent(url) {
