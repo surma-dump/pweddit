@@ -66,7 +66,7 @@ export default class Downloader {
       r = this._linksFromString(comment.body_html);
 
     if(comment.replies && comment.replies.data && comment.replies.data.children) {
-      comment.replies.data.children.forEach(c => r.push(...this._linksFromComment(c)))
+      comment.replies.data.children.forEach(c => r.push(...this._linksFromComment(c.data)))
     }
     return r;
   }

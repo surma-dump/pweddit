@@ -11,7 +11,9 @@ describe('Downloader', function() {
           data: {
             children: [
               {
-                body_html: '&lt;a href="http://link3.com"&gt;'
+                data: {
+                  body_html: '&lt;a href="http://link3.com"&gt;'
+                }
               }
             ]
           }
@@ -108,5 +110,4 @@ describe('Downloader', function() {
       })
       .then(_ => done());
   });
-
 });
