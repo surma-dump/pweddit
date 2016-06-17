@@ -13,6 +13,15 @@ export default class SubredditView extends View {
     this.errorTemplate = new Template(o => `
       <div class="error">${o.errorMsg}</div>
     `);
+
+    this.drawerControlsNode = new Template(o => `
+      <div class="drawercontrols">
+        <button class="drawercontrols__btn download-all-threads-btn">Download all threads</button>
+      </div>
+    `).renderAsDOM({})[0];
+
+    this.drawerControlsNode.querySelector('.download-all-threads-btn')
+      .addEventListener('click', _ => this.downloadAllThreads());
   }
 
   in(data) {
@@ -33,6 +42,7 @@ export default class SubredditView extends View {
         })
     ])
     .then(_ => {
+      HeaderBar().setDrawerControls(this.drawerControlsNode);
       this.updateDOM();
       return super.in(data)
     })
@@ -80,5 +90,9 @@ export default class SubredditView extends View {
       subreddit: parts[0],
       sorting: parts[1] || 'hot'
     };
+  }
+
+  downloadAllThreads() {
+    this.threadViewItems.forEach(tvi => tvi.download());
   }
 }

@@ -11,17 +11,17 @@ export default class RootView extends View {
   constructor() {
     super('root');
     this.drawerControlsNode = new Template(o => `
-      <div class="rootview__drawer">
-        <button class="rootview__drawer__btn clear-all-caches-btn">Wipe all caches</button>
-        <button class="rootview__drawer__btn clear-image-caches-btn">Wipe image caches</button>
-        <button class="rootview__drawer__btn reset-app-btn">Reset app</button>
+      <div class="drawercontrols">
+        <button class="drawercontrols__btn clear-all-caches-btn">Wipe all caches</button>
+        <button class="drawercontrols__btn clear-image-caches-btn">Wipe image caches</button>
+        <button class="drawercontrols__btn reset-app-btn">Reset app</button>
       </div>
     `).renderAsDOM({})[0];
 
     this.drawerControlsNode.querySelector('.clear-all-caches-btn')
       .addEventListener('click', _ => this.wipeAllCaches());
-      this.drawerControlsNode.querySelector('.clear-image-caches-btn')
-        .addEventListener('click', _ => this.wipeImageCaches());
+    this.drawerControlsNode.querySelector('.clear-image-caches-btn')
+      .addEventListener('click', _ => this.wipeImageCaches());
     this.drawerControlsNode.querySelector('.reset-app-btn')
       .addEventListener('click', _ => this.resetApp());
   }

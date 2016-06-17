@@ -165,3 +165,17 @@
 .headerbar__drawer__suggestion__edit {
   background-image: url('/images/pencil.svg');
 }
+
+.drawercontrols__btn {
+  display: block;
+  padding: 20px;
+  text-align: center;
+  border: 2px solid black;
+  margin: 10px;
+}
+
+.drawercontrols {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
