@@ -1,0 +1,38 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --base: 8px;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  body {
+    position: relative;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    padding: var(--base);
+   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+  }
+  .panel {
+    transition: transform 1s cubic-bezier(0.8, 0, 0.8, 1);
+    will-change: transform;
+  }
+  .invisible, .transitioning-out {
+    transform: translateX(100%);
+  }
+
+</style>
+<header>
+  Pweddit
+</header>
+<view-switcher>
+  <h1>
+    Panel 1
+  </h1>
+</view-switcher>
+<script type="module" src="main.js"></script>
