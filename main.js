@@ -4,6 +4,8 @@ import {StatefulGroup} from '/stateful-element.js';
 import '/comlink/comlink.global.js';
 import '/eventtargetmixin.js';
 
+Comlink.transferHandlers.set('EVENT', eventTransferHandler);
+
 const subredditTemplate = state => html`
   ${repeat(state.threads, i => html`
     <div><a href="${i.permalink}">${i.title}</a></div>
@@ -40,10 +42,11 @@ const worker = new Worker('/worker.js');
 const p = Comlink.proxy(worker);
 
 async function update() {
-  render(mainTemplate(await p.stateMgr.state), document.body);
+  const state = await p.stateMgr.state;
+  render(mainTemplate(state), document.body);
 }
 
-p.stateMgr.addEventListener('state-change', Comlink.eventListener(update))
+p.stateMgr.addEventListener('state-change', Comlink.proxyValue(update));
 
 async function mutateState(f) {
   await p.stateMgr.mutateState(Comlink.proxyValue(f));
@@ -63,20 +66,7 @@ function transitionEnd(elem) {
   });
 }
 
-document.body.addEventListener('transitionend', async ev => {
-  if (!ev.target.classList.contains('panel')) return;
-  await mutateState(state => {
-    switch(state.visibility) {
-      case 'transitioning-out':
-        state.visibility = 'invisible';
-        break;
-      case 'transitioning-in':
-        state.visibility = 'visible';
-        break;
-    }
-    return state;
-  });
-});
+document.body.addEventListener('transitionend', Comlink.proxyValue(p.transitionEnd.bind()));
 
 document.addEventListener('click', async event => {
   if (event.target.nodeName !== 'A') return;

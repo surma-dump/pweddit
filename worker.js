@@ -1,6 +1,8 @@
 importScripts('/comlink/comlink.global.js');
 importScripts('/eventtargetmixin.js');
 
+Comlink.transferHandlers.set('EVENT', eventTransferHandler);
+
 class StateManager extends EventTargetMixin(class {}) {
   constructor() {
     super();
@@ -83,8 +85,23 @@ async function transitionTo(href) {
   });
 }
 
+async function transitionEnd(event) {
+  if (!event.targetClassList.includes('panel')) return;
+  await stateMgr.mutateState(state => {
+    switch(state.visibility) {
+      case 'transitioning-out':
+        state.visibility = 'invisible';
+        break;
+      case 'transitioning-in':
+        state.visibility = 'visible';
+        break;
+    }
+    return state;
+  });
+}
 
 Comlink.expose({
   stateMgr: Comlink.proxyValue(stateMgr),
   transitionTo,
+  transitionEnd,
 }, self);
