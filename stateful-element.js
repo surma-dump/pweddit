@@ -1,42 +1,56 @@
+// lol
 function deepEquals(a, b) {
-  return false; // TODO
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function id(state) {
+  return state;
 }
 
 export class StatefulGroup {
-  constructor(state) {
-    this._defaultState = state;
-    this.state = state;
-    this._instances = new Set();
-    this._baseClasses = new WeakMap();
+  constructor(defaultState) {
+    this._defaultState = defaultState;
+    this.state = defaultState;
+    this._members = new Map();
   }
 
-  update(newState) {
+  async transitionTo(newState) {
     const fullState = Object.assign({}, this._defaultState, newState);
-    for(const instance of this._instances) {
-      instance.update(fullState);
-    }
+    const transitions =
+      this._members.keys().map(async member => {
+        if (member.isConnected) {
+          this._members.delete(member);
+          return;
+        }
+        const newState = this._members.get(member).mapper(fullState);
+        if (!deepEqual(newState, member.state))
+          await member.transitionTo(newState);
+        member.state = state;
+      });
+    await Promise.all(transitions)
     this.state = newState;
   }
 
-  statefulElement(base) {
-    if (this._baseClasses.has(base)) {
-      return this._baseClasses.get(base);
-    }
-    const instances = this._instances;
-    const getState = () => this.state;
-    const clazz = class StatefulElement extends base {
-      constructor() {
-        super();
-        instances.add(this);
-        this.state = null;
-        this.update(getState());
-      }
-
-      update(newState) {
-        throw Error('`newState` needs to be overwritten');
-      }
-    }
-    this._baseClasses.set(base, clazz);
-    return clazz;
+  addMember(instance, mapper = id) {
+    this._members.set(instance, {mapper});
   }
+}
+
+const statefulElement_baseClasses = new WeakMap();
+export function statefulElement(base) {
+  if (statefulElement_baseClasses.has(base)) {
+    return statefulElement_baseClasses.get(base);
+  }
+  const clazz = class StatefulElement extends base {
+    constructor() {
+      super();
+      this.state = null;
+    }
+
+    async transitionTo(newState) {
+      throw Error('`transitionTo` needs to be overwritten');
+    }
+  };
+  statefulElement_baseClasses.set(base, clazz);
+  return clazz;
 }

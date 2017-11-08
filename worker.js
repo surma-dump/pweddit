@@ -9,10 +9,6 @@ class StateManager extends EventTargetMixin(class {}) {
     this.state = {};
   }
 
-  async addParamlessEventListener(name, f) {
-    this.addEventListener(name, _ => f());
-  }
-
   stateChange(f) {
     return new Promise(resolve => {
       this.addEventListener('state-change', async function l(ev) {
@@ -25,83 +21,118 @@ class StateManager extends EventTargetMixin(class {}) {
 
   async mutateState(f) {
     this.state = await f(this.state);
-    this.dispatchEvent(new CustomEvent('state-change'));
+    this.dispatchEvent(new CustomEvent('state-change', {detail: this.state}));
   }
 };
 
 const stateMgr = new StateManager();
 stateMgr.state = {
-  locked: false,
-  title: 'Pweddit',
-  visibility: 'visible',
-  panels: [
-    {
-      type: 'subreddit',
-      threads: [
-        {
-          title: 'Why your mom is not smart',
-          permalink: '/thread/lol',
-        },
-        {
-          title: 'LPT: Eat your veggies',
-          permalink: '/thread/lol',
-        },
-        {
-          title: 'How can mirrors be real if our eyes aren’t real?',
-          permalink: '/thread/lol',
-        },
-      ],
-    },
-    // {
-    //   id: 'lol2',
-    //   title: 'Panel 2',
-    // },
-  ],
+  currentState: {
+    title: 'Pweddit',
+    type: 'stack',
+    stacks: [
+      {
+        type: 'subscriptions',
+        reddits: [
+          {
+            name: 'all',
+            threads: [
+              {
+                title: 'Why your mom is not smart',
+                permalink: '/thread/lol',
+              },
+              {
+                title: 'LPT: Eat your veggies',
+                permalink: '/thread/lol',
+              },
+              {
+                title: 'How can mirrors be real if our eyes aren’t real?',
+                permalink: '/thread/lol',
+              },
+            ],
+          },
+          {
+            name: 'leagueoflegends',
+            threads: [
+              {
+                title: 'New champ',
+                permalink: '/thread/lol',
+              },
+              {
+                title: 'Stop flaming',
+                permalink: '/thread/lol',
+              },
+              {
+                title: 'Irelia nerfed lol',
+                permalink: '/thread/lol',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  targetState: null,
+  nextState: null,
 };
 
-async function transitionTo(href) {
-  await stateMgr.mutateState(state => {
-    state.visibility = 'transitioning-out';
-    return state;
-  });
-  await stateMgr.stateChange(state => state.visibility === 'invisible');
-  await stateMgr.mutateState(state => {
-    state.panels[0] =     state.panels[0] = {
+const dummyData = new Map([
+  [
+    'thread',
+    {
       type: 'thread',
       title: 'Some thread',
       text: 'Let’s do a thing',
       comments: [
-        {author: 'user 1', comment: 'ohai'},
+        {author: 'user 1', comment: 'ohai, have you seen <a href="/subreddit/lol">/r/lol</a>?'},
         {author: 'user 2', comment: 'desudesudesu'},
         {author: 'user 3', comment: 'top kek'},
         {author: 'user 4', comment: 'no'},
       ],
-    };
-    return state;
-  });
-  await stateMgr.mutateState(state => {
-    state.visibility = 'transitioning-in';
-    return state;
-  });
+    },
+  ],
+  [
+    'subreddit',
+    {
+      type: 'subreddit',
+      name: 'webdev',
+      threads: [
+        {
+          title: 'Using brainfuck on the web using wasm',
+          permalink: '/thread/lol',
+        },
+        {
+          title: 'Twitter now uses backbone',
+          permalink: '/thread/lol',
+        },
+        {
+          title: 'jQuery still popular',
+          permalink: '/thread/lol',
+        },
+      ],
+    },
+  ],
+]);
+
+// lol
+function deepCopy(obj) {
+  return JSON.parse(JSON.stringify(obj));
 }
 
-async function transitionEnd(event) {
-  if (!event.targetClassList.includes('panel')) return;
-  await stateMgr.mutateState(state => {
-    switch(state.visibility) {
-      case 'transitioning-out':
-        state.visibility = 'invisible';
-        break;
-      case 'transitioning-in':
-        state.visibility = 'visible';
-        break;
-    }
-    return state;
-  });
+async function pushStack(type, params) {
+  const nextState = deepCopy(stateMgr.state.targetState || stateMgr.state.currentState);
+  nextState.stacks.push(dummyData.get(type));
+  await stateMgr.mutateState(state => Object.assign(state, {nextState}));
+}
+
+async function popStack() {
+  const nextState = deepCopy(stateMgr.state.targetState || stateMgr.state.currentState);
+  nextState.stacks.pop();
+  await stateMgr.mutateState(state => Object.assign(state, {nextState}));
 }
 
 Comlink.expose({
   stateMgr: Comlink.proxyValue(stateMgr),
-  transitionTo,
-  transitionEnd,
+  pushStack,
+  popStack,
 }, self);

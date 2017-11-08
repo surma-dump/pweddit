@@ -10,29 +10,25 @@
     min-height: 100vh;
   }
   body {
-    position: relative;
+    display: flex;
+    flex-direction: column;
   }
   header {
     position: sticky;
     top: 0;
     padding: var(--base);
-   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+    flex-grow: 0;
+    flex-shrink: 0;
+    z-index: 999;
   }
-  .panel {
-    transition: transform 1s cubic-bezier(0.8, 0, 0.8, 1);
-    will-change: transform;
+  header + * {
+    flex-grow: 1;
+    flex-shrink: 1;
   }
-  .invisible, .transitioning-out {
-    transform: translateX(100%);
-  }
-
 </style>
 <header>
   Pweddit
 </header>
-<view-switcher>
-  <h1>
-    Panel 1
-  </h1>
-</view-switcher>
+<h1>Uninitialized</h1>
 <script type="module" src="main.js"></script>
