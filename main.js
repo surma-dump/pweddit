@@ -1,5 +1,6 @@
 import {html, render} from '/lit-html/lit-html.js';
 import {repeat} from '/lit-html/lib/repeat.js';
+import {transitionEndPromise, requestAnimationFramePromise} from '/helper.js';
 import '/comlink/comlink.global.js';
 import '/eventtargetmixin.js';
 import '/pweddit-stack.js';
@@ -56,14 +57,8 @@ const viewByType = new Map([
   [
     'stack', {
       prerender: async (oldState, newState) => {
-        if (newState.stacks.length < oldState.stacks.length) {
-          const topLayer = document.querySelector('pweddit-stack > *:last-child');
-          topLayer.style.transition = 'transform 1s ease-in-out';
-          await requestAnimationFramePromise();
-          await requestAnimationFramePromise();
-          topLayer.style.transform = 'translateX(100%)';
-          await transitionEndPromise(topLayer);
-        }
+        if (newState.stacks.length < oldState.stacks.length)
+          await document.querySelector('pweddit-stack').slideOut();
       },
       template: state => html`
         <pweddit-stack>
@@ -71,15 +66,8 @@ const viewByType = new Map([
         </pweddit-stack>
       `,
       postrender: async (oldState, newState) => {
-        if (newState.stacks.length > oldState.stacks.length) {
-          const topLayer = document.querySelector('pweddit-stack > *:last-child');
-          topLayer.style.transform = 'translateX(100%)';
-          await requestAnimationFramePromise();
-          await requestAnimationFramePromise();
-          topLayer.style.transition = 'transform 1s ease-in-out';
-          topLayer.style.transform = '';
-          await transitionEndPromise(topLayer);
-        }
+        if (newState.stacks.length > oldState.stacks.length)
+          await document.querySelector('pweddit-stack').slideIn();
       },
     },
   ],
@@ -109,7 +97,7 @@ async function update(ev) {
   console.log('Update', state);
   if (!state)
     return;
-  if (state.nextState) {
+  if (state.nextState && !state.targetState) {
     mutateState(state => Object.assign(state, {targetState: state.nextState, nextState: null}));
     return;
   }
@@ -122,20 +110,6 @@ async function update(ev) {
 }
 
 p.stateMgr.addEventListener('state-change', Comlink.proxyValue(update));
-
-function transitionEndPromise(elem) {
-  return new Promise(resolve => {
-    elem.addEventListener('transitionend', function l(ev) {
-      if (ev.target !== elem) return;
-      elem.removeEventListener('transitionend', l);
-      resolve();
-    });
-  });
-}
-
-function requestAnimationFramePromise() {
-  return new Promise(resolve => requestAnimationFrame(resolve));
-}
 
 document.addEventListener('click', async event => {
   if (event.target.nodeName !== 'A') return;
