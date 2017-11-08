@@ -22,6 +22,7 @@ class StateManager extends EventTargetMixin(class {}) {
   async mutateState(f) {
     this.state = await f(this.state);
     this.dispatchEvent(new CustomEvent('state-change', {detail: this.state}));
+    return this.state;
   }
 };
 
@@ -73,7 +74,7 @@ stateMgr.state = {
     ],
   },
   targetState: null,
-  nextState: null,
+  nextStates: [],
 };
 
 const dummyData = new Map([
@@ -119,16 +120,31 @@ function deepCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+function newestState() {
+  let nextState = stateMgr.state.nextStates.slice(-1)[0];
+  if (!nextState)
+    nextState = stateMgr.state.targetState;
+  if (!nextState)
+    nextState = stateMgr.state.currentState;
+  return nextState;
+}
+
 async function pushStack(type, params) {
-  const nextState = deepCopy(stateMgr.state.targetState || stateMgr.state.currentState);
+  const nextState = deepCopy(newestState());
   nextState.stacks.push(dummyData.get(type));
-  await stateMgr.mutateState(state => Object.assign(state, {nextState}));
+  await stateMgr.mutateState(state => {
+    state.nextStates.push(nextState);
+    return state;
+  });
 }
 
 async function popStack() {
-  const nextState = deepCopy(stateMgr.state.targetState || stateMgr.state.currentState);
+  const nextState = deepCopy(newestState());
   nextState.stacks.pop();
-  await stateMgr.mutateState(state => Object.assign(state, {nextState}));
+  await stateMgr.mutateState(state => {
+    state.nextStates.push(nextState);
+    return state;
+  });
 }
 
 Comlink.expose({

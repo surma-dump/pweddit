@@ -93,15 +93,12 @@ const worker = new Worker('/worker.js');
 const p = Comlink.proxy(worker);
 
 async function update(ev) {
-  const state = ev.detail;
+  let state = ev.detail;
   console.log('Update', state);
   if (!state)
     return;
-  if (state.nextState && !state.targetState) {
-    mutateState(state => Object.assign(state, {targetState: state.nextState, nextState: null}));
-    return;
-  }
-  if (state.targetState) {
+  if (!state.targetState && state.nextStates.length > 0) {
+    state = await mutateState(state => Object.assign(state, {targetState: state.nextStates.shift()}));
     await viewByType.get('main').prerender(state.currentState, state.targetState);
     render(viewByType.get('main').template(state.targetState), document.body);
     await viewByType.get('main').postrender(state.currentState, state.targetState);
@@ -123,7 +120,7 @@ document.addEventListener('click', async event => {
 });
 
 async function mutateState(f) {
-  await p.stateMgr.mutateState(Comlink.proxyValue(f));
+  return await p.stateMgr.mutateState(Comlink.proxyValue(f));
 }
 
 function stateChange(f) {
@@ -131,6 +128,6 @@ function stateChange(f) {
 }
 
 mutateState(state => {
-  state.nextState = Object.assign({}, state.currentState, {title: 'Pweddit — Initialized'});;
+  state.nextStates.push(Object.assign({}, state.currentState, {title: 'Pweddit — Initialized'}));
   return state;
 });
