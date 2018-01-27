@@ -18,7 +18,7 @@ export class ViewB extends HTMLElement {
     render(shadowDomTemplate(), this.shadowRoot);
   }
 
-  static LightDom(state) {
+  static lightDom(state) {
     return html`
       <view-b>
         <h1>${state.title}</h1>

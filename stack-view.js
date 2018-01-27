@@ -30,6 +30,7 @@ const componentMap = new Map([
 
 export class StackView extends HTMLElement {
   static get tag() {return 'stack-view';}
+
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
@@ -38,33 +39,49 @@ export class StackView extends HTMLElement {
     this.shadowRoot.querySelector('#dismiss').onclick = _ => this.dismiss();
   }
 
+  get keepFirst() {
+    return this.hasAttribute('keep-first') && this.getAttribute('keep-first') !== 'false';
+  }
+
+  set keepFirst(val) {
+    val = Boolean(val) && val !== 'false';
+    if (val)
+      this.setAttribute('keep-first');
+    else
+      this.removeAttribute('keep-first');
+  }
+
   get topItem() {
-    let last = this.lastElementChild
+    let last = this.lastElementChild;
     while (last && last.classList.contains('dismissed'))
       last = last.previousElementSibling;
     return last;
   }
 
+  get numItems() {
+    return Array.from(this.children).filter(f => !f.classList.contains('dismissed')).length;
+  }
+
   async dismiss() {
+    if (this.numItems === 1 && this.keepFirst)
+      return;
+
     let dismissedItem = this.topItem;
-    console.log(`animation ${dismissedItem.tagName}`);
     dismissedItem.classList.toggle('dismissed')
     Object.assign(dismissedItem.style, {
       transition: 'transform 1s ease-in-out',
       transform: 'translateX(100%)'
     });
-    console.log(`awaitin ${dismissedItem.tagName}`);
-    await animationtools.transitionEndPromise(dismissedItem);
-    console.log(`dispatching ${dismissedItem.tagName}`)
+    await animationtools.transitionEndPromise(dismissedItem, 1000);
     this.dispatchEvent(new CustomEvent('top-view-dismiss', {
       bubbles: true
     }));
   }
 
-  static LightDom(state) {
+  static lightDom(state) {
     return html`
-      <stack-view>
-        ${repeat(state.stack, item => item.uid, item => componentMap.get(item.type).LightDom(item))}
+      <stack-view keep-first=${state.keepFirst}>
+        ${repeat(state.items, item => item.uid, item => componentMap.get(item.type).lightDom(item))}
       </stack-view>
     `;
   }

@@ -10,7 +10,8 @@ async function init() {
   setupEventListeners(app);
   app.addEventListener('view-model-change', async ev => {
     const state = ev.detail;
-    render(StackView.LightDom(state), document.querySelector('main'));
+    console.log(state);
+    render(StackView.lightDom(state), document.body);
   });
   await app.update();
 }
@@ -18,6 +19,6 @@ init();
 
 function setupEventListeners(app) {
   document.addEventListener('top-view-dismiss', _ => {
-    app.removeTopView()
+    app.removeTopView();
   });
 }

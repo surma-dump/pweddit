@@ -8,7 +8,8 @@ function genUID() {
 }
 
 const state = {
-  stack: [
+  keepFirst: true,
+  items: [
     {
       uid: genUID(),
       type: 'view-a',
@@ -41,7 +42,7 @@ class ViewModel {
     port1.dispatchEvent(ev);
   }
   removeTopView() {
-    state.stack.pop();
+    state.items.pop();
     this.update();
   }
 
