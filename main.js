@@ -8,19 +8,11 @@ import {StackView} from '/stack-view.js';
 async function init() {
   const app = Comlink.proxy(new Worker('worker.js'));
   setupEventListeners(app);
-  const reader = streamtools.eventStream(app, 'view-model-change')
-    .pipeThrough(streamtools.mapStream(ev => ev.detail))
-    .pipeThrough(streamtools.logStream())
-    .getReader();
-
+  app.addEventListener('view-model-change', async ev => {
+    const state = ev.detail;
+    render(StackView.LightDom(state), document.querySelector('main'));
+  });
   await app.update();
-
-  while (true) {
-    const {value, done} = await reader.read();
-    if (done)
-      return;
-    render(StackView.LightDom(value), document.querySelector('main'));
-  }
 }
 init();
 

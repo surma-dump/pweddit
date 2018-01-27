@@ -27,7 +27,19 @@ const state = {
   ]
 };
 
-class ViewModel extends EventTarget {
+const {port1} = new MessageChannel();
+class ViewModel {
+  postMessage(msg) {
+    port1.postMessage(msg);
+  }
+
+  addEventListener(name, f) {
+    port1.addEventListener(name, f);
+  }
+
+  dispatchEvent(ev) {
+    port1.dispatchEvent(ev);
+  }
   removeTopView() {
     state.stack.pop();
     this.update();
