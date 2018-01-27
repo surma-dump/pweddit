@@ -28,9 +28,8 @@ const state = {
 };
 
 class ViewModel extends EventTarget {
-  swapTopStackItems() {
-    const i = state.stack.length;
-    [state.stack[i-2], state.stack[i-1]] = [state.stack[i-1], state.stack[i-2]];
+  removeTopView() {
+    state.stack.pop();
     this.update();
   }
 

@@ -19,13 +19,13 @@ async function init() {
     const {value, done} = await reader.read();
     if (done)
       return;
-    render(StackView.LightDom(value), document.body);
+    render(StackView.LightDom(value), document.querySelector('main'));
   }
 }
 init();
 
 function setupEventListeners(app) {
-  document.addEventListener('swap-top-stack-items', _ => {
-    app.swapTopStackItems();
+  document.addEventListener('top-view-dismiss', _ => {
+    app.removeTopView()
   });
 }
