@@ -1,7 +1,7 @@
 import '/comlink.global.min.js';
 import '/event.transferhandler.js';
 import '/function.transferhandler.js';
-import {render} from '/lit-html.js';
+import {render} from '/lit-property.js';
 import * as streamtools from '/streamtools.js';
 import {StackView} from '/stack-view.js';
 
@@ -21,4 +21,9 @@ function setupEventListeners(app) {
   document.addEventListener('top-view-dismiss', _ => {
     app.removeTopView();
   });
+
+  document.addEventListener('add-view', ev => {
+    app.addView(ev.detail);
+  });
 }
+

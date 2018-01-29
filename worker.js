@@ -13,17 +13,20 @@ const state = {
     {
       uid: genUID(),
       type: 'view-a',
-      title: 'stack 1',
+      title: 'Base view. Can’t dismiss me.',
+      skipAnimation: true
     },
     {
       uid: genUID(),
       type: 'view-b',
       title: 'stack 2',
+      skipAnimation: true
     },
     {
       uid: genUID(),
       type: 'view-a',
       title: 'stack 3',
+      skipAnimation: true
     },
   ]
 };
@@ -41,6 +44,12 @@ class ViewModel {
   dispatchEvent(ev) {
     port1.dispatchEvent(ev);
   }
+
+  addView(view) {
+    state.items.push(Object.assign(view, {uid: genUID()}));
+    this.update();
+  }
+
   removeTopView() {
     state.items.pop();
     this.update();

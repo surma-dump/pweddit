@@ -8,6 +8,7 @@ const shadowDomTemplate = state => html`
     }
   </style>
   <slot></slot>
+  <button>Clone me</button>
 `;
 
 export class ViewB extends HTMLElement {
@@ -16,11 +17,24 @@ export class ViewB extends HTMLElement {
     super();
     this.attachShadow({mode: 'open'});
     render(shadowDomTemplate(), this.shadowRoot);
+    this.shadowRoot.querySelector('button').onclick = _ => this.cloneMe();
   }
+
+  cloneMe() {
+    this.dispatchEvent(new CustomEvent('add-view', {
+      detail: {
+        type: 'view-b',
+        title: `Clone of ${this.state.title}`,
+        skipAnimation: true
+      },
+      bubbles: true
+    }));
+  }
+
 
   static lightDom(state) {
     return html`
-      <view-b>
+      <view-b state$=${state}>
         <h1>${state.title}</h1>
       </view-b>
     `;

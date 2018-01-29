@@ -10,13 +10,17 @@ const shadowDomTemplate = state => html`
     :host {
       position: relative;
     }
-    /*::slotted(*) {
+    ::slotted(*) {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-    }*/
+    }
+    button {
+      position: relative;
+      z-index: 999;
+    }
   </style>
   <button id="dismiss">Dismiss top view</button>
   <slot>
@@ -37,6 +41,7 @@ export class StackView extends HTMLElement {
     render(shadowDomTemplate(), this.shadowRoot);
 
     this.shadowRoot.querySelector('#dismiss').onclick = _ => this.dismiss();
+    this.shadowRoot.addEventListener('slotchange', this._viewChange.bind(this));
   }
 
   get keepFirst() {
@@ -62,20 +67,47 @@ export class StackView extends HTMLElement {
     return Array.from(this.children).filter(f => !f.classList.contains('dismissed')).length;
   }
 
+  _viewChange(ev) {
+    const elements = ev.target.assignedNodes().filter(n => n.nodeType === 1);
+    const unhandledElements =
+      elements
+        .filter(n => !n.state.skipAnimation)
+        .filter(n => !n.classList.contains('animation-progress'))
+        .filter(n => !n.classList.contains('animation-done'));
+    unhandledElements.forEach(async el => {
+      el.classList.add('animation-progress');
+      Object.assign(el.style, {
+        transform: 'translateX(100%)',
+      });
+      await animationtools.requestAnimationFramePromise();
+      await animationtools.requestAnimationFramePromise();
+      Object.assign(el.style, {
+        transition: 'transform 1s ease-in-out',
+        transform: '',
+      });
+      await animationtools.transitionEndPromise(el);
+      el.classList.remove('animation-progress');
+      el.classList.add('animation-done');
+      Object.assign(el.style, {
+        transform: '',
+        transition: '',
+      });
+    });
+
+  }
+
   async dismiss() {
     if (this.numItems === 1 && this.keepFirst)
       return;
 
     let dismissedItem = this.topItem;
-    dismissedItem.classList.toggle('dismissed')
+    dismissedItem.classList.toggle('dismissed');
     Object.assign(dismissedItem.style, {
       transition: 'transform 1s ease-in-out',
       transform: 'translateX(100%)'
     });
     await animationtools.transitionEndPromise(dismissedItem, 1000);
-    this.dispatchEvent(new CustomEvent('top-view-dismiss', {
-      bubbles: true
-    }));
+    this.dispatchEvent(new CustomEvent('top-view-dismiss', {bubbles: true}));
   }
 
   static lightDom(state) {
