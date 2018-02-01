@@ -3,6 +3,9 @@ import {html, render} from '/lit-html.js';
 
 const shadowDomTemplate = state => html`
 <style>
+  :host {
+    position: relative;
+  }
   #sidenav {
     position: fixed;
     top: 0;
@@ -16,6 +19,13 @@ const shadowDomTemplate = state => html`
   :host([open]) #sidenav {
     transform: translateX(0%);
     pointer-events: initial;
+  }
+  #mainslot::slotted(*) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 </style>
 <slot id="mainslot"></slot>
@@ -113,7 +123,7 @@ export class SideNav extends HTMLElement {
 
   static lightDom(state) {
     return html`
-      <side-nav>
+      <side-nav state$=${state}>
         <div slot="sidenav">${state.sidenav}</div>
         ${customElements.get(state.main.type).lightDom(state.main)}
       </side-nav>

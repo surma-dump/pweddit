@@ -21,13 +21,68 @@ const shadowDomTemplate = state => html`
 
 export class StackView extends HTMLElement {
   static get tag() {return 'stack-view';}
+  static get SWIPE_THRESHOLD() {return 10;}
 
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
     render(shadowDomTemplate(), this.shadowRoot);
     this.shadowRoot.addEventListener('slotchange', this._viewChange.bind(this));
+    this.addEventListener('touchstart', this._onTouchStart.bind(this));
+    this.addEventListener('touchmove', this._onTouchMove.bind(this));
+    this.addEventListener('touchend', this._onTouchEnd.bind(this));
   }
+
+  _onTouchStart(ev) {
+    if (ev.touches.length > 1)
+      return;
+    if (ev.touches[0].clientX > StackView.SWIPE_THRESHOLD)
+      return;
+    this._dragStartX = ev.touches[0].clientX;
+    ev.preventDefault();
+    ev.stopPropagation();
+  }
+
+  _onTouchMove(ev) {
+    if (this._dragStartX === null)
+      return;
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    this._dragDelta = ev.touches[0].clientX - this._dragStartX;
+    const move = Math.max(this._dragDelta, 0);
+    Object.assign(this.topItem.style, {
+      transform: `translateX(calc(${move}px))`
+    });
+  }
+
+  async _onTouchEnd(ev) {
+    if (!this._dragStartX)
+      return;
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    if (this._dragDelta > 150) {
+      this.dismiss();
+    } else {
+      const el = this.topItem;
+      Object.assign(el.style, {
+        transition: 'transform 1s ease-in-out',
+      });
+      await animationtools.requestAnimationFramePromise();
+      await animationtools.requestAnimationFramePromise();
+      Object.assign(el.style, {
+        transform: 'translateX(0%)'
+      });
+      await animationtools.transitionEndPromise(el);
+      Object.assign(el.style, {
+        transition: '',
+        transform: ''
+      });
+    }
+    this._dragStartX = null;
+  }
+
 
   get keepFirst() {
     return this.hasAttribute('keep-first') && this.getAttribute('keep-first') !== 'false';
@@ -79,19 +134,26 @@ export class StackView extends HTMLElement {
     if (this.keepFirst && this.numItems === 1)
       return;
 
-    let dismissedItem = this.topItem;
-    dismissedItem.classList.add('dismissed');
-    const animation = dismissedItem.animate([
-      {transform: 'translateX(0%)', easing: 'ease-in-out'},
-      {transform: 'translateX(100%)', easing: 'ease-in-out'},
-    ], 1000);
-    await animationtools.waapiDone(animation);
+    let el = this.topItem;
+    el.classList.add('dismissed');
+    Object.assign(el.style, {
+      transition: 'transform 1s ease-in-out',
+    });
+    await animationtools.requestAnimationFramePromise();
+    await animationtools.requestAnimationFramePromise();
+    Object.assign(el.style, {
+      transform: 'translateX(100%)'
+    });
+    await animationtools.transitionEndPromise(el);
+    Object.assign(el.style, {
+      transition: ''
+    });
     this.dispatchEvent(new CustomEvent('top-view-dismiss', {bubbles: true}));
   }
 
   static lightDom(state) {
     return html`
-      <stack-view keep-first=${state.keepFirst}>
+      <stack-view keep-first=${state.keepFirst} state$=${state}>
         ${repeat(state.items, item => item.uid, item => customElements.get(item.type).lightDom(item))}
       </stack-view>
     `;
