@@ -26,12 +26,54 @@ const shadowDomTemplate = state => html`
 
 export class SideNav extends HTMLElement {
   static get tag() {return 'side-nav';}
+  static get SWIPE_THRESHOLD() {return 2;}
 
   constructor() {
     super();
     this.attachShadow({mode: 'open'});
     render(shadowDomTemplate(), this.shadowRoot);
     this._sidenav = this.shadowRoot.querySelector('#sidenav');
+    this.addEventListener('touchstart', this._onTouchStart.bind(this));
+    this.addEventListener('touchmove', this._onTouchMove.bind(this));
+    this.addEventListener('touchend', this._onTouchEnd.bind(this));
+  }
+
+  connectedCallback() {
+    this._sidenavSize = this._sidenav.getBoundingClientRect();
+  }
+
+  _onTouchStart(ev) {
+    if (ev.touches.length > 1)
+      return;
+    if (ev.touches[0].clientX > SideNav.SWIPE_THRESHOLD)
+      return;
+    this._dragStartX = ev.touches[0].clientX;
+    ev.preventDefault();
+    ev.stopPropagation();
+  }
+
+  _onTouchMove(ev) {
+    if (this._dragStartX === null)
+      return;
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    this._dragDelta = ev.touches[0].clientX - this._dragStartX;
+    const move = Math.min(this._dragDelta, this._sidenavSize.width);
+    Object.assign(this._sidenav.style, {
+      transform: `translateX(calc(-100% + ${move}px))`
+    });
+  }
+
+  _onTouchEnd(ev) {
+    if (!this._dragStartX)
+      return;
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    if (this._dragDelta > 50)
+      this.open();
+    this._dragStartX = null;
   }
 
   async open() {
