@@ -4,10 +4,12 @@ import '/function.transferhandler.js';
 import {render} from '/lit-property.js';
 import * as streamtools from '/streamtools.js';
 import {StackView} from '/stack-view.js';
+import {SideNav} from '/side-nav.js';
 import {ViewA} from '/view-a.js';
 import {ViewB} from '/view-b.js';
 
 customElements.define(StackView.tag, StackView);
+customElements.define(SideNav.tag, SideNav);
 customElements.define(ViewA.tag, ViewA);
 customElements.define(ViewB.tag, ViewB);
 

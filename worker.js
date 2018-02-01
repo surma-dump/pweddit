@@ -8,28 +8,32 @@ function genUID() {
 }
 
 const state = {
-  type: 'stack-view',
-  keepFirst: true,
-  items: [
-    {
-      uid: genUID(),
-      type: 'view-a',
-      title: 'Base view. Can’t dismiss me.',
-      skipAnimation: true
-    },
-    {
-      uid: genUID(),
-      type: 'view-b',
-      title: 'stack 2',
-      skipAnimation: true
-    },
-    {
-      uid: genUID(),
-      type: 'view-a',
-      title: 'stack 3',
-      skipAnimation: true
-    },
-  ]
+  type: 'side-nav',
+  sidenav: "LOL OHAI",
+  main: {
+    type: 'stack-view',
+    keepFirst: true,
+    items: [
+      {
+        uid: genUID(),
+        type: 'view-a',
+        title: 'Base view. Can’t dismiss me.',
+        skipAnimation: true
+      },
+      {
+        uid: genUID(),
+        type: 'view-b',
+        title: 'stack 2',
+        skipAnimation: true
+      },
+      {
+        uid: genUID(),
+        type: 'view-a',
+        title: 'stack 3',
+        skipAnimation: true
+      }
+    ]
+  }
 };
 
 const {port1} = new MessageChannel();
@@ -47,12 +51,12 @@ class ViewModel {
   }
 
   addView(view) {
-    state.items.push(Object.assign(view, {uid: genUID()}));
+    state.main.items.push(Object.assign(view, {uid: genUID()}));
     this.update();
   }
 
   removeTopView() {
-    state.items.pop();
+    state.main.items.pop();
     this.update();
   }
 

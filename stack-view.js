@@ -1,6 +1,5 @@
 import {html, render} from '/lit-html.js';
 import {repeat} from '/repeat.js';
-import * as streamtools from '/streamtools.js';
 import * as animationtools from '/animationtools.js';
 
 const shadowDomTemplate = state => html`
@@ -15,12 +14,7 @@ const shadowDomTemplate = state => html`
       right: 0;
       bottom: 0;
     }
-    button {
-      position: relative;
-      z-index: 999;
-    }
   </style>
-  <button id="dismiss">Dismiss top view</button>
   <slot>
   </slot>
 `;
@@ -32,8 +26,6 @@ export class StackView extends HTMLElement {
     super();
     this.attachShadow({mode: 'open'});
     render(shadowDomTemplate(), this.shadowRoot);
-
-    this.shadowRoot.querySelector('#dismiss').onclick = _ => this.dismiss();
     this.shadowRoot.addEventListener('slotchange', this._viewChange.bind(this));
   }
 
