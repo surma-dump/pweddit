@@ -76,16 +76,11 @@ export class StackView extends HTMLElement {
         .filter(n => !n.classList.contains('animation-done'));
     unhandledElements.forEach(async el => {
       el.classList.add('animation-progress');
-      Object.assign(el.style, {
-        transform: 'translateX(100%)',
-      });
-      await animationtools.requestAnimationFramePromise();
-      await animationtools.requestAnimationFramePromise();
-      Object.assign(el.style, {
-        transition: 'transform 1s ease-in-out',
-        transform: '',
-      });
-      await animationtools.transitionEndPromise(el);
+      const animation = el.animate([
+        {transform: 'translateX(100%)', easing: 'ease-in-out'},
+        {transform: 'translateX(0%)', easing: 'ease-in-out'}
+      ], 1000);
+      await animationtools.waapiDone(animation);
       el.classList.remove('animation-progress');
       el.classList.add('animation-done');
       Object.assign(el.style, {
@@ -93,20 +88,19 @@ export class StackView extends HTMLElement {
         transition: '',
       });
     });
-
   }
 
   async dismiss() {
-    if (this.numItems === 1 && this.keepFirst)
+    if (this.keepFirst && this.numItems === 1)
       return;
 
     let dismissedItem = this.topItem;
-    dismissedItem.classList.toggle('dismissed');
-    Object.assign(dismissedItem.style, {
-      transition: 'transform 1s ease-in-out',
-      transform: 'translateX(100%)'
-    });
-    await animationtools.transitionEndPromise(dismissedItem, 1000);
+    dismissedItem.classList.add('dismissed');
+    const animation = dismissedItem.animate([
+      {transform: 'translateX(0%)', easing: 'ease-in-out'},
+      {transform: 'translateX(100%)', easing: 'ease-in-out'},
+    ], 1000);
+    await animationtools.waapiDone(animation);
     this.dispatchEvent(new CustomEvent('top-view-dismiss', {bubbles: true}));
   }
 
