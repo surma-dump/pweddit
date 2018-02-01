@@ -8,6 +8,7 @@ function genUID() {
 }
 
 const state = {
+  type: 'stack-view',
   keepFirst: true,
   items: [
     {

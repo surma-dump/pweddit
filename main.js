@@ -4,6 +4,12 @@ import '/function.transferhandler.js';
 import {render} from '/lit-property.js';
 import * as streamtools from '/streamtools.js';
 import {StackView} from '/stack-view.js';
+import {ViewA} from '/view-a.js';
+import {ViewB} from '/view-b.js';
+
+customElements.define(StackView.tag, StackView);
+customElements.define(ViewA.tag, ViewA);
+customElements.define(ViewB.tag, ViewB);
 
 async function init() {
   const app = Comlink.proxy(new Worker('worker.js'));
@@ -11,7 +17,7 @@ async function init() {
   app.addEventListener('view-model-change', async ev => {
     const state = ev.detail;
     console.log(state);
-    render(StackView.lightDom(state), document.body);
+    render(customElements.get(state.type).lightDom(state), document.body);
   });
   await app.update();
 }

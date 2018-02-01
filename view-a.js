@@ -47,5 +47,3 @@ export class ViewA extends HTMLElement {
     `;
   }
 }
-
-customElements.define(ViewA.tag, ViewA);

@@ -2,8 +2,6 @@ import {html, render} from '/lit-html.js';
 import {repeat} from '/repeat.js';
 import * as streamtools from '/streamtools.js';
 import * as animationtools from '/animationtools.js';
-import {ViewA} from '/view-a.js';
-import {ViewB} from '/view-b.js';
 
 const shadowDomTemplate = state => html`
   <style>
@@ -26,11 +24,6 @@ const shadowDomTemplate = state => html`
   <slot>
   </slot>
 `;
-
-const componentMap = new Map([
-  ['view-a', ViewA],
-  ['view-b', ViewB],
-]);
 
 export class StackView extends HTMLElement {
   static get tag() {return 'stack-view';}
@@ -107,10 +100,8 @@ export class StackView extends HTMLElement {
   static lightDom(state) {
     return html`
       <stack-view keep-first=${state.keepFirst}>
-        ${repeat(state.items, item => item.uid, item => componentMap.get(item.type).lightDom(item))}
+        ${repeat(state.items, item => item.uid, item => customElements.get(item.type).lightDom(item))}
       </stack-view>
     `;
   }
 }
-
-customElements.define(StackView.tag, StackView);
