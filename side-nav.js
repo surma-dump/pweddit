@@ -11,9 +11,11 @@ const shadowDomTemplate = state => html`
     height: 100vh;
     transform: translateX(-100%);
     background-color: white;
+    pointer-events: none;
   }
   :host([open]) #sidenav {
     transform: translateX(0%);
+    pointer-events: initial;
   }
 </style>
 <slot id="mainslot"></slot>
@@ -33,10 +35,37 @@ export class SideNav extends HTMLElement {
   }
 
   async open() {
+    Object.assign(this._sidenav.style, {
+      transition: 'transform 1s ease-in-out'
+    });
+    await animationtools.requestAnimationFramePromise();
+    await animationtools.requestAnimationFramePromise();
+    Object.assign(this._sidenav.style, {
+      transform: 'translateX(0%)'
+    });
+    await animationtools.transitionEndPromise(this._sidenav);
+    Object.assign(this._sidenav.style, {
+      transition: '',
+      transform: ''
+    });
     this.setAttribute('open', '');
   }
 
-  close() {
+  async close() {
+    Object.assign(this._sidenav.style, {
+      transition: 'transform 1s ease-in-out',
+      pointerEvents: 'none'
+    });
+    await animationtools.requestAnimationFramePromise();
+    await animationtools.requestAnimationFramePromise();
+    Object.assign(this._sidenav.style, {
+      transform: 'translateX(-100%)'
+    });
+    await animationtools.transitionEndPromise(this._sidenav);
+    Object.assign(this._sidenav.style, {
+      transition: '',
+      pointerEvents: ''
+    });
     this.removeAttribute('open');
   }
 
