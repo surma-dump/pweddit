@@ -83,41 +83,18 @@ export class SideNav extends HTMLElement {
 
     if (this._dragDelta > 50)
       this.open();
+    else
+      this.close();
     this._dragStartX = null;
   }
 
   async open() {
-    Object.assign(this._sidenav.style, {
-      transition: 'transform 1s ease-in-out'
-    });
-    await animationtools.requestAnimationFramePromise();
-    await animationtools.requestAnimationFramePromise();
-    Object.assign(this._sidenav.style, {
-      transform: 'translateX(0%)'
-    });
-    await animationtools.transitionEndPromise(this._sidenav);
-    Object.assign(this._sidenav.style, {
-      transition: '',
-      transform: ''
-    });
+    await animationtools.animateTo(this._sidenav, 'transform 1s ease-in-out', {transform: 'translateX(0%)'});
     this.setAttribute('open', '');
   }
 
   async close() {
-    Object.assign(this._sidenav.style, {
-      transition: 'transform 1s ease-in-out',
-      pointerEvents: 'none'
-    });
-    await animationtools.requestAnimationFramePromise();
-    await animationtools.requestAnimationFramePromise();
-    Object.assign(this._sidenav.style, {
-      transform: 'translateX(-100%)'
-    });
-    await animationtools.transitionEndPromise(this._sidenav);
-    Object.assign(this._sidenav.style, {
-      transition: '',
-      pointerEvents: ''
-    });
+    await animationtools.animateTo(this._sidenav, 'transform 1s ease-in-out', {transform: 'translateX(-100%)'});
     this.removeAttribute('open');
   }
 

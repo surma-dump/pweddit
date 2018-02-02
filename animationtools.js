@@ -23,3 +23,11 @@ export function waapiDone(animation) {
     animation.addEventListener('finish', resolve, {once: true});
   })
 }
+
+export async function animateTo(el, transition, style) {
+  Object.assign(el.style, {transition});
+  await requestAnimationFramePromise();
+  await requestAnimationFramePromise();
+  Object.assign(el.style, style);
+  await transitionEndPromise(el);
+}

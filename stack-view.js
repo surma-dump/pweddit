@@ -136,18 +136,7 @@ export class StackView extends HTMLElement {
 
     let el = this.topItem;
     el.classList.add('dismissed');
-    Object.assign(el.style, {
-      transition: 'transform 1s ease-in-out',
-    });
-    await animationtools.requestAnimationFramePromise();
-    await animationtools.requestAnimationFramePromise();
-    Object.assign(el.style, {
-      transform: 'translateX(100%)'
-    });
-    await animationtools.transitionEndPromise(el);
-    Object.assign(el.style, {
-      transition: ''
-    });
+    await animationtools.animateTo(el, 'transform 1s ease-in-out', {transform: 'translateX(100%)'});
     this.dispatchEvent(new CustomEvent('top-view-dismiss', {bubbles: true}));
   }
 

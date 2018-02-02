@@ -21,18 +21,18 @@ const state = {
         title: 'Base view. Can’t dismiss me.',
       }
     },
-    {
-      uid: genUID(),
-      type: 'view-b',
-      title: 'stack 2',
-      skipAnimation: true
-    },
-    {
-      uid: genUID(),
-      type: 'view-a',
-      title: 'stack 3',
-      skipAnimation: true
-    }
+    // {
+    //   uid: genUID(),
+    //   type: 'view-b',
+    //   title: 'stack 2',
+    //   skipAnimation: true
+    // },
+    // {
+    //   uid: genUID(),
+    //   type: 'view-a',
+    //   title: 'stack 3',
+    //   skipAnimation: true
+    // }
   ]
 };
 
