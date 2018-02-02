@@ -1,5 +1,5 @@
 import * as animationtools from '/animationtools.js';
-import {html, render} from '/lit-html.js';
+import {html, render} from '/custom-lit.js';
 
 const shadowDomTemplate = state => html`
 <style>

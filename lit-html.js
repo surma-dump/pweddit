@@ -11,66 +11,120 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-/**
- * TypeScript has a problem with precompiling templates literals
- * https://github.com/Microsoft/TypeScript/issues/17956
- *
- * TODO(justinfagnani): Run tests compiled to ES5 with both Babel and
- * TypeScript to verify correctness.
- */
-const envCachesTemplates = ((t) => t() === t())(() => ((s) => s) ``);
 // The first argument to JS template tags retain identity across multiple
 // calls to a tag for the same literal, so we can cache work done per literal
 // in a Map.
-const templates = new Map();
-const svgTemplates = new Map();
+export const templateCaches = new Map();
 /**
  * Interprets a template literal as an HTML template that can efficiently
  * render to and update a container.
  */
-export const html = (strings, ...values) => litTag(strings, values, templates, false);
+export const html = (strings, ...values) => new TemplateResult(strings, values, 'html');
 /**
  * Interprets a template literal as an SVG template that can efficiently
  * render to and update a container.
  */
-export const svg = (strings, ...values) => litTag(strings, values, svgTemplates, true);
-function litTag(strings, values, templates, isSvg) {
-    const key = envCachesTemplates ?
-        strings :
-        strings.join('{{--uniqueness-workaround--}}');
-    let template = templates.get(key);
-    if (template === undefined) {
-        template = new Template(strings, isSvg);
-        templates.set(key, template);
-    }
-    return new TemplateResult(template, values);
-}
+export const svg = (strings, ...values) => new SVGTemplateResult(strings, values, 'svg');
 /**
  * The return type of `html`, which holds a Template and the values from
  * interpolated expressions.
  */
 export class TemplateResult {
-    constructor(template, values) {
-        this.template = template;
+    constructor(strings, values, type, partCallback = defaultPartCallback) {
+        this.strings = strings;
         this.values = values;
+        this.type = type;
+        this.partCallback = partCallback;
     }
+    /**
+     * Returns a string of HTML used to create a <template> element.
+     */
+    getHTML() {
+        const l = this.strings.length - 1;
+        let html = '';
+        let isTextBinding = true;
+        for (let i = 0; i < l; i++) {
+            const s = this.strings[i];
+            html += s;
+            // We're in a text position if the previous string closed its tags.
+            // If it doesn't have any tags, then we use the previous text position
+            // state.
+            const closing = findTagClose(s);
+            isTextBinding = closing > -1 ? closing < s.length : isTextBinding;
+            html += isTextBinding ? nodeMarker : marker;
+        }
+        html += this.strings[l];
+        return html;
+    }
+    getTemplateElement() {
+        const template = document.createElement('template');
+        template.innerHTML = this.getHTML();
+        return template;
+    }
+}
+/**
+ * A TemplateResult for SVG fragments.
+ *
+ * This class wraps HTMl in an <svg> tag in order to parse its contents in the
+ * SVG namespace, then modifies the template to remove the <svg> tag so that
+ * clones only container the original fragment.
+ */
+export class SVGTemplateResult extends TemplateResult {
+    getHTML() {
+        return `<svg>${super.getHTML()}</svg>`;
+    }
+    getTemplateElement() {
+        const template = super.getTemplateElement();
+        const content = template.content;
+        const svgElement = content.firstChild;
+        content.removeChild(svgElement);
+        reparentNodes(content, svgElement.firstChild);
+        return template;
+    }
+}
+/**
+ * The default TemplateFactory which caches Templates keyed on
+ * result.type and result.strings.
+ */
+export function defaultTemplateFactory(result) {
+    let templateCache = templateCaches.get(result.type);
+    if (templateCache === undefined) {
+        templateCache = new Map();
+        templateCaches.set(result.type, templateCache);
+    }
+    let template = templateCache.get(result.strings);
+    if (template === undefined) {
+        template = new Template(result, result.getTemplateElement());
+        templateCache.set(result.strings, template);
+    }
+    return template;
 }
 /**
  * Renders a template to a container.
  *
  * To update a container with new values, reevaluate the template literal and
  * call `render` with the new result.
+ *
+ * @param result a TemplateResult created by evaluating a template tag like
+ *     `html` or `svg.
+ * @param container A DOM parent to render to. The entire contents are either
+ *     replaced, or efficiently updated if the same result type was previous
+ *     rendered there.
+ * @param templateFactory a function to create a Template or retreive one from
+ *     cache.
  */
-export function render(result, container, partCallback = defaultPartCallback) {
+export function render(result, container, templateFactory = defaultTemplateFactory) {
+    const template = templateFactory(result);
     let instance = container.__templateInstance;
     // Repeat render, just call update()
-    if (instance !== undefined && instance.template === result.template &&
-        instance._partCallback === partCallback) {
+    if (instance !== undefined && instance.template === template &&
+        instance._partCallback === result.partCallback) {
         instance.update(result.values);
         return;
     }
     // First render, create a new TemplateInstance and append it
-    instance = new TemplateInstance(result.template, partCallback);
+    instance =
+        new TemplateInstance(template, result.partCallback, templateFactory);
     container.__templateInstance = instance;
     const fragment = instance._clone();
     instance.update(result.values);
@@ -78,10 +132,14 @@ export function render(result, container, partCallback = defaultPartCallback) {
     container.appendChild(fragment);
 }
 /**
- * An expression marker with embedded unique key to avoid
- * https://github.com/PolymerLabs/lit-html/issues/62
+ * An expression marker with embedded unique key to avoid collision with
+ * possible text in templates.
  */
 const marker = `{{lit-${String(Math.random()).slice(2)}}}`;
+/**
+ * An expression marker used text-posisitions, not attribute positions,
+ * in template.
+ */
 const nodeMarker = `<!--${marker}-->`;
 const markerRegex = new RegExp(`${marker}|${nodeMarker}`);
 /**
@@ -147,17 +205,14 @@ export class TemplatePart {
         this.strings = strings;
     }
 }
+/**
+ * An updateable Template that tracks the location of dynamic parts.
+ */
 export class Template {
-    constructor(strings, svg = false) {
+    constructor(result, element) {
         this.parts = [];
-        const element = this.element = document.createElement('template');
-        element.innerHTML = this._getHtml(strings, svg);
-        const content = element.content;
-        if (svg) {
-            const svgElement = content.firstChild;
-            content.removeChild(svgElement);
-            reparentNodes(content, svgElement.firstChild);
-        }
+        this.element = element;
+        const content = this.element.content;
         // Edge needs all 4 parameters present; IE11 needs 3rd parameter to be null
         const walker = document.createTreeWalker(content, 133 /* NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT |
                NodeFilter.SHOW_TEXT */, null, false);
@@ -191,7 +246,7 @@ export class Template {
                 while (count-- > 0) {
                     // Get the template literal section leading up to the first
                     // expression in this attribute attribute
-                    const stringForPart = strings[partIndex];
+                    const stringForPart = result.strings[partIndex];
                     // Find the attribute name
                     const attributeNameInPart = lastAttributeNameRegex.exec(stringForPart)[1];
                     // Find the corresponding attribute
@@ -264,26 +319,6 @@ export class Template {
             n.parentNode.removeChild(n);
         }
     }
-    /**
-     * Returns a string of HTML used to create a <template> element.
-     */
-    _getHtml(strings, svg) {
-        const l = strings.length - 1;
-        let html = '';
-        let isTextBinding = true;
-        for (let i = 0; i < l; i++) {
-            const s = strings[i];
-            html += s;
-            // We're in a text position if the previous string closed its tags.
-            // If it doesn't have any tags, then we use the previous text position
-            // state.
-            const closing = findTagClose(s);
-            isTextBinding = closing > -1 ? closing < s.length : isTextBinding;
-            html += isTextBinding ? nodeMarker : marker;
-        }
-        html += strings[l];
-        return svg ? `<svg>${html}</svg>` : html;
-    }
 }
 /**
  * Returns a value ready to be inserted into a Part from a user-provided value.
@@ -306,7 +341,13 @@ export const directive = (f) => {
     return f;
 };
 const isDirective = (o) => typeof o === 'function' && o.__litDirective === true;
-const directiveValue = {};
+/**
+ * A sentinel value that signals that a value was handled by a directive and
+ * should not be written to the DOM.
+ */
+export const directiveValue = {};
+const isPrimitiveValue = (value) => value === null ||
+    !(typeof value === 'object' || typeof value === 'function');
 export class AttributePart {
     constructor(instance, element, name, strings) {
         this.instance = instance;
@@ -314,6 +355,7 @@ export class AttributePart {
         this.name = name;
         this.strings = strings;
         this.size = strings.length - 1;
+        this._previousValues = [];
     }
     _interpolate(values, startIndex) {
         const strings = this.strings;
@@ -335,9 +377,36 @@ export class AttributePart {
         }
         return text + strings[l];
     }
+    _equalToPreviousValues(values, startIndex) {
+        for (let i = startIndex; i < startIndex + this.size; i++) {
+            if (this._previousValues[i] !== values[i] ||
+                !isPrimitiveValue(values[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
     setValue(values, startIndex) {
-        const text = this._interpolate(values, startIndex);
-        this.element.setAttribute(this.name, text);
+        if (this._equalToPreviousValues(values, startIndex)) {
+            return;
+        }
+        const s = this.strings;
+        let value;
+        if (s.length === 2 && s[0] === '' && s[1] === '') {
+            // An expression that occupies the whole attribute value will leave
+            // leading and trailing empty strings.
+            value = getValue(this, values[startIndex]);
+            if (Array.isArray(value)) {
+                value = value.join('');
+            }
+        }
+        else {
+            value = this._interpolate(values, startIndex);
+        }
+        if (value !== directiveValue) {
+            this.element.setAttribute(this.name, value);
+        }
+        this._previousValues = values;
     }
 }
 export class NodePart {
@@ -352,8 +421,7 @@ export class NodePart {
         if (value === directiveValue) {
             return;
         }
-        if (value === null ||
-            !(typeof value === 'object' || typeof value === 'function')) {
+        if (isPrimitiveValue(value)) {
             // Handle primitive values
             // If the value didn't change, do nothing
             if (value === this._previousValue) {
@@ -406,14 +474,13 @@ export class NodePart {
         this._previousValue = value;
     }
     _setTemplateResult(value) {
+        const template = this.instance._getTemplate(value);
         let instance;
-        if (this._previousValue &&
-            this._previousValue.template === value.template) {
+        if (this._previousValue && this._previousValue.template === template) {
             instance = this._previousValue;
         }
         else {
-            instance =
-                new TemplateInstance(value.template, this.instance._partCallback);
+            instance = new TemplateInstance(template, this.instance._partCallback, this.instance._getTemplate);
             this._setNode(instance._clone());
             this._previousValue = instance;
         }
@@ -496,10 +563,11 @@ export const defaultPartCallback = (instance, templatePart, node) => {
  * with new values.
  */
 export class TemplateInstance {
-    constructor(template, partCallback = defaultPartCallback) {
+    constructor(template, partCallback, getTemplate) {
         this._parts = [];
         this.template = template;
         this._partCallback = partCallback;
+        this._getTemplate = getTemplate;
     }
     update(values) {
         let valueIndex = 0;

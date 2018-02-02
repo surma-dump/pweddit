@@ -1,4 +1,4 @@
-import {render, html} from '/lit-html.js';
+import {html, render} from '/custom-lit.js';
 
 const shadowDomTemplate = state => html`
   <style>

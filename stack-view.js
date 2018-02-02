@@ -1,4 +1,4 @@
-import {html, render} from '/lit-html.js';
+import {html, render} from '/custom-lit.js';
 import {repeat} from '/repeat.js';
 import * as animationtools from '/animationtools.js';
 

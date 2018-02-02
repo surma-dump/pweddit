@@ -1,7 +1,7 @@
 import '/comlink.global.min.js';
 import '/event.transferhandler.js';
 import '/function.transferhandler.js';
-import {render} from '/lit-property.js';
+import {html, render} from '/custom-lit.js';
 import * as streamtools from '/streamtools.js';
 import {StackView} from '/stack-view.js';
 import {SideNav} from '/side-nav.js';
