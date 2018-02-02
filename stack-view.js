@@ -57,7 +57,7 @@ export class StackView extends HTMLElement {
   }
 
   async _onTouchEnd(ev) {
-    if (!this._dragStartX)
+    if (this._dragStartX === null)
       return;
     ev.preventDefault();
     ev.stopPropagation();

@@ -15,6 +15,7 @@ const shadowDomTemplate = state => html`
     transform: translateX(-100%);
     background-color: white;
     pointer-events: none;
+    overflow: hidden;
   }
   :host([open]) #sidenav {
     transform: translateX(0%);
@@ -52,10 +53,37 @@ export class SideNav extends HTMLElement {
     this._sidenavSize = this._sidenav.getBoundingClientRect();
   }
 
+  get isOpen() {
+    return this.hasAttribute('open');
+  }
+
+  get isClosed() {
+    return !this.isOpen;
+  }
+
+  _isSidenavElement(el) {
+    // If the element passed to this function is either:
+    // - a child to any of the nodes that have been slotted into the <slot>
+    // - or a child to the sidenav div
+    // than the element is part of the sidenav.
+    const assignedNodes = this._sidenav.querySelector('slot').assignedNodes();
+    assignedNodes.push(this._sidenav);
+    do {
+      if (assignedNodes.includes(el))
+        return true;
+      el = el.parentElement;
+    } while(el);
+    return false;
+  }
+
   _onTouchStart(ev) {
     if (ev.touches.length > 1)
       return;
-    if (ev.touches[0].clientX > SideNav.SWIPE_THRESHOLD)
+    if (this.isClosed && ev.touches[0].clientX > SideNav.SWIPE_THRESHOLD)
+      return;
+    // ev.touches[0].target ignores ShadowDOM elements. The backdrop of our sidenav
+    // is a ShadowDOM element, so we use path instead.
+    if (this.isOpen && !this._isSidenavElement(ev.path[0]))
       return;
     this._dragStartX = ev.touches[0].clientX;
     ev.preventDefault();
@@ -69,22 +97,26 @@ export class SideNav extends HTMLElement {
     ev.stopPropagation();
 
     this._dragDelta = ev.touches[0].clientX - this._dragStartX;
-    const move = Math.min(this._dragDelta, this._sidenavSize.width);
+    const move = this.isClosed ?
+      Math.min(this._dragDelta, this._sidenavSize.width) :
+      Math.min(this._dragDelta, 0);
+    const start = this.isClosed ? '-100%' : '0%';
     Object.assign(this._sidenav.style, {
-      transform: `translateX(calc(-100% + ${move}px))`
+      transform: `translateX(calc(${start} + ${move}px))`,
+      transition: ''
     });
   }
 
   _onTouchEnd(ev) {
-    if (!this._dragStartX)
+    if (this._dragStartX === null)
       return;
     ev.preventDefault();
     ev.stopPropagation();
 
-    if (this._dragDelta > 50)
-      this.open();
+    if (Math.abs(this._dragDelta) > 50)
+      this.toggle();
     else
-      this.close();
+      this._reset();
     this._dragStartX = null;
   }
 
@@ -98,10 +130,24 @@ export class SideNav extends HTMLElement {
     this.removeAttribute('open');
   }
 
+  async _reset() {
+    if (this.isOpen)
+      await this.open();
+    else
+      await this.close();
+  }
+
+  async toggle() {
+    if (this.isOpen)
+      await this.close();
+    else
+      await this.open();
+  }
+
   static lightDom(state) {
     return html`
       <side-nav state$=${state}>
-        <div slot="sidenav">${state.sidenav}</div>
+        <div slot="sidenav"><h1>${state.sidenav}</h1></div>
         ${customElements.get(state.main.type).lightDom(state.main)}
       </side-nav>
     `;
