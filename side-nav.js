@@ -1,5 +1,5 @@
 import * as animationtools from '/animationtools.js';
-import {html, render} from '/custom-lit.js';
+import {html, render, compileTime} from '/custom-lit.js';
 
 const shadowDomTemplate = state => html`
 <style>
@@ -143,13 +143,17 @@ export class SideNav extends HTMLElement {
     else
       await this.open();
   }
-
   static lightDom(state) {
     return html`
-      <side-nav state$=${state}>
-        <div slot="sidenav"><h1>${state.sidenav}</h1></div>
-        ${customElements.get(state.main.type).lightDom(state.main)}
-      </side-nav>
+      <${compileTime(this.tag)} state$=${state}>
+        ${this.children(state)}
+      </${compileTime(this.tag)}>
+    `;
+  }
+  static children(state) {
+    return html`
+      <div slot="sidenav"><h1>${state.sidenav}</h1></div>
+      ${customElements.get(state.main.type).lightDom(state.main)}
     `;
   }
 }

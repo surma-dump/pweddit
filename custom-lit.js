@@ -1,7 +1,31 @@
 import {TemplateResult, defaultPartCallback, AttributePart} from '/lit-html.js';
 export * from '/lit-html.js';
 
+const ctMarker = Symbol('compiletime');
+export function compileTime(value) {
+  return {
+    value,
+    [ctMarker]: true
+  };
+}
+
+export function isCompileTime(value) {
+  return !!value[ctMarker];
+}
+
+export function getCompileTimeValue(value) {
+  return value.value;
+}
+
 export function html(strings, ...values) {
+  strings = strings.slice();
+  while (values.some(isCompileTime)) {
+    const i = values.findIndex(isCompileTime);
+    strings[i] = `${strings[i]}${getCompileTimeValue(values[i])}${strings[i+1]}`;
+    strings.splice(i+1, 1);
+    values.splice(i, 1);
+  }
+  console.log(strings, values);
   return new TemplateResult(strings, values, 'html', propertyPartCallback);
 }
 
