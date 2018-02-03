@@ -2,30 +2,7 @@ import {TemplateResult, defaultPartCallback, AttributePart} from '/lit/lit-html.
 export * from '/lit/lit-html.js';
 export * from '/lit/lib/repeat.js';
 
-const ctMarker = Symbol('compiletime');
-export function compileTime(value) {
-  return {
-    value,
-    [ctMarker]: true
-  };
-}
-
-export function isCompileTime(value) {
-  return !!value[ctMarker];
-}
-
-export function getCompileTimeValue(value) {
-  return value.value;
-}
-
 export function html(strings, ...values) {
-  strings = strings.slice();
-  while (values.some(isCompileTime)) {
-    const i = values.findIndex(isCompileTime);
-    strings[i] = `${strings[i]}${getCompileTimeValue(values[i])}${strings[i+1]}`;
-    strings.splice(i+1, 1);
-    values.splice(i, 1);
-  }
   return new TemplateResult(strings, values, 'html', propertyPartCallback);
 }
 

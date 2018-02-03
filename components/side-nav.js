@@ -1,37 +1,37 @@
 import * as animationtools from '/helpers/animationtools.js';
-import {html, render, compileTime} from '/lit/custom-lit.js';
+import {html, render} from '/lit/custom-lit.js';
 
 const shadowDomTemplate = state => html`
-<style>
-  :host {
-    position: relative;
-  }
-  #sidenav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 30vw;
-    height: 100vh;
-    transform: translateX(-100%);
-    background-color: white;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  :host([open]) #sidenav {
-    transform: translateX(0%);
-    pointer-events: initial;
-  }
-  #mainslot::slotted(*) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
+  <style>
+    :host {
+      position: relative;
+    }
+    #sidenav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 30vw;
+      height: 100vh;
+      transform: translateX(-100%);
+      background-color: white;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    :host([open]) #sidenav {
+      transform: translateX(0%);
+      pointer-events: initial;
+    }
+    #mainslot::slotted(*) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
   </style>
   <slot id="mainslot"></slot>
   <div id="sidenav">
-  <slot name="sidenav"></slot>
+    <slot name="sidenav"></slot>
   </div>
   `;
 
