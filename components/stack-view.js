@@ -1,6 +1,5 @@
-import {html, render} from '/custom-lit.js';
-import {repeat} from '/repeat.js';
-import * as animationtools from '/animationtools.js';
+import {html, render, repeat} from '/lit/custom-lit.js';
+import * as animationtools from '/helpers/animationtools.js';
 
 const shadowDomTemplate = state => html`
   <style>
@@ -111,7 +110,6 @@ export class StackView extends HTMLElement {
     const elements = ev.target.assignedNodes().filter(n => n.nodeType === 1);
     const unhandledElements =
       elements
-        .filter(n => !n.state.skipAnimation)
         .filter(n => !n.classList.contains('animation-progress'))
         .filter(n => !n.classList.contains('animation-done'));
     unhandledElements.forEach(async el => {
@@ -138,13 +136,5 @@ export class StackView extends HTMLElement {
     el.classList.add('dismissed');
     await animationtools.animateTo(el, 'transform 1s ease-in-out', {transform: 'translateX(100%)'});
     this.dispatchEvent(new CustomEvent('top-view-dismiss', {bubbles: true}));
-  }
-
-  static lightDom(state) {
-    return html`
-      <stack-view keep-first=${state.keepFirst} state$=${state}>
-        ${repeat(state.items, item => item.uid, item => customElements.get(item.type).lightDom(item))}
-      </stack-view>
-    `;
   }
 }

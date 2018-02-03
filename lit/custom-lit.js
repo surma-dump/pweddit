@@ -1,5 +1,6 @@
-import {TemplateResult, defaultPartCallback, AttributePart} from '/lit-html.js';
-export * from '/lit-html.js';
+import {TemplateResult, defaultPartCallback, AttributePart} from '/lit/lit-html.js';
+export * from '/lit/lit-html.js';
+export * from '/lit/lib/repeat.js';
 
 const ctMarker = Symbol('compiletime');
 export function compileTime(value) {
@@ -25,7 +26,6 @@ export function html(strings, ...values) {
     strings.splice(i+1, 1);
     values.splice(i, 1);
   }
-  console.log(strings, values);
   return new TemplateResult(strings, values, 'html', propertyPartCallback);
 }
 

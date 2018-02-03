@@ -1,17 +1,16 @@
-import '/comlink.global.min.js';
-import '/event.transferhandler.js';
-import '/function.transferhandler.js';
-import {html, render} from '/custom-lit.js';
-import * as streamtools from '/streamtools.js';
-import {StackView} from '/stack-view.js';
-import {SideNav} from '/side-nav.js';
-import {ViewA} from '/view-a.js';
-import {ViewB} from '/view-b.js';
+import '/comlink/comlink.global.min.js';
+import '/comlink/event.transferhandler.js';
+import '/comlink/function.transferhandler.js';
+import {html, render} from '/lit/custom-lit.js';
+import {StackView} from '/views/stack-view.js';
+import {SideNav} from '/views/side-nav.js';
+import {ViewA} from '/views/view-a.js';
+import {ViewB} from '/views/view-b.js';
 
-customElements.define(StackView.tag, StackView);
-customElements.define(SideNav.tag, SideNav);
-customElements.define(ViewA.tag, ViewA);
-customElements.define(ViewB.tag, ViewB);
+customElements.define('stack-view', StackView);
+customElements.define('side-nav', SideNav);
+customElements.define('view-a', ViewA);
+customElements.define('view-b', ViewB);
 
 async function init() {
   const app = Comlink.proxy(new Worker('worker.js'));

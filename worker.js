@@ -1,6 +1,6 @@
-importScripts('/comlink.global.min.js');
-importScripts('/event.transferhandler.js');
-importScripts('/function.transferhandler.js');
+importScripts('/comlink/comlink.global.min.js');
+importScripts('/comlink/event.transferhandler.js');
+importScripts('/comlink/function.transferhandler.js');
 
 function genUID() {
   const arr = new Array(8).fill(0).map(_ => Math.floor(Math.random() * 256));

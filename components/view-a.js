@@ -1,20 +1,21 @@
-import {html, render} from '/custom-lit.js';
+import {html, render} from '/lit/custom-lit.js';
 
 const shadowDomTemplate = state => html`
   <style>
     :host {
       display: block;
-      background-color: blue;
+      background-color: red;
     }
   </style>
   <slot></slot>
   <button>Clone me</button>
 `;
 
-export class ViewB extends HTMLElement {
-  static get tag() {return 'view-b';}
+export class ViewA extends HTMLElement {
+  static get tag() {return 'view-a';}
   constructor() {
     super();
+    this._state = {};
     this.attachShadow({mode: 'open'});
     render(shadowDomTemplate(), this.shadowRoot);
     this.shadowRoot.querySelector('button').onclick = _ => this.cloneMe();
@@ -23,20 +24,18 @@ export class ViewB extends HTMLElement {
   cloneMe() {
     this.dispatchEvent(new CustomEvent('add-view', {
       detail: {
-        type: 'view-b',
-        title: `Clone of ${this.state.title}`,
-        skipAnimation: true
+        type: 'view-a',
+        title: `Clone of ${this.state.title}`
       },
       bubbles: true
     }));
   }
 
+  set state(value) {
+    this._state = value;
+  }
 
-  static lightDom(state) {
-    return html`
-      <view-b state$=${state}>
-        <h1>${state.title}</h1>
-      </view-b>
-    `;
+  get state() {
+    return this._state;
   }
 }

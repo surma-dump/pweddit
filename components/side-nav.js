@@ -1,5 +1,5 @@
-import * as animationtools from '/animationtools.js';
-import {html, render, compileTime} from '/custom-lit.js';
+import * as animationtools from '/helpers/animationtools.js';
+import {html, render, compileTime} from '/lit/custom-lit.js';
 
 const shadowDomTemplate = state => html`
 <style>
@@ -28,16 +28,16 @@ const shadowDomTemplate = state => html`
     right: 0;
     bottom: 0;
   }
-</style>
-<slot id="mainslot"></slot>
-<div id="sidenav">
+  </style>
+  <slot id="mainslot"></slot>
+  <div id="sidenav">
   <slot name="sidenav"></slot>
-</div>
-`;
+  </div>
+  `;
 
-export class SideNav extends HTMLElement {
-  static get tag() {return 'side-nav';}
-  static get SWIPE_THRESHOLD() {return 2;}
+  export class SideNav extends HTMLElement {
+    static get tag() {return 'side-nav';}
+    static get SWIPE_THRESHOLD() {return 2;}
 
   constructor() {
     super();
@@ -78,7 +78,7 @@ export class SideNav extends HTMLElement {
 
   _onTouchStart(ev) {
     if (ev.touches.length > 1)
-      return;
+    return;
     if (this.isClosed && ev.touches[0].clientX > SideNav.SWIPE_THRESHOLD)
       return;
     // ev.touches[0].target ignores ShadowDOM elements. The backdrop of our sidenav
@@ -109,14 +109,14 @@ export class SideNav extends HTMLElement {
 
   _onTouchEnd(ev) {
     if (this._dragStartX === null)
-      return;
+    return;
     ev.preventDefault();
     ev.stopPropagation();
 
     if (Math.abs(this._dragDelta) > 50)
-      this.toggle();
+    this.toggle();
     else
-      this._reset();
+    this._reset();
     this._dragStartX = null;
   }
 
@@ -143,17 +143,5 @@ export class SideNav extends HTMLElement {
     else
       await this.open();
   }
-  static lightDom(state) {
-    return html`
-      <${compileTime(this.tag)} state$=${state}>
-        ${this.children(state)}
-      </${compileTime(this.tag)}>
-    `;
-  }
-  static children(state) {
-    return html`
-      <div slot="sidenav"><h1>${state.sidenav}</h1></div>
-      ${customElements.get(state.main.type).lightDom(state.main)}
-    `;
-  }
+
 }
