@@ -1,5 +1,7 @@
-export default function eventBinder(clazz) {
-  return class extends clazz {
+import mixinMemoize from '/helpers/mixin-memoize.js';
+
+export default mixinMemoize(clazz =>
+  class extends clazz {
     constructor() {
       super();
       for(const [eventName, handler] of Object.entries(this.handlerMap))
@@ -18,4 +20,4 @@ export default function eventBinder(clazz) {
         this.removeEventListener(eventName, this[handler]);
     }
   }
-}
+);
