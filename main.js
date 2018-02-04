@@ -65,7 +65,7 @@ const viewByType = new Map([
           ${repeat(state.stacks, i => html`${viewByType.get(i.type).template(i)}`)}
         </pweddit-stack>
       `,
-      postrender: async (oldState, newState) => {
+      postrender: async (oldState, newState, parentAnimation) => {
         if (newState.stacks.length > oldState.stacks.length)
           await document.querySelector('pweddit-stack').slideIn();
       },
@@ -74,7 +74,7 @@ const viewByType = new Map([
   [
     'main', {
       prerender: async (oldState, newState) => {
-        await viewByType.get(oldState.type).prerender(oldState, newState);
+        await viewByType.get(oldState.type).prerender(oldState, newState, _ => {});
       },
       template: state => html`
         <header>
@@ -83,7 +83,7 @@ const viewByType = new Map([
         ${viewByType.get(state.type).template(state)}
       `,
       postrender: async (oldState, newState) => {
-        await viewByType.get(newState.type).postrender(oldState, newState);
+        await viewByType.get(newState.type).postrender(oldState, newState, _ => {});
       },
     },
   ],
