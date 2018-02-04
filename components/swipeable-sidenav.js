@@ -1,5 +1,7 @@
 import * as animationtools from '/helpers/animationtools.js';
 import litShadow from '/helpers/lit-shadow.js';
+import eventBinder from '/helpers/event-binder.js';
+import callbackBase from '/helpers/callback-base.js';
 import {html, render} from '/lit/custom-lit.js';
 
 const tpl = state => html`
@@ -36,18 +38,25 @@ const tpl = state => html`
   </div>
   `;
 
-  export default class SwipeableSidenav extends litShadow(tpl, HTMLElement) {
+  const handlerMap = {
+    'touchstart': '_onTouchStart',
+    'touchmove': '_onTouchMove',
+    'touchend': '_onTouchEnd',
+    'mousedown': '_onTouchStart',
+    'mousemove': '_onTouchMove',
+    'mouseup': '_onTouchEnd',
+  }
+
+  export default class SwipeableSidenav extends eventBinder(handlerMap, litShadow(tpl, callbackBase(HTMLElement))) {
     static get SWIPE_THRESHOLD() {return 10;}
 
   constructor() {
     super();
     this._sidenav = this.shadowRoot.querySelector('#sidenav');
-    this.addEventListener('touchstart', this._onTouchStart.bind(this));
-    this.addEventListener('touchmove', this._onTouchMove.bind(this));
-    this.addEventListener('touchend', this._onTouchEnd.bind(this));
   }
 
   connectedCallback() {
+    super.connectedCallback();
     this._sidenavSize = this._sidenav.getBoundingClientRect();
   }
 
@@ -75,15 +84,16 @@ const tpl = state => html`
   }
 
   _onTouchStart(ev) {
-    if (ev.touches.length > 1)
-    return;
-    if (this.isClosed && ev.touches[0].clientX > SwipeableSidenav.SWIPE_THRESHOLD)
+    if (ev.touches && ev.touches.length > 1)
       return;
-    // ev.touches[0].target ignores ShadowDOM elements. The backdrop of our sidenav
-    // is a ShadowDOM element, so we use path instead.
+    const clientX = (ev.touches && ev.touches[0].clientX) || ev.clientX;
+    if (this.isClosed && clientX > SwipeableSidenav.SWIPE_THRESHOLD)
+      return;
+    // ev.touches[0].target (and event.target) ignores ShadowDOM elements. The
+    // backdrop of our sidenav is a ShadowDOM element, so we use path instead.
     if (this.isOpen && !this._isSidenavElement(ev.path[0]))
       return;
-    this._dragStartX = ev.touches[0].clientX;
+    this._dragStartX = clientX;
     ev.preventDefault();
     ev.stopPropagation();
   }
@@ -94,7 +104,8 @@ const tpl = state => html`
     ev.preventDefault();
     ev.stopPropagation();
 
-    this._dragDelta = ev.touches[0].clientX - this._dragStartX;
+    const clientX = (ev.touches && ev.touches[0].clientX) || ev.clientX;
+    this._dragDelta = clientX - this._dragStartX;
     const move = this.isClosed ?
       Math.min(this._dragDelta, this._sidenavSize.width) :
       Math.min(this._dragDelta, 0);

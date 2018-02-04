@@ -1,5 +1,7 @@
 import {html, render, repeat} from '/lit/custom-lit.js';
 import litShadow from '/helpers/lit-shadow.js';
+import callbackBase from '/helpers/callback-base.js';
+import eventBinder from '/helpers/event-binder.js';
 import * as animationtools from '/helpers/animationtools.js';
 
 const tpl = state => html`
@@ -19,7 +21,16 @@ const tpl = state => html`
   </slot>
 `;
 
-export default class SwipeableStack extends litShadow(tpl, HTMLElement) {
+const handlerMap = {
+  'touchstart': '_onTouchStart',
+  'touchmove': '_onTouchMove',
+  'touchend': '_onTouchEnd',
+  'mousedown': '_onTouchStart',
+  'mousemove': '_onTouchMove',
+  'mouseup': '_onTouchEnd',
+}
+
+export default class SwipeableStack extends eventBinder(handlerMap, litShadow(tpl, callbackBase(HTMLElement))) {
   static get SWIPE_THRESHOLD() {return 20;}
 
   constructor() {
@@ -31,11 +42,12 @@ export default class SwipeableStack extends litShadow(tpl, HTMLElement) {
   }
 
   _onTouchStart(ev) {
-    if (ev.touches.length > 1)
+    if (ev.touches && ev.touches.length > 1)
       return;
-    if (ev.touches[0].clientX > SwipeableStack.SWIPE_THRESHOLD)
+    const clientX = (ev.touches && ev.touches[0].clientX) || ev.clientX;
+    if (clientX > SwipeableStack.SWIPE_THRESHOLD)
       return;
-    this._dragStartX = ev.touches[0].clientX;
+    this._dragStartX = clientX;
     ev.preventDefault();
     ev.stopPropagation();
   }
@@ -46,7 +58,8 @@ export default class SwipeableStack extends litShadow(tpl, HTMLElement) {
     ev.preventDefault();
     ev.stopPropagation();
 
-    this._dragDelta = ev.touches[0].clientX - this._dragStartX;
+    const clientX = (ev.touches && ev.touches[0].clientX) || ev.clientX;
+    this._dragDelta = clientX - this._dragStartX;
     const move = Math.max(this._dragDelta, 0);
     Object.assign(this.topItem.style, {
       transform: `translateX(calc(${move}px))`

@@ -6,7 +6,7 @@ const defaultOpts = {
 
 export default function litShadow(tpl, clazz, opts = {}) {
   opts = Object.assign({}, defaultOpts, opts);
-  return class LitShadow extends clazz {
+  return class extends clazz {
     constructor() {
       super();
       this.attachShadow({mode: 'open'});

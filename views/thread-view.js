@@ -1,7 +1,7 @@
 import FlexList from '/components/flex-list.js';
 import litShadow from '/helpers/lit-shadow.js';
+import callbackBase from '/helpers/callback-base.js';
 import {html, render, repeat} from '/lit/custom-lit.js';
-
 
 const tpl = state => html`
   <style>
@@ -17,7 +17,7 @@ const tpl = state => html`
   <slot></slot>
 `;
 
-export default class ThreadView extends litShadow(tpl, HTMLElement) {
+export default class ThreadView extends litShadow(tpl, callbackBase(HTMLElement)) {
   static lightDom(state) {
     return html`
       <thread-view>

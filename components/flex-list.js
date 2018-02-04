@@ -1,5 +1,6 @@
 import {html, render} from '/lit/custom-lit.js';
 import litShadow from '/helpers/lit-shadow.js';
+import callbackBase from '/helpers/callback-base.js';
 
 const tpl = state => html`
   <style>
@@ -11,7 +12,7 @@ const tpl = state => html`
   <slot></slot>
 `;
 
-export default class FlexList extends litShadow(tpl, HTMLElement) {
+export default class FlexList extends litShadow(tpl, callbackBase(HTMLElement)) {
   static get observedAttributes() {return ['horizontal']}
 
   get horizontal() {
