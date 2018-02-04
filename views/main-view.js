@@ -9,7 +9,7 @@ export default class MainView extends SwipeableStack {
           <div slot="sidenav"><h1>${state.sidenav}</h1></div>
           ${customElements.get(state.root.type).lightDom(state.root)}
         </swipeable-sidenav>
-        ${repeat(state.items, item => item.uid, item => customElements.get(item.type).lightDom(item))}
+        ${repeat(state.views, item => item.uid, item => customElements.get(item.type).lightDom(item))}
       </main-view>
     `;
   }

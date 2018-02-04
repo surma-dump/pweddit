@@ -20,6 +20,10 @@ const tpl = state => html`
     ::slotted(*:not(img)) {
       flex-grow: 1;
     }
+    ::slotted(.meta) {
+      display: flex;
+      flex-direction: column;
+    }
   </style>
   <slot></slot>
 `;
@@ -29,8 +33,8 @@ export default class ThreadItem extends litShadow(tpl, HTMLElement) {
     return html`
       <thread-item>
         <img src="/images/kitty.jpg">
-        <section>
-          <p>${state.title}</p>
+        <section class="meta">
+          <a href="/comments/${state.thread_id}">${state.title}</a>
           <span>${state.author}</span>
           <span>/r/${state.subreddit}</span>
           <span>${state.date}</span>

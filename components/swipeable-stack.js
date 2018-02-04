@@ -20,7 +20,7 @@ const tpl = state => html`
 `;
 
 export default class SwipeableStack extends litShadow(tpl, HTMLElement) {
-  static get SWIPE_THRESHOLD() {return 10;}
+  static get SWIPE_THRESHOLD() {return 20;}
 
   constructor() {
     super();

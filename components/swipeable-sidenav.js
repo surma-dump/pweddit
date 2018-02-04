@@ -37,7 +37,7 @@ const tpl = state => html`
   `;
 
   export default class SwipeableSidenav extends litShadow(tpl, HTMLElement) {
-    static get SWIPE_THRESHOLD() {return 2;}
+    static get SWIPE_THRESHOLD() {return 10;}
 
   constructor() {
     super();
