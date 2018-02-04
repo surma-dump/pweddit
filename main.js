@@ -7,6 +7,7 @@ import SubredditView from '/views/subreddit-view.js';
 import ThreadItem from '/views/thread-item.js';
 import ThreadView from '/views/thread-view.js';
 import SwipeableSidenav from '/components/swipeable-sidenav.js';
+  import EventTargetPolyfill from '/helpers/event-target-polyfill.js';
 
 customElements.define('main-view', MainView);
 customElements.define('thread-item', ThreadItem);
@@ -14,33 +15,26 @@ customElements.define('thread-view', ThreadView);
 customElements.define('subreddit-view', SubredditView);
 customElements.define('swipeable-sidenav', SwipeableSidenav);
 
-async function init() {
-  const app = Comlink.proxy(new Worker('worker.js'));
-  setupEventListeners(app);
-  await app.update();
-}
+const ui = new class extends EventTargetPolyfill {
+  constructor() {
+    super();
+    document.addEventListener('click', this._onClick.bind(this));
+  }
 
-function setupEventListeners(app) {
-  document.addEventListener('top-view-dismiss', _ => {
-    app.removeTopView();
-  });
+  querySelector(s) {
+    return Comlink.proxyValue(document.querySelector(s));
+  }
 
-  document.addEventListener('add-view', ev => {
-    app.addView(ev.detail);
-  });
-
-  app.addEventListener('view-model-change', ev => {
-    const state = ev.detail;
-    console.log(state);
+  render(state) {
     render(MainView.lightDom(state), document.body);
-  });
+  }
 
-  document.addEventListener('click', ev => {
-    if (ev.target.tagName !== 'A') return;
-
-    ev.preventDefault();
-    app.navigate(ev.target.href);
-  });
+  _onClick(ev) {
+    if (ev.target.tagName === 'A') {
+      ev.preventDefault();
+      this.dispatchEvent(new CustomEvent('navigate', {detail: ev.target.href}));
+    }
+  }
 }
 
-init();
+Comlink.expose(ui, new Worker('worker.js'));

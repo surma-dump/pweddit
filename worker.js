@@ -7,6 +7,27 @@ function genUID() {
   return btoa(arr);
 }
 
+function openThread(id) {
+  state.views.push({
+    type: 'thread-view',
+    title: 'Lol something else',
+    author: 'dassurma',
+    subreddit: 'pwa',
+    date: '2018-01-01 yo:mama',
+    post_text: 'Hey, I wanted to know: I’m 12 and what <em>is</em> this?',
+    comments: [
+      {
+        author: 'PK',
+        post_text: 'Dead powerful',
+      },
+      {
+        author: 'aerotwist',
+        post_text: 'Moany moan',
+      }
+    ]
+  });
+}
+
 const state = {
   root: {
     type: 'subreddit-view',
@@ -35,61 +56,25 @@ const state = {
   views: [ ]
 };
 
-const {port1} = new MessageChannel();
-class ViewModel {
-  postMessage(msg) {
-    port1.postMessage(msg);
-  }
+(async _ => {
+  const UI = Comlink.proxy(self);
+  await UI.render(state);
 
-  addEventListener(name, f) {
-    port1.addEventListener(name, f);
-  }
-
-  dispatchEvent(ev) {
-    port1.dispatchEvent(ev);
-  }
-
-  removeTopView() {
-    state.views.pop();
-    this.update();
-  }
-
-  openThread(id) {
-    state.views.push({
-      type: 'thread-view',
-      title: 'Lol something else',
-      author: 'dassurma',
-      subreddit: 'pwa',
-      date: '2018-01-01 yo:mama',
-      post_text: 'Hey, I wanted to know: I’m 12 and what <em>is</em> this?',
-      comments: [
-        {
-          author: 'PK',
-          post_text: 'Dead powerful',
-        },
-        {
-          author: 'aerotwist',
-          post_text: 'Moany moan',
-        }
-      ]
-    });
-    this.update();
-  }
-
-  navigate(url) {
-    url = new URL(url);
-    const items = url.pathname.split('/').slice(1);
-    switch(items[0].toLowerCase()) {
+  UI.addEventListener('navigate', async ev => {
+    const pathItems = new URL(ev.detail).pathname.split('/').slice(1);
+    switch (pathItems[0]) {
       case 'comments':
-        this.openThread(items[1]);
+        openThread(pathItems[1]);
+        await UI.render(state);
       break;
     }
-  }
+  });
 
-  update() {
-    viewmodel.dispatchEvent(new CustomEvent('view-model-change', {detail: state}));
-  }
-}
-const viewmodel = new ViewModel();
-Comlink.expose(viewmodel, self);
+  const mainView = await UI.querySelector('main-view');
+  mainView.addEventListener('top-view-dismiss', async ev => {
+    state.views.pop();
+    await UI.render(state);
+  });
+})();
+
 
