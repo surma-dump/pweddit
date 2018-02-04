@@ -1,6 +1,7 @@
 import {html, render} from '/lit/custom-lit.js';
+import litShadow from '/helpers/lit-shadow.js';
 
-const shadowDomTemplate = state => html`
+const tpl = state => html`
   <style>
     :host {
       display: flex;
@@ -10,14 +11,8 @@ const shadowDomTemplate = state => html`
   <slot></slot>
 `;
 
-export class FlexList extends HTMLElement {
+export default class FlexList extends litShadow(tpl, HTMLElement) {
   static get observedAttributes() {return ['horizontal']}
-
-  constructor() {
-    super();
-    this.attachShadow({mode: 'open'});
-    render(shadowDomTemplate({}), this.shadowRoot);
-  }
 
   get horizontal() {
     return this.hasAttribute('horizontal') && this.getAttribute('horizontal') !== 'false';

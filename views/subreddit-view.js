@@ -1,7 +1,7 @@
-import {FlexList} from '/components/flex-list.js';
+import FlexList from '/components/flex-list.js';
 import {html, repeat} from '/lit/custom-lit.js';
 
-export class SubredditView extends FlexList {
+export default class SubredditView extends FlexList {
   static lightDom(state) {
     return html`
       <subreddit-view>

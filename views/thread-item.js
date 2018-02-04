@@ -1,8 +1,9 @@
-import {FlexList} from '/components/flex-list.js';
+import FlexList from '/components/flex-list.js';
+import litShadow from '/helpers/lit-shadow.js';
 import {html, render, repeat} from '/lit/custom-lit.js';
 
 
-const shadowDomTemplate = state => html`
+const tpl = state => html`
   <style>
     :host {
       --height: 10vh;
@@ -23,13 +24,7 @@ const shadowDomTemplate = state => html`
   <slot></slot>
 `;
 
-export class ThreadItem extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({mode: 'open'});
-    render(shadowDomTemplate(), this.shadowRoot);
-  }
-
+export default class ThreadItem extends litShadow(tpl, HTMLElement) {
   static lightDom(state) {
     return html`
       <thread-item>

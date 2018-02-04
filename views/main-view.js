@@ -1,7 +1,7 @@
-import {SwipeableStack} from '/components/swipeable-stack.js';
+import SwipeableStack from '/components/swipeable-stack.js';
 import {html, repeat} from '/lit/custom-lit.js';
 
-export class MainView extends SwipeableStack {
+export default class MainView extends SwipeableStack {
   static lightDom(state) {
     return html`
       <main-view keep-first=true>

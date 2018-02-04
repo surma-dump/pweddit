@@ -1,7 +1,8 @@
 import {html, render, repeat} from '/lit/custom-lit.js';
+import litShadow from '/helpers/lit-shadow.js';
 import * as animationtools from '/helpers/animationtools.js';
 
-const shadowDomTemplate = state => html`
+const tpl = state => html`
   <style>
     :host {
       position: relative;
@@ -18,13 +19,11 @@ const shadowDomTemplate = state => html`
   </slot>
 `;
 
-export class SwipeableStack extends HTMLElement {
+export default class SwipeableStack extends litShadow(tpl, HTMLElement) {
   static get SWIPE_THRESHOLD() {return 10;}
 
   constructor() {
     super();
-    this.attachShadow({mode: 'open'});
-    render(shadowDomTemplate(), this.shadowRoot);
     this.shadowRoot.addEventListener('slotchange', this._viewChange.bind(this));
     this.addEventListener('touchstart', this._onTouchStart.bind(this));
     this.addEventListener('touchmove', this._onTouchMove.bind(this));

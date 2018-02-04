@@ -1,7 +1,8 @@
 import * as animationtools from '/helpers/animationtools.js';
+import litShadow from '/helpers/lit-shadow.js';
 import {html, render} from '/lit/custom-lit.js';
 
-const shadowDomTemplate = state => html`
+const tpl = state => html`
   <style>
     :host {
       position: relative;
@@ -35,13 +36,11 @@ const shadowDomTemplate = state => html`
   </div>
   `;
 
-  export class SwipeableSidenav extends HTMLElement {
+  export default class SwipeableSidenav extends litShadow(tpl, HTMLElement) {
     static get SWIPE_THRESHOLD() {return 2;}
 
   constructor() {
     super();
-    this.attachShadow({mode: 'open'});
-    render(shadowDomTemplate(), this.shadowRoot);
     this._sidenav = this.shadowRoot.querySelector('#sidenav');
     this.addEventListener('touchstart', this._onTouchStart.bind(this));
     this.addEventListener('touchmove', this._onTouchMove.bind(this));
