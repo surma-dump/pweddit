@@ -12,7 +12,6 @@ const shadowDomTemplate = state => html`
 `;
 
 export class ViewB extends HTMLElement {
-  static get tag() {return 'view-b';}
   constructor() {
     super();
     this.attachShadow({mode: 'open'});

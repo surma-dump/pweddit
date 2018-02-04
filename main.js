@@ -2,13 +2,17 @@ import '/comlink/comlink.global.min.js';
 import '/comlink/event.transferhandler.js';
 import '/comlink/function.transferhandler.js';
 import {html, render} from '/lit/custom-lit.js';
-import {StackView} from '/views/stack-view.js';
-import {SideNav} from '/views/side-nav.js';
+import {MainView} from '/views/main-view.js';
+import {SubredditView} from '/views/subreddit-view.js';
+import {ThreadItem} from '/views/thread-item.js';
+import {SwipeableSidenav} from '/components/swipeable-sidenav.js';
 import {ViewA} from '/views/view-a.js';
 import {ViewB} from '/views/view-b.js';
 
-customElements.define('stack-view', StackView);
-customElements.define('side-nav', SideNav);
+customElements.define('main-view', MainView);
+customElements.define('thread-item', ThreadItem);
+customElements.define('subreddit-view', SubredditView);
+customElements.define('swipeable-sidenav', SwipeableSidenav);
 customElements.define('view-a', ViewA);
 customElements.define('view-b', ViewB);
 
@@ -30,7 +34,7 @@ function setupEventListeners(app) {
   app.addEventListener('view-model-change', ev => {
     const state = ev.detail;
     console.log(state);
-    render(customElements.get(state.type).lightDom(state), document.body);
+    render(MainView.lightDom(state), document.body);
   });
 }
 

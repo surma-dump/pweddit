@@ -18,8 +18,7 @@ const shadowDomTemplate = state => html`
   </slot>
 `;
 
-export class StackView extends HTMLElement {
-  static get tag() {return 'stack-view';}
+export class SwipeableStack extends HTMLElement {
   static get SWIPE_THRESHOLD() {return 10;}
 
   constructor() {
@@ -35,7 +34,7 @@ export class StackView extends HTMLElement {
   _onTouchStart(ev) {
     if (ev.touches.length > 1)
       return;
-    if (ev.touches[0].clientX > StackView.SWIPE_THRESHOLD)
+    if (ev.touches[0].clientX > SwipeableStack.SWIPE_THRESHOLD)
       return;
     this._dragStartX = ev.touches[0].clientX;
     ev.preventDefault();

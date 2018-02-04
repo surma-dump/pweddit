@@ -12,10 +12,8 @@ const shadowDomTemplate = state => html`
 `;
 
 export class ViewA extends HTMLElement {
-  static get tag() {return 'view-a';}
   constructor() {
     super();
-    this._state = {};
     this.attachShadow({mode: 'open'});
     render(shadowDomTemplate(), this.shadowRoot);
     this.shadowRoot.querySelector('button').onclick = _ => this.cloneMe();
@@ -29,13 +27,5 @@ export class ViewA extends HTMLElement {
       },
       bubbles: true
     }));
-  }
-
-  set state(value) {
-    this._state = value;
-  }
-
-  get state() {
-    return this._state;
   }
 }

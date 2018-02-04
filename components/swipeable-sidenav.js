@@ -35,8 +35,7 @@ const shadowDomTemplate = state => html`
   </div>
   `;
 
-  export class SideNav extends HTMLElement {
-    static get tag() {return 'side-nav';}
+  export class SwipeableSidenav extends HTMLElement {
     static get SWIPE_THRESHOLD() {return 2;}
 
   constructor() {
@@ -79,7 +78,7 @@ const shadowDomTemplate = state => html`
   _onTouchStart(ev) {
     if (ev.touches.length > 1)
     return;
-    if (this.isClosed && ev.touches[0].clientX > SideNav.SWIPE_THRESHOLD)
+    if (this.isClosed && ev.touches[0].clientX > SwipeableSidenav.SWIPE_THRESHOLD)
       return;
     // ev.touches[0].target ignores ShadowDOM elements. The backdrop of our sidenav
     // is a ShadowDOM element, so we use path instead.

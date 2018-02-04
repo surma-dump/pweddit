@@ -8,19 +8,27 @@ function genUID() {
 }
 
 const state = {
-  type: 'stack-view',
-  keepFirst: true,
-  items: [
-    {
-      skipAnimation: true,
-      uid: genUID(),
-      type: 'side-nav',
-      sidenav: 'Ohai lol',
-      main: {
-        type: 'view-a',
-        title: 'Base view. Can’t dismiss me.',
+  root: {
+    type: 'subreddit-view',
+    subreddit: 'frontpage',
+    threads: [
+      {
+        type: 'thread-item',
+        title: 'I stole this from Monica',
+        author: 'Some random neckbeard',
+        subreddit: 'webdev',
+        date: '2018-01-01'
+      },
+      {
+        type: 'thread-item',
+        title: 'This author said JavaScript is call by reference.',
+        author: 'Too_smart_for_you',
+        subreddit: 'javascript',
+        date: '2018-01-01'
       }
-    },
+    ]
+  },
+  items: [
     // {
     //   uid: genUID(),
     //   type: 'view-b',
