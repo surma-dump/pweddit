@@ -3,33 +3,7 @@ import litShadow from '/helpers/lit-shadow.js';
 import callbackBase from '/helpers/callback-base.js';
 import {html, render, repeat} from '/lit/custom-lit.js';
 
-
-const tpl = state => html`
-  <style>
-    :host {
-      --height: 10vh;
-      display: flex;
-      flex-direction: row;
-      height: var(--height);
-    }
-    ::slotted(img) {
-      height: var(--height);
-      width: var(--height);
-      flex-shrink: 0;
-      flex-grow: 0;
-    }
-    ::slotted(*:not(img)) {
-      flex-grow: 1;
-    }
-    ::slotted(.meta) {
-      display: flex;
-      flex-direction: column;
-    }
-  </style>
-  <slot></slot>
-`;
-
-export default class ThreadItem extends litShadow(tpl, callbackBase(HTMLElement)) {
+export default class ThreadItem extends litShadow(callbackBase(HTMLElement)) {
   static lightDom(state) {
     return html`
       <thread-item>
@@ -41,6 +15,33 @@ export default class ThreadItem extends litShadow(tpl, callbackBase(HTMLElement)
           <span>${state.date}</span>
         </section>
       </thread-item>
+    `;
+  }
+
+  shadowDom(state) {
+    return html`
+      <style>
+        :host {
+          --height: 10vh;
+          display: flex;
+          flex-direction: row;
+          height: var(--height);
+        }
+        ::slotted(img) {
+          height: var(--height);
+          width: var(--height);
+          flex-shrink: 0;
+          flex-grow: 0;
+        }
+        ::slotted(*:not(img)) {
+          flex-grow: 1;
+        }
+        ::slotted(.meta) {
+          display: flex;
+          flex-direction: column;
+        }
+      </style>
+      <slot></slot>
     `;
   }
 }

@@ -2,17 +2,7 @@ import {html, render} from '/lit/custom-lit.js';
 import litShadow from '/helpers/lit-shadow.js';
 import callbackBase from '/helpers/callback-base.js';
 
-const tpl = state => html`
-  <style>
-    :host {
-      display: flex;
-      flex-direction: ${state.horizontal?'row':'column'};
-    }
-  </style>
-  <slot></slot>
-`;
-
-export default class FlexList extends litShadow(tpl, callbackBase(HTMLElement)) {
+export default class FlexList extends litShadow(callbackBase(HTMLElement)) {
   static get observedAttributes() {return ['horizontal']}
 
   get horizontal() {
@@ -25,5 +15,17 @@ export default class FlexList extends litShadow(tpl, callbackBase(HTMLElement)) 
       this.setAttribute('horizontal');
     else
       this.removeAttribute('horizontal');
+  }
+
+  shadowDom(state) {
+    return html`
+      <style>
+        :host {
+          display: flex;
+          flex-direction: ${state.horizontal?'row':'column'};
+        }
+      </style>
+      <slot></slot>
+    `;
   }
 }

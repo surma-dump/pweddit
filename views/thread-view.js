@@ -3,21 +3,7 @@ import litShadow from '/helpers/lit-shadow.js';
 import callbackBase from '/helpers/callback-base.js';
 import {html, render, repeat} from '/lit/custom-lit.js';
 
-const tpl = state => html`
-  <style>
-    :host {
-      display: flex;
-      flex-direction: column;
-      background-color: white;
-    }
-    ::slotted(*) {
-      margin: 20px 0;
-    }
-  </style>
-  <slot></slot>
-`;
-
-export default class ThreadView extends litShadow(tpl, callbackBase(HTMLElement)) {
+export default class ThreadView extends litShadow(callbackBase(HTMLElement)) {
   static lightDom(state) {
     return html`
       <thread-view>
@@ -39,6 +25,22 @@ export default class ThreadView extends litShadow(tpl, callbackBase(HTMLElement)
           `)}
         </section>
       </thread-view>
+    `;
+  }
+
+  shadowDom(state) {
+    return html`
+      <style>
+        :host {
+          display: flex;
+          flex-direction: column;
+          background-color: white;
+        }
+        ::slotted(*) {
+          margin: 20px 0;
+        }
+      </style>
+      <slot></slot>
     `;
   }
 }

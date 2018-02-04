@@ -4,33 +4,7 @@ import callbackBase from '/helpers/callback-base.js';
 import eventBinder from '/helpers/event-binder.js';
 import * as animationtools from '/helpers/animationtools.js';
 
-const tpl = state => html`
-  <style>
-    :host {
-      position: relative;
-    }
-    ::slotted(*) {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
-  </style>
-  <slot>
-  </slot>
-`;
-
-const handlerMap = {
-  'touchstart': '_onTouchStart',
-  'touchmove': '_onTouchMove',
-  'touchend': '_onTouchEnd',
-  'mousedown': '_onTouchStart',
-  'mousemove': '_onTouchMove',
-  'mouseup': '_onTouchEnd',
-}
-
-export default class SwipeableStack extends eventBinder(handlerMap, litShadow(tpl, callbackBase(HTMLElement))) {
+export default class SwipeableStack extends eventBinder(litShadow(callbackBase(HTMLElement))) {
   static get SWIPE_THRESHOLD() {return 20;}
 
   constructor() {
@@ -43,10 +17,10 @@ export default class SwipeableStack extends eventBinder(handlerMap, litShadow(tp
 
   _onTouchStart(ev) {
     if (ev.touches && ev.touches.length > 1)
-      return;
+    return;
     const clientX = (ev.touches && ev.touches[0].clientX) || ev.clientX;
     if (clientX > SwipeableStack.SWIPE_THRESHOLD)
-      return;
+    return;
     this._dragStartX = clientX;
     ev.preventDefault();
     ev.stopPropagation();
@@ -54,7 +28,7 @@ export default class SwipeableStack extends eventBinder(handlerMap, litShadow(tp
 
   _onTouchMove(ev) {
     if (this._dragStartX === null)
-      return;
+    return;
     ev.preventDefault();
     ev.stopPropagation();
 
@@ -68,7 +42,7 @@ export default class SwipeableStack extends eventBinder(handlerMap, litShadow(tp
 
   async _onTouchEnd(ev) {
     if (this._dragStartX === null)
-      return;
+    return;
     ev.preventDefault();
     ev.stopPropagation();
 
@@ -101,25 +75,25 @@ export default class SwipeableStack extends eventBinder(handlerMap, litShadow(tp
   set keepFirst(val) {
     val = Boolean(val) && val !== 'false';
     if (val)
-      this.setAttribute('keep-first');
+    this.setAttribute('keep-first');
     else
       this.removeAttribute('keep-first');
-  }
+    }
 
-  get topItem() {
-    let last = this.lastElementChild;
-    while (last && last.classList.contains('dismissed'))
+    get topItem() {
+      let last = this.lastElementChild;
+      while (last && last.classList.contains('dismissed'))
       last = last.previousElementSibling;
-    return last;
-  }
+      return last;
+    }
 
-  get numItems() {
-    return Array.from(this.children).filter(f => !f.classList.contains('dismissed')).length;
-  }
+    get numItems() {
+      return Array.from(this.children).filter(f => !f.classList.contains('dismissed')).length;
+    }
 
-  _viewChange(ev) {
-    const elements = ev.target.assignedNodes().filter(n => n.nodeType === 1);
-    const unhandledElements =
+    _viewChange(ev) {
+      const elements = ev.target.assignedNodes().filter(n => n.nodeType === 1);
+      const unhandledElements =
       elements
         .filter(n => !n.classList.contains('animation-progress'))
         .filter(n => !n.classList.contains('animation-done'));
@@ -141,11 +115,41 @@ export default class SwipeableStack extends eventBinder(handlerMap, litShadow(tp
 
   async dismiss() {
     if (this.keepFirst && this.numItems === 1)
-      return;
+    return;
 
     let el = this.topItem;
     el.classList.add('dismissed');
     await animationtools.animateTo(el, 'transform 1s ease-in-out', {transform: 'translateX(100%)'});
     this.dispatchEvent(new CustomEvent('top-view-dismiss', {bubbles: true}));
+  }
+
+  shadowDom(state) {
+    return html`
+      <style>
+        :host {
+          position: relative;
+        }
+        ::slotted(*) {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+        }
+      </style>
+      <slot>
+      </slot>
+    `;
+  }
+
+  get handlerMap() {
+    return {
+      'touchstart': '_onTouchStart',
+      'touchmove': '_onTouchMove',
+      'touchend': '_onTouchEnd',
+      'mousedown': '_onTouchStart',
+      'mousemove': '_onTouchMove',
+      'mouseup': '_onTouchEnd'
+    }
   }
 }

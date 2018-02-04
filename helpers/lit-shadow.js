@@ -4,7 +4,7 @@ const defaultOpts = {
   noInitRender: false
 };
 
-export default function litShadow(tpl, clazz, opts = {}) {
+export default function litShadow(clazz, opts = {}) {
   opts = Object.assign({}, defaultOpts, opts);
   return class extends clazz {
     constructor() {
@@ -15,7 +15,7 @@ export default function litShadow(tpl, clazz, opts = {}) {
     }
 
     renderShadow(state) {
-      render(tpl(state), this.shadowRoot);
+      render(this.shadowDom(state), this.shadowRoot);
     }
   };
 }
