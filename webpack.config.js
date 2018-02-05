@@ -4,10 +4,10 @@ const copy = require('copy-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
+
 module.exports = {
   entry: {
     main: './src/main.js',
-    worker: './src/worker.js'
   },
   output: {
     filename: '[name].js',
@@ -20,6 +20,12 @@ module.exports = {
         use: [
           'file-loader'
         ]
+      },
+      {
+        test: /worker\.js$/,
+        use: [
+          'worker-loader'
+        ]
       }
     ]
   },
@@ -27,13 +33,11 @@ module.exports = {
     new copy([
       {from: './src/index.html'}
     ]),
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   name: 'common',
-    //   filenake: 'common.js',
-    //   // children: true,
-    //   // deepChildren: true,
-    // }),
-    // new BundleAnalyzerPlugin()
+    new webpack.optimize.CommonsChunkPlugin({
+      async: true,
+      minChunks: 2,
+    }),
+    new BundleAnalyzerPlugin()
   ],
   watch: true,
 };

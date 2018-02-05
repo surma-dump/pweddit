@@ -2,6 +2,7 @@ import {Comlink} from './comlink/comlink.es6.js';
 import {default as injectEventHandler} from './comlink/event.transferhandler.js';
 import {default as injectFunctionHandler} from './comlink/function.transferhandler.js';
 import EventTargetPolyfill from './helpers/event-target-polyfill.js';
+import Worker from './worker.js';
 
 injectFunctionHandler(injectEventHandler(Comlink));
 
@@ -37,4 +38,4 @@ const ui = new class extends EventTargetPolyfill {
   }
 }
 
-Comlink.expose(ui, new Worker('worker.js'));
+Comlink.expose(ui, new Worker());
