@@ -1,6 +1,6 @@
-import {html, render} from '/lit/custom-lit.js';
-import litShadow from '/helpers/lit-shadow.js';
-import callbackBase from '/helpers/callback-base.js';
+import {html, render} from '../lit/custom-lit.js';
+import litShadow from '../helpers/lit-shadow.js';
+import callbackBase from '../helpers/callback-base.js';
 
 export default class FlexList extends litShadow(callbackBase(HTMLElement)) {
   static get observedAttributes() {return ['horizontal']}

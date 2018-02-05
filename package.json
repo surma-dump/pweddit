@@ -7,11 +7,14 @@
     "url": "https://github.com/surma/pweddit"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack --display-modules"
   },
   "author": "Surma <surma@surma.link>",
   "license": "Apache-2.0",
   "devDependencies": {
+    "copy-webpack-plugin": "^4.3.1",
+    "file-loader": "^1.1.6",
     "webpack": "^3.10.0"
-  }
+  },
+  "dependencies": {}
 }

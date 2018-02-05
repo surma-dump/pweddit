@@ -1,6 +1,6 @@
-import {TemplateResult, defaultPartCallback, AttributePart} from '/lit/lit-html.js';
-export * from '/lit/lit-html.js';
-export * from '/lit/lib/repeat.js';
+import {TemplateResult, defaultPartCallback, AttributePart} from './lit-html.js';
+export * from './lit-html.js';
+export * from './lib/repeat.js';
 
 export function html(strings, ...values) {
   return new TemplateResult(strings, values, 'html', propertyPartCallback);

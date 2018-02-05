@@ -1,8 +1,8 @@
-import {html, render, repeat} from '/lit/custom-lit.js';
-import litShadow from '/helpers/lit-shadow.js';
-import callbackBase from '/helpers/callback-base.js';
-import eventBinder from '/helpers/event-binder.js';
-import * as animationtools from '/helpers/animationtools.js';
+import {html, render, repeat} from '../lit/custom-lit.js';
+import litShadow from '../helpers/lit-shadow.js';
+import callbackBase from '../helpers/callback-base.js';
+import eventBinder from '../helpers/event-binder.js';
+import * as animationtools from '../helpers/animationtools.js';
 
 export default class SwipeableStack extends eventBinder(litShadow(callbackBase(HTMLElement))) {
   static get SWIPE_THRESHOLD() {return 20;}

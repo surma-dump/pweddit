@@ -1,5 +1,5 @@
-import mixinMemoize from '/helpers/mixin-memoize.js';
-import {render} from '/lit/custom-lit.js';
+import mixinMemoize from './mixin-memoize.js';
+import {render} from '../lit/custom-lit.js';
 
 export default mixinMemoize(clazz =>
   class extends clazz {

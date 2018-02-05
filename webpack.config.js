@@ -1,4 +1,5 @@
 const path = require('path');
+const copy = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -9,8 +10,19 @@ module.exports = {
     filename: '[name].js',
     path: path.resolve('./dist')
   },
-  resolve: {
-    alias: {
-        '': path.resolve('./src')
-    }
-}};
+  module: {
+    rules: [
+      {
+        test: /\.(png|jpg)$/,
+        use: [
+          'file-loader'
+        ]
+      }
+    ]
+  },
+  plugins: [
+    new copy([
+      {from: './src/index.html'}
+    ])
+  ]
+};

@@ -1,21 +1,18 @@
-import '/comlink/comlink.global.min.js';
-import '/comlink/event.transferhandler.js';
-import '/comlink/function.transferhandler.js';
-import {html, render} from '/lit/custom-lit.js';
-import EventTargetPolyfill from '/helpers/event-target-polyfill.js';
+import {Comlink} from './comlink/comlink.es6.js';
+import {default as injectEventHandler} from './comlink/event.transferhandler.js';
+import {default as injectFunctionHandler} from './comlink/function.transferhandler.js';
+import EventTargetPolyfill from './helpers/event-target-polyfill.js';
+
+injectFunctionHandler(injectEventHandler(Comlink));
 
 [
-  'views/main-view',
-  'views/thread-item',
-  'views/thread-view',
-  'views/subreddit-view',
-  'components/swipeable-sidenav'
+  {tag: 'main-view', module: import('./fragments/main-view.js')},
+  {tag: 'thread-item', module: import('./fragments/thread-item.js')},
+  {tag: 'thread-view', module: import('./fragments/thread-view.js')},
+  {tag: 'subreddit-view', module: import('./fragments/subreddit-view.js')},
+  {tag: 'swipeable-sidenav', module: import('./components/swipeable-sidenav.js')}
 ]
-  .map(async item => {
-    const tag = item.split('/')[1];
-    const module = await import(`${item}.js`);
-    customElements.define(tag, module.default);
-  });
+  .map(async elem => customElements.define(elem.tag, (await elem.module).default));
 
 const ui = new class extends EventTargetPolyfill {
   constructor() {
@@ -27,8 +24,9 @@ const ui = new class extends EventTargetPolyfill {
     return Comlink.proxyValue(document.querySelector(s));
   }
 
-  render(state) {
-    render(MainView.lightDom(state), document.body);
+  async render(state) {
+    const {render} = await import('./lit/custom-lit.js');
+    render((await import('./fragments/main-view.js')).default.lightDom(state), document.body);
   }
 
   _onClick(ev) {

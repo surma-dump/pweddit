@@ -1,8 +1,8 @@
-import * as animationtools from '/helpers/animationtools.js';
-import litShadow from '/helpers/lit-shadow.js';
-import eventBinder from '/helpers/event-binder.js';
-import callbackBase from '/helpers/callback-base.js';
-import {html, render} from '/lit/custom-lit.js';
+import * as animationtools from '../helpers/animationtools.js';
+import litShadow from '../helpers/lit-shadow.js';
+import eventBinder from '../helpers/event-binder.js';
+import callbackBase from '../helpers/callback-base.js';
+import {html, render} from '../lit/custom-lit.js';
 
 export default class SwipeableSidenav extends eventBinder(litShadow(callbackBase(HTMLElement))) {
   static get SWIPE_THRESHOLD() {return 10;}
