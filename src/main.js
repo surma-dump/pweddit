@@ -2,18 +2,20 @@ import '/comlink/comlink.global.min.js';
 import '/comlink/event.transferhandler.js';
 import '/comlink/function.transferhandler.js';
 import {html, render} from '/lit/custom-lit.js';
-import MainView from '/views/main-view.js';
-import SubredditView from '/views/subreddit-view.js';
-import ThreadItem from '/views/thread-item.js';
-import ThreadView from '/views/thread-view.js';
-import SwipeableSidenav from '/components/swipeable-sidenav.js';
-  import EventTargetPolyfill from '/helpers/event-target-polyfill.js';
+import EventTargetPolyfill from '/helpers/event-target-polyfill.js';
 
-customElements.define('main-view', MainView);
-customElements.define('thread-item', ThreadItem);
-customElements.define('thread-view', ThreadView);
-customElements.define('subreddit-view', SubredditView);
-customElements.define('swipeable-sidenav', SwipeableSidenav);
+[
+  'views/main-view',
+  'views/thread-item',
+  'views/thread-view',
+  'views/subreddit-view',
+  'components/swipeable-sidenav'
+]
+  .map(async item => {
+    const tag = item.split('/')[1];
+    const module = await import(`${item}.js`);
+    customElements.define(tag, module.default);
+  });
 
 const ui = new class extends EventTargetPolyfill {
   constructor() {

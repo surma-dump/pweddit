@@ -1,0 +1,17 @@
+{
+  "name": "pweddit",
+  "version": "0.0.1",
+  "description": "Reddit PWA",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/surma/pweddit"
+  },
+  "scripts": {
+    "build": "webpack"
+  },
+  "author": "Surma <surma@surma.link>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "webpack": "^3.10.0"
+  }
+}
