@@ -2,7 +2,6 @@ import {Comlink} from './comlink/comlink.es6.js';
 import {default as injectEventHandler} from './comlink/event.transferhandler.js';
 import {default as injectFunctionHandler} from './comlink/function.transferhandler.js';
 import EventTargetPolyfill from './helpers/event-target-polyfill.js';
-import Worker from './worker.js';
 
 injectFunctionHandler(injectEventHandler(Comlink));
 
@@ -38,4 +37,6 @@ const ui = new class extends EventTargetPolyfill {
   }
 }
 
-Comlink.expose(ui, new Worker());
+// This is a workaround for Webpack.
+const base = `${location.protocol}//${location.host}${location.pathname.split('/').slice(0, -1).join('/')}`;
+Comlink.expose(ui, new Worker(`data:application/javascript,window=self;importScripts('${base}/comlink.js');importScripts('${base}/worker.js');`));
