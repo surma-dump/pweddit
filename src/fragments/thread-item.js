@@ -1,13 +1,13 @@
-import FlexList from '/components/flex-list.js';
-import litShadow from '/helpers/lit-shadow.js';
-import callbackBase from '/helpers/callback-base.js';
-import {html, render, repeat} from '/lit/custom-lit.js';
+import FlexList from '../components/flex-list.js';
+import litShadow from '../helpers/lit-shadow.js';
+import callbackBase from '../helpers/callback-base.js';
+import {html, render, repeat} from '../lit/custom-lit.js';
 
 export default class ThreadItem extends litShadow(callbackBase(HTMLElement)) {
   static lightDom(state) {
     return html`
       <thread-item>
-        <img src="/images/kitty.jpg">
+        <img src="${state.image}">
         <section class="meta">
           <a href="/comments/${state.thread_id}">${state.title}</a>
           <span>${state.author}</span>

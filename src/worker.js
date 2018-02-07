@@ -1,6 +1,10 @@
-importScripts('/comlink/comlink.global.min.js');
-importScripts('/comlink/event.transferhandler.js');
-importScripts('/comlink/function.transferhandler.js');
+import {Comlink} from './comlink/comlink.es6.js';
+import {default as injectEventHandler} from './comlink/event.transferhandler.js';
+import {default as injectFunctionHandler} from './comlink/function.transferhandler.js';
+
+import kittyImage from './images/kitty.jpg';
+
+injectFunctionHandler(injectEventHandler(Comlink));
 
 function genUID() {
   const arr = new Array(8).fill(0).map(_ => Math.floor(Math.random() * 256));
@@ -37,6 +41,7 @@ const state = {
         uid: genUID(),
         type: 'thread-item',
         thread_id: 1,
+        image: kittyImage,
         title: 'I stole this from Monica',
         author: 'Some random neckbeard',
         subreddit: 'webdev',
@@ -46,6 +51,7 @@ const state = {
         uid: genUID(),
         type: 'thread-item',
         thread_id: 2,
+        image: kittyImage,
         title: 'This author said JavaScript is call by reference.',
         author: 'Too_smart_for_you',
         subreddit: 'javascript',
