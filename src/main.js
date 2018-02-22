@@ -25,8 +25,7 @@ const ui = new class extends EventTargetPolyfill {
   }
 
   async render(state) {
-    const {render} = await import('./lit/custom-lit.js');
-    render((await import('./fragments/main-view.js')).default.lightDom(state), document.body);
+    (await import('./fragments/main-view.js')).default.renderTo(state, document.body);
   }
 
   _onClick(ev) {
