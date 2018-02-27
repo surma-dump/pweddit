@@ -4,7 +4,7 @@
   "description": "Reddit PWA",
   "repository": {
     "type": "git",
-    "url": "https://github.com/surma/pweddit"
+    "url": "git+https://github.com/surma/pweddit.git"
   },
   "scripts": {
     "build": "webpack --display-modules"
@@ -18,5 +18,10 @@
     "webpack": "^3.10.0",
     "webpack-bundle-analyzer": "^2.10.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "bugs": {
+    "url": "https://github.com/surma/pweddit/issues"
+  },
+  "homepage": "https://github.com/surma/pweddit#readme",
+  "main": "webpack.config.js"
 }

@@ -1,0 +1,29 @@
+{
+  "root": {
+    "type": "subreddit-view",
+    "subreddit": "frontpage",
+    "threads": [
+      {
+        "uid": "customid-1",
+        "type": "thread-item",
+        "thread_id": 1,
+        "image": "https://placekitten.img/g/250/250",
+        "title": "I stole this from Monica",
+        "author": "Some random neckbeard",
+        "subreddit": "webdev",
+        "date": "2018-01-01"
+      },
+      {
+        "uid": "customid-2",
+        "type": "thread-item",
+        "thread_id": 2,
+        "image": "https://placekitten.img/g/250/250",
+        "title": "This author said JavaScript is call by reference.",
+        "author": "Too_smart_for_you",
+        "subreddit": "javascript",
+        "date": "2018-01-01"
+      }
+    ]
+  },
+  "views": [ ]
+}
