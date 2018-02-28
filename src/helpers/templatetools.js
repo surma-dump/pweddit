@@ -3,33 +3,36 @@ function isTemplate(e) {
 }
 
 export class Template {
-  constructor(html) {
+  constructor(html, updateFunc = _ => {}) {
     this._tpl = document.createElement('template');
     this._tpl.innerHTML = html;
+    this._updateFunc = updateFunc;
   }
 
-  instantiate(updateFunc = _ => {}) {
+  instantiate() {
     const instance = document.createElement('template-instance');
+    instance.setUpdateFunction(this._updateFunc);
     instance.appendChild(this._tpl.content.cloneNode(true));
     instance.rescanParts();
-    instance.setUpdateFunction(updateFunc);
     return instance;
   }
 
-  instantiateTo(container, updateFunc = _ => {}) {
+  instantiateTo(container, state) {
     let instance;
     if (isTemplate(container))
       instance = container;
     else if (isTemplate(container.firstChild))
       instance = container.firstChild;
-    if (instance && instance.state.id === state.id) {
+    if (instance && instance.state.uid === state.uid) {
+        instance.update(state);
         return instance;
     } else if (instance && instance.isHydratable) {
       // TODO
     } else {
       while (container.firstChild)
         container.firstChild.remove();
-      const instance = this.instantiate(updateFunc);
+      const instance = this.instantiate();
+      instance.update(state);
       container.appendChild(instance);
       return instance;
     }

@@ -10,19 +10,19 @@ export default mixinMemoize(clazz => {
 
     static get template() {
       if (!template) {
-        template = new Template(this.lightDom);
+        template = new Template(this.lightDom, this.update.bind(this));
       }
       return template;
     }
 
-    static instantiate(state) {
-      const instance = this.template.instantiate(this.update.bind(this));
+    static instantiate(state = {}) {
+      const instance = this.template.instantiate();
       instance.update(state);
       return instance;
     }
 
-    static renderTo(container, state) {
-      this.template.instantiateTo(container, this.update).update(state);
+    static renderTo(container, state = {}) {
+      this.template.instantiateTo(container, state);
     }
   }
 });
