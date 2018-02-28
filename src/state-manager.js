@@ -21,7 +21,10 @@ export default class StateManager {
   }
 
   async openThread(id) {
-    state.views.push(await fetch('/states/newthread.json').then(resp => resp.json()));
+    const newThread = await fetch('/states/newthread.json').then(resp => resp.json());
+    newThread.uid = StateManager.genUID();
+    this.state.views.push(newThread);
+    console.log(this.state);
     await this.update();
   }
 

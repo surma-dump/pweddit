@@ -17,5 +17,6 @@ export default class PwedditMainView extends stateElement(SwipeableStack) {
   static update(instance, state, oldState) {
     instance.part('sidenav').textContent = 'side-nav';
     customElements.get(`pweddit-${state.root.type}`).renderTo(instance.part('root'), state.root);
+
   }
 }

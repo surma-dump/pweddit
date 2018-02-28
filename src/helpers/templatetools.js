@@ -79,4 +79,32 @@ export class TemplateInstance extends HTMLElement {
 }
 customElements.define('template-instance', TemplateInstance);
 
+export function updateList(container, targetItems, itemFactory, idFunc = v => v.uid) {
+  const existingItems = Array.from(container.children);
+  const existingItemUidMap = existingItems.reduce((map, item) => Object.assign(map, {[idFunc(item.state)]: item}), {});
+  const targetItemUidMap = targetItems.reduce((map, item) => Object.assign(map, {[idFunc(item)]: item}), {});
+
+  const deletedItemIds = existingItems.map(item => idFunc(item.state)).filter(id => !(id in targetItemUidMap));
+  deletedItemIds.forEach(item => item.remove());
+
+  const targetItemIt = targetItems[Symbol.iterator]();
+  const existingItemIt = existingItems[Symbol.iterator]();
+  while (true) {
+    const {value: existingItem} = existingItemIt.next();
+    const {value: targetItem} = targetItemIt.next();
+    if(!targetItem)
+      break;
+    if(existingItem && existingItem.state.uid === targetItem.uid) {
+      container.appendChild(existingItem);
+      continue;
+    }
+    if(targetItem.uid in existingItemUidMap) {
+      container.appendChild(existingItem);
+      continue;
+    }
+    const instance = itemFactory();
+    instance.update(targetItem);
+    container.appendChild(instance);
+  }
+}
 export const html = String.raw;
