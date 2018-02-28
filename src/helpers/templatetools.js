@@ -79,7 +79,7 @@ export class TemplateInstance extends HTMLElement {
 }
 customElements.define('template-instance', TemplateInstance);
 
-export function updateList(container, targetItems, itemFactory, idFunc = v => v.uid) {
+export function updateCollection(container, targetItems, itemFactory, idFunc = v => v.uid) {
   const existingItems = Array.from(container.children);
   const existingItemUidMap = existingItems.reduce((map, item) => Object.assign(map, {[idFunc(item.state)]: item}), {});
   const targetItemUidMap = targetItems.reduce((map, item) => Object.assign(map, {[idFunc(item)]: item}), {});
