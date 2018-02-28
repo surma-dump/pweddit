@@ -10,12 +10,14 @@ export default class StateManager {
   }
 
   async _init() {
-    const mainView = await this._ui.querySelector('main-view');
-    mainView.addEventListener('top-view-dismiss', this.dismissTopView.bind(this));
-    this._ui.addEventListener('navigate', this.onNavigate.bind(this));
+    await this._ui.whenDefined('pweddit-main-view');
     // Set initial state
     this.state = await fetch('/states/defaultstate.json').then(resp => resp.json());
     await this.update();
+
+    const mainView = await this._ui.querySelector('pweddit-main-view');
+    mainView.addEventListener('top-view-dismiss', this.dismissTopView.bind(this));
+    this._ui.addEventListener('navigate', this.onNavigate.bind(this));
   }
 
   async openThread(id) {

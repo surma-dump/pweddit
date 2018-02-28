@@ -8,6 +8,14 @@ export class Template {
     this._tpl.innerHTML = html;
   }
 
+  instantiate2(updateFunc) {
+    const instance = document.createElement('template-instance');
+    instance.appendChild(this._tpl.content.cloneNode(true));
+    instance.rescanParts();
+    instance.setUpdateFunction(updateFunc);
+    return instance;
+  }
+
   instantiate(container, updateFunc) {
     let instance;
     if (isTemplate(container))
@@ -21,10 +29,7 @@ export class Template {
     } else {
       while (container.firstChild)
         container.firstChild.remove();
-      const instance = document.createElement('template-instance');
-      instance.appendChild(this._tpl.content.cloneNode(true));
-      instance.rescanParts();
-      instance.setUpdateFunction(updateFunc);
+      const instance = this.instantiate2(updateFunc);
       container.appendChild(instance);
       return instance;
     }

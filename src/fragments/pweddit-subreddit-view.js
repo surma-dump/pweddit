@@ -2,16 +2,16 @@ import FlexList from '../components/flex-list.js';
 import {Template, html} from '../helpers/templatetools.js';
 
 const template = new Template( html`
-  <subreddit-view part-id="items">
-  </subreddit-view>
+  <pweddit-subreddit-view part-id="items">
+  </pweddit-subreddit-view>
 `);
 
 const extraItemData = new WeakMap();
-export default class SubredditView extends FlexList {
+export default class PwedditSubredditView extends FlexList {
   static update(instance, state, oldState) {
-    const itemPart = instance.parts('items');
+    const itemPart = instance.part('items');
     const existingItems = Array.from(itemPart.children);
-    // const existingItemIdMap = targetItems.reduce((map, item) => Object.assign(map, {[item.state.id]: item}), {});
+    const existingItemIdMap = existingItems.reduce((map, item) => Object.assign(map, {[item.state.id]: item}), {});
     const targetItems = state.threads;
     const targetItemIdMap = targetItems.reduce((map, item) => Object.assign(map, {[item.id]: item}), {});
 
@@ -23,13 +23,23 @@ export default class SubredditView extends FlexList {
     while (true) {
       const {value: existingItem} = existingItemIt.next();
       const {value: targetItem} = targetItemIt.next();
+      if(!targetItem)
+        break;
+      if(existingItem && existingItem.state.uid === targetItem.uid) {
+        itemPart.appendChild(existingItem);
+        continue;
+      }
+      if(targetItem.uid in existingItemIdMap) {
+        itemPart.appendChild(existingItem);
+        continue;
+      }
+      const instance = customElements.get('pweddit-thread-item').instantiate(targetItem);
+      itemPart.appendChild(instance);
     }
-
-    instance.part('items').textContent = 'lol';
   }
 
   static renderTo(state, container) {
-    template.instantiate(container, SubredditView.update).update(state);
+    template.instantiate(container, PwedditSubredditView.update).update(state);
   }
 
     // state.threads.forEach(thread => {

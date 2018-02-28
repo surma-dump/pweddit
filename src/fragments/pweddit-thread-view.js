@@ -3,18 +3,28 @@ import litShadow from '../helpers/lit-shadow.js';
 import callbackBase from '../helpers/callback-base.js';
 import {html, render, repeat} from '../lit/custom-lit.js';
 
-export default class ThreadItem extends litShadow(callbackBase(HTMLElement)) {
+export default class PwedditThreadView extends litShadow(callbackBase(HTMLElement)) {
   static lightDom(state) {
     return html`
-      <thread-item>
-        <img src="${state.image}">
+      <pweddit-thread-view>
         <section class="meta">
-          <a href="/comments/${state.thread_id}">${state.title}</a>
+          <h1>${state.title}</h1>
           <span>${state.author}</span>
           <span>/r/${state.subreddit}</span>
           <span>${state.date}</span>
         </section>
-      </thread-item>
+        <section class="content">
+          ${state.post_text}
+        </section>
+        <section class="comments">
+          ${repeat(state.comments, item => item.uid, item => html`
+            <div class="comment">
+              <p>${item.author}</p>
+              ${item.post_text}
+            </comment-item>
+          `)}
+        </section>
+      </pweddit-thread-view>
     `;
   }
 
@@ -22,23 +32,12 @@ export default class ThreadItem extends litShadow(callbackBase(HTMLElement)) {
     return html`
       <style>
         :host {
-          --height: 10vh;
-          display: flex;
-          flex-direction: row;
-          height: var(--height);
-        }
-        ::slotted(img) {
-          height: var(--height);
-          width: var(--height);
-          flex-shrink: 0;
-          flex-grow: 0;
-        }
-        ::slotted(*:not(img)) {
-          flex-grow: 1;
-        }
-        ::slotted(.meta) {
           display: flex;
           flex-direction: column;
+          background-color: white;
+        }
+        ::slotted(*) {
+          margin: 20px 0;
         }
       </style>
       <slot></slot>

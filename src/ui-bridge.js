@@ -1,17 +1,24 @@
 import EventTargetPolyfill from './helpers/event-target-polyfill.js';
 
-export default class UI extends EventTargetPolyfill {
+export default class UiBridge extends EventTargetPolyfill {
   constructor() {
     super();
     document.addEventListener('click', this._onClick.bind(this));
   }
 
+  whenDefined(elem) {
+    return customElements.whenDefined(elem);
+  }
+
   querySelector(s) {
-    return Clooney.asRemoteValue(document.querySelector(s));
+    const r = document.querySelector(s);
+    if(!r)
+      return r
+    return Clooney.asRemoteValue(r);
   }
 
   async render(state) {
-    (await import('./fragments/main-view.js')).default.renderTo(state, document.body);
+    (await import('./fragments/pweddit-main-view.js')).default.renderTo(state, document.body);
   }
 
   _onClick(ev) {
