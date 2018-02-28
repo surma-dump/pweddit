@@ -8,7 +8,7 @@ export class Template {
     this._tpl.innerHTML = html;
   }
 
-  instantiate2(updateFunc) {
+  instantiate(updateFunc = _ => {}) {
     const instance = document.createElement('template-instance');
     instance.appendChild(this._tpl.content.cloneNode(true));
     instance.rescanParts();
@@ -16,7 +16,7 @@ export class Template {
     return instance;
   }
 
-  instantiate(container, updateFunc) {
+  instantiateTo(container, updateFunc = _ => {}) {
     let instance;
     if (isTemplate(container))
       instance = container;
@@ -29,7 +29,7 @@ export class Template {
     } else {
       while (container.firstChild)
         container.firstChild.remove();
-      const instance = this.instantiate2(updateFunc);
+      const instance = this.instantiate(updateFunc);
       container.appendChild(instance);
       return instance;
     }

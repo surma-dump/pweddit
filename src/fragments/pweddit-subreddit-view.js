@@ -1,13 +1,15 @@
 import FlexList from '../components/flex-list.js';
-import {Template, html} from '../helpers/templatetools.js';
+import stateElement from '../helpers/state-element.js';
+import {html} from '../helpers/templatetools.js';
 
-const template = new Template( html`
-  <pweddit-subreddit-view part-id="items">
-  </pweddit-subreddit-view>
-`);
+export default class PwedditSubredditView extends stateElement(FlexList) {
+  static get lightDom() {
+    return html`
+      <pweddit-subreddit-view part-id="items">
+      </pweddit-subreddit-view>
+    `;
+  }
 
-const extraItemData = new WeakMap();
-export default class PwedditSubredditView extends FlexList {
   static update(instance, state, oldState) {
     const itemPart = instance.part('items');
     const existingItems = Array.from(itemPart.children);
@@ -37,28 +39,4 @@ export default class PwedditSubredditView extends FlexList {
       itemPart.appendChild(instance);
     }
   }
-
-  static renderTo(state, container) {
-    template.instantiate(container, PwedditSubredditView.update).update(state);
-  }
-
-    // state.threads.forEach(thread => {
-
-    // });
-    // instance.
-    // const deletedThreads =
-    //   Array.from(instance['_host'].children).filter(threadItem => {
-    //     const id = extraItemData.get(threadItem).id;
-    //     const stillAlive = state.threads.any(thread => thread.id === id);
-    //     return !stillAlive;
-    //   });
-    // deletedThreads.forEach(it => it.remove());
-    // let curItem = instance['_host'].firstElementChild;
-    // let curExtraData = extraItemData.get(curItem);
-    // state.threads.forEach(thread => {
-    //   if (curExtraData.id === thread.id) {
-    //     // curExtraData.instance
-    //   }
-    // });
-    // return instance;
 }

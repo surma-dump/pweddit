@@ -18,7 +18,7 @@ export default class UiBridge extends EventTargetPolyfill {
   }
 
   async render(state) {
-    (await import('./fragments/pweddit-main-view.js')).default.renderTo(state, document.body);
+    (await import('./fragments/pweddit-main-view.js')).default.renderTo(document.body, state);
   }
 
   _onClick(ev) {
